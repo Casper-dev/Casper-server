@@ -8,10 +8,9 @@ import (
 
 	"fmt"
 	"github.com/ethereum/go-ethereum/common"
-
+	"github.com/Casper-dev/Casper-SC/casper_sc"
 	"gx/ipfs/QmNp85zy9RLrQ5oQD4hPyS39ezrrXpcaa7R4Y9kxdWQLLQ/go-cid"
 	"gx/ipfs/QmXYjuNuxVzXKJCfWasQk1RqkhVLDM9jtUKhqc2WPQmFSB/go-libp2p-peer"
-	"github.com/Casper-dev/Casper-SC/casper_sc"
 )
 
 func newLedger(p peer.ID) *ledger {
@@ -22,7 +21,8 @@ func newLedger(p peer.ID) *ledger {
 	}
 }
 
-var AllowedHashes string
+
+var AllowedHashes map[string]bool
 var Wallet string
 
 // ledger stores the data exchange relationship between two peers.
@@ -85,9 +85,8 @@ func (l *ledger) ReceivedBytes(n int) {
 
 func (l *ledger) Wants(k *cid.Cid, priority int) {
 	log.Debugf("peer %s wants %s", l.Partner, k)
-	fmt.Printf("peer %s wants %s\n", l.Partner.Pretty(), k)
-
-	if k.String() == AllowedHashes {
+	//fmt.Printf("peer %s wants %s\n", l.Partner.Pretty(), k.String())
+	if AllowedHashes[k.String()] {
 		casperclient, _, _ := Casper_SC.GetSC()
 		isPre, _ := casperclient.IsPrepaid(nil, common.HexToAddress(Wallet))
 		fmt.Println("is prepaid: ", isPre)
@@ -96,7 +95,10 @@ func (l *ledger) Wants(k *cid.Cid, priority int) {
 			fmt.Printf("Hash %s was allowed to download w/ wallet %s\n", k.String(), Wallet)
 		}
 	} else {
-		fmt.Printf("Wanted %s hash, but expected %s hash\n", k.String(), AllowedHashes)
+
+		 {
+		 //fmt.Printf("Wanted %s hash, but not expected\n", k.String())
+		 }
 	}
 
 }

@@ -31,13 +31,13 @@ type Config struct {
 
 const (
 	// DefaultPathName is the default config dir name
-	DefaultPathName = ".ipfs"
+	DefaultPathName = ".casper"
 	// DefaultPathRoot is the path to the default config dir location.
 	DefaultPathRoot = "~/" + DefaultPathName
 	// DefaultConfigFile is the filename of the configuration file
 	DefaultConfigFile = "config"
 	// EnvDir is the environment variable used to change the path root.
-	EnvDir = "IPFS_PATH"
+	EnvDir = "CASPER_SERVER_PATH"
 )
 
 // PathRoot returns the default configuration root directory
