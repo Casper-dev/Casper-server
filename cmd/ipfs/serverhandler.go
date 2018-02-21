@@ -6,12 +6,14 @@ import (
 	"os"
 	"time"
 	"io"
+	"github.com/Casper-dev/Casper-SC/casper_sc"
 	"math/big"
 	"github.com/Casper-dev/Casper-server/exchange/bitswap/decision"
 
 	"github.com/Casper-dev/Casper-server/core/commands"
-	"github.com/Casper-dev/Casper-SC/casper_sc"
 	"github.com/Casper-dev/Casper-server/casper/casper_utils"
+	"errors"
+	"github.com/ethereum/go-ethereum/core/types"
 )
 
 type CasperServerHandler struct {
@@ -27,9 +29,9 @@ func (serverHandler *CasperServerHandler) Ping(ctx context.Context) (int64, erro
 
 func (serverHandler *CasperServerHandler) SendUploadQuery(ctx context.Context, hash string, ipAddr string, size int64) (status string, err error) {
 	fmt.Println(hash + " " + ipAddr);
+	///TODO: We might want to reimplement this without runCommand
 	status, err = runCommand(ctx, []string{"files", "cp", "/ipfs/" + hash, "/"})
-	status, err = runCommand(ctx, []string{"pin", "add", hash})
-	status, err = runCommand(ctx, []string{"cat", "/ipfs/" + hash})
+	//status, err = runCommand(ctx, []string{"cat", "/ipfs/" + hash})
 	if err == nil {
 		fmt.Println("no error");
 	}
@@ -39,19 +41,24 @@ func (serverHandler *CasperServerHandler) SendUploadQuery(ctx context.Context, h
 
 	fmt.Println("Waiting to get SC")
 	casper, client, auth := Casper_SC.GetSC()
-	tx, err := casper.ConfirmUpload(auth, casper_utils.GetCasperNodeID(), big.NewInt(size))
+
+	///TODO: check actual size from network
+
+	confirmUploadClosure := func() (tx *types.Transaction, err error) {
+		return casper.ConfirmUpload(auth, casper_utils.GetCasperNodeID(), hash, big.NewInt(size))
+	}
 	if err != nil {
 		fmt.Println(err)
 	}
 	fmt.Println("Got SC")
-	casper_utils.MineTX(tx, client)
+	Casper_SC.ValidateMineTX(confirmUploadClosure, client)
 
 	return
 }
 
 func (serverHandler *CasperServerHandler) SendDownloadQuery(ctx context.Context, hash string, ipAddr string, wallet string) (status string, err error) {
 	fmt.Println(hash + " " + ipAddr)
-	decision.AllowedHashes = hash
+	decision.AllowedHashes[hash] = true
 	decision.Wallet = wallet
 	///TODO: reimplement this in a more sane way
 	///as it is now, this impl cannot serve more than one connection
@@ -61,21 +68,53 @@ func (serverHandler *CasperServerHandler) SendDownloadQuery(ctx context.Context,
 
 func (serverHandler *CasperServerHandler) SendDeleteQuery(ctx context.Context, hash string) (status string, err error) {
 	fmt.Println(hash)
-	///TODO: look closely if we need to reimplement this without runCommand
+	///TODO: We might want to reimplement this without runCommand
 	runCommand(ctx, []string{"ls", hash})
 	status, err = runCommand(ctx, []string{"pin", "rm", hash})
-	status, err = runCommand(ctx, []string{"files", "rm", "/" + hash})
+	status, err = runCommand(ctx, []string{"block", "rm", hash})
 
 	casper, client, auth := Casper_SC.GetSC()
 	size := int64(commands.SizeOut)
-	tx, err := casper.NotifySpaceFreed(auth, casper_utils.GetCasperNodeID(), big.NewInt(size))
-	if err != nil {
-		fmt.Println(err)
+
+	notifySpaceFreedClosure:= func() (tx *types.Transaction, err error) {
+		return casper.NotifySpaceFreed(auth, casper_utils.GetCasperNodeID(), big.NewInt(size))
 	}
 	fmt.Println("Got SC")
-	casper_utils.MineTX(tx, client)
+	Casper_SC.ValidateMineTX(notifySpaceFreedClosure, client)
 	if err == nil {
 		fmt.Println("no error");
+	}
+	return
+}
+
+func (serverHandler *CasperServerHandler) SendReplicationQuery(ctx context.Context, hash string, ip string, size int64) (status string, err error) {
+	client, _, _ := Casper_SC.GetSC()
+	status = ""
+	if verified, _ := client.VerifyReplication(nil, ip); verified {
+		///Copied as is from SendUploadQuery
+		///We might want to use different logic here soz for now we'll just copy func body from Upload
+		status, err = runCommand(ctx, []string{"files", "cp", "/ipfs/" + hash, "/"})
+		///status, err = runCommand(ctx, []string{"cat", "/ipfs/" + hash})
+		if err == nil {
+			fmt.Println("no error");
+		}
+		fmt.Println("Running events")
+		//intSize, err := strconv.ParseInt(size, 10, 64)
+		fmt.Println(err)
+
+		fmt.Println("Waiting to get SC")
+		casper, client, auth := Casper_SC.GetSC()
+
+		///TODO: check actual size from network
+		///tx, err := casper.ConfirmUpload(auth, casper_utils.GetCasperNodeID(), hash, big.NewInt(size))
+
+		fmt.Println("Got SC")
+		confirmUploadClosure := func() (tx *types.Transaction, err error) {
+			return casper.ConfirmUpload(auth, casper_utils.GetCasperNodeID(), hash, big.NewInt(size))
+		}
+		Casper_SC.ValidateMineTX(confirmUploadClosure, client)
+	} else {
+		err = errors.New("replication verification failed")
 	}
 	return
 }

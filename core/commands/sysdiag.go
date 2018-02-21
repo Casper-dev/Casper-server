@@ -79,14 +79,14 @@ func runtimeInfo(out map[string]interface{}) error {
 func envVarInfo(out map[string]interface{}) error {
 	ev := make(map[string]interface{})
 	ev["GOPATH"] = os.Getenv("GOPATH")
-	ev["IPFS_PATH"] = os.Getenv("IPFS_PATH")
+	ev["IPFS_PATH"] = os.Getenv("CASPER_SERVER_PATH")
 
 	out["environment"] = ev
 	return nil
 }
 
 func ipfsPath() string {
-	p := os.Getenv("IPFS_PATH")
+	p := os.Getenv("CASPER_SERVER_PATH")
 	if p == "" {
 		p = path.Join(os.Getenv("HOME"), ".ipfs")
 	}

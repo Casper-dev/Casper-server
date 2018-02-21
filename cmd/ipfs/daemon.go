@@ -25,7 +25,9 @@ import (
 	"gx/ipfs/QmX3U3YXCQ6UYBxq2LVWF8dARS1hPUTEYLrSx654Qyxyw6/go-multiaddr-net"
 	ma "gx/ipfs/QmXY77cVe7rVRQXZZQRioukUM7aRW3BTcAgJe12MCtb3Ji/go-multiaddr"
 	iconn "gx/ipfs/QmfQAY7YU4fQi3sjGLs1hwkM2Aq7dxgDyoMjaKN4WBWvcB/go-libp2p-interface-conn"
+
 	"github.com/Casper-dev/Casper-server/casper/casper_utils"
+
 )
 
 const (
@@ -318,6 +320,9 @@ func daemonFunc(req cmds.Request, res cmds.Response) {
 		return
 	}
 
+
+	ncfg.Routing = core.DHTClientOption
+
 	node, err := core.NewNode(req.Context(), ncfg)
 	if err != nil {
 		log.Error("error from node construction: ", err)
@@ -333,7 +338,8 @@ func daemonFunc(req cmds.Request, res cmds.Response) {
 
 	printSwarmAddrs(node)
 
-	go casper_utils.RegisterSC(node)
+	go casper_utils.RegisterSC(node, cfg)
+	//go memory.ServeRPC()
 
 	defer func() {
 		// We wait for the node to close first, as the node has children
