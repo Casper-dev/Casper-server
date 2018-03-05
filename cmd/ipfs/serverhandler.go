@@ -24,6 +24,7 @@ func NewCasperServerHandler() *CasperServerHandler {
 }
 
 func (serverHandler *CasperServerHandler) Ping(ctx context.Context) (int64, error) {
+	fmt.Println("Ping received")
 	return int64(time.Now().Unix()), nil
 }
 
@@ -51,7 +52,7 @@ func (serverHandler *CasperServerHandler) SendUploadQuery(ctx context.Context, h
 		fmt.Println(err)
 	}
 	fmt.Println("Got SC")
-	Casper_SC.ValidateMineTX(confirmUploadClosure, client)
+	Casper_SC.ValidateMineTX(confirmUploadClosure, client, auth)
 
 	return
 }
@@ -71,16 +72,17 @@ func (serverHandler *CasperServerHandler) SendDeleteQuery(ctx context.Context, h
 	///TODO: We might want to reimplement this without runCommand
 	runCommand(ctx, []string{"ls", hash})
 	status, err = runCommand(ctx, []string{"pin", "rm", hash})
+	status, err = runCommand(ctx, []string{"files", "rm", "/" + hash})
 	status, err = runCommand(ctx, []string{"block", "rm", hash})
 
 	casper, client, auth := Casper_SC.GetSC()
 	size := int64(commands.SizeOut)
 
 	notifySpaceFreedClosure:= func() (tx *types.Transaction, err error) {
-		return casper.NotifySpaceFreed(auth, casper_utils.GetCasperNodeID(), big.NewInt(size))
+		return casper.NotifySpaceFreed(auth, casper_utils.GetCasperNodeID(), hash, big.NewInt(size))
 	}
 	fmt.Println("Got SC")
-	Casper_SC.ValidateMineTX(notifySpaceFreedClosure, client)
+	Casper_SC.ValidateMineTX(notifySpaceFreedClosure, client, auth)
 	if err == nil {
 		fmt.Println("no error");
 	}
@@ -112,10 +114,14 @@ func (serverHandler *CasperServerHandler) SendReplicationQuery(ctx context.Conte
 		confirmUploadClosure := func() (tx *types.Transaction, err error) {
 			return casper.ConfirmUpload(auth, casper_utils.GetCasperNodeID(), hash, big.NewInt(size))
 		}
-		Casper_SC.ValidateMineTX(confirmUploadClosure, client)
+		Casper_SC.ValidateMineTX(confirmUploadClosure, client, auth)
 	} else {
 		err = errors.New("replication verification failed")
 	}
+	return
+}
+
+func (serverHandler *CasperServerHandler) SendUpdateQuery(ctx context.Context, uuid string, hash string, size int64) (status string, err error) {
 	return
 }
 

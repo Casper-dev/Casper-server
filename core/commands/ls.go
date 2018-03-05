@@ -170,23 +170,19 @@ The JSON output contains type information.
 			SizeOut = 0
 			for _, object := range output.Objects {
 				if len(output.Objects) > 1 {
-					fmt.Println("ls1")
 					fmt.Fprintf(w, "%s:\n", object.Hash)
 				}
 				if headers {
-					fmt.Println("ls2")
 					fmt.Fprintln(w, "Hash\tSize\tName")
 				}
 				for _, link := range object.Links {
 					if link.Type == unixfspb.Data_Directory {
 						link.Name += "/"
 					}
-					fmt.Println("ls3")
 					SizeOut += link.Size
-					fmt.Fprintf(w, "%s\t%v\t%s\n", link.Hash, link.Size, link.Name)
+					//fmt.Fprintf(w, "%s\t%v\t%s\n", link.Hash, link.Size, link.Name)
 				}
 				if len(output.Objects) > 1 {
-					fmt.Println("ls4")
 					fmt.Fprintln(w)
 				}
 			}

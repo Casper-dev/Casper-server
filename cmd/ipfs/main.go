@@ -62,7 +62,6 @@ type cmdInvocation struct {
 // - output the response
 // - if anything fails, print error, maybe with help
 func main() {
-	go serve()
 	os.Exit(mainRet())
 }
 
@@ -142,6 +141,11 @@ func mainRet() int {
 			printHelp(false, os.Stderr)
 		}
 		return 1
+	}
+
+	// Start Thrift server only if it is daemon command
+	if invoc.cmd == daemonCmd {
+		go serve(invoc.req.InvocContext().ConfigRoot)
 	}
 
 	// here we handle the cases where

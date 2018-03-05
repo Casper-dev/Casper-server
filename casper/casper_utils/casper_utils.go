@@ -9,11 +9,11 @@ import (
 	"github.com/Casper-dev/Casper-server/core"
 	"github.com/Casper-dev/Casper-SC/casper_sc"
 
-
+	"github.com/Casper-dev/Casper-SC/casperproto"
 	"github.com/Casper-dev/Casper-server/repo/config"
 	"regexp"
 	"github.com/ethereum/go-ethereum/core/types"
-	"github.com/Casper-dev/Casper-SC/casperproto"
+	"time"
 )
 
 var fullNodeID string
@@ -31,14 +31,17 @@ func RegisterSC(node *core.IpfsNode, cfg *config.Config) {
 	addTokenClosure := func() (*types.Transaction, error) {
 		return casper.AddToken(auth, big.NewInt(int64(13370000000)))
 	}
-	Casper_SC.ValidateMineTX(addTokenClosure, client)
+	Casper_SC.ValidateMineTX(addTokenClosure, client, auth)
+
+	time.Sleep(1 * time.Second)
+
 	fmt.Println("registering")
 
 	registerProviderClosure := func() (*types.Transaction, error) {
 		return casper.RegisterProvider(auth, fullNodeID, big.NewInt(int64(13370000000)))
 	}
 
-	Casper_SC.ValidateMineTX(registerProviderClosure, client)
+	Casper_SC.ValidateMineTX(registerProviderClosure, client, auth)
 
 	return
 }
