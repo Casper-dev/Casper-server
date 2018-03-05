@@ -1,4 +1,5 @@
 
+
 # CasperAPI provider application.
 CasperAPI is a decentralized data storage.
 We were deeply concerned with the state of the Internet and thought that with the state-of-art decentralized technologies we could at least start changing the way data is stored and distributed right now.
@@ -64,7 +65,7 @@ ipfs: ELF 64-bit LSB executable, x86-64, version 1 (SYSV), dynamically linked, i
 ```
 
 #### Usage
-Provider mostly just serves incoming connections from client, so you only need to run it. As of now, works only with open IP addresses and requires own INFURA Ropsten test network ethereum wallet and some ETH on it.
+Provider mostly just serves incoming connections from client, so you only need to run it. As of now, works only with open IP addresses and ~~requires own INFURA Ropsten test network ethereum wallet and some ETH on it~~ for now works on fast private blockchain.
 ```bash
 ipfs init 	 			# this will instantiate an id and a repo that provider will use
 ipfs daemon	 			# runs ipfs daemon that will serve incoming commands
