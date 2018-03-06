@@ -15,6 +15,8 @@ We were deeply concerned with the state of the Internet and thought that with th
 ## Building from source
 ### Debian-based linux
 #### Prerequisites
+For the build process you'll need Go 1.9.2 or higher. We also assume that you already exported $GOROOT and $GOPATH variables and have $GOROOT/bin exported to your $PATH environment variable.
+
 ```bash
 apt-get install build-essential \
 	software-properties-common \
