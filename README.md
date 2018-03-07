@@ -74,14 +74,13 @@ ipfs: ELF 64-bit LSB executable, x86-64, version 1 (SYSV), dynamically linked, i
 
 #### Getting started
 Provider mostly just serves incoming connections from client, so you only need to run it. 
-If you are using pre-built ipfs binary you need to place it somewhere in the system, open a terminal near and run
+If you are using a pre-built ipfs binary, you need to unpack it (default on Windows; on Linux use tar xvf <filename>), place contents somewhere in the system and then open a terminal(or PowerShell) near and run
 ```bash
 ./ipfs init 	 			# this will instantiate an id and a repo that provider will use
 ./ipfs daemon	 			# runs ipfs daemon that will serve incoming commands
 # or you can use
 ./ipfs daemon --init=true # runs ipfs daemon even without previous ipfs init; will make an id and a repo if there's none already instanced
 ```
-When under Windows you might want to use a PowerShell to run it.
 If you built binaries yourself then look for them in $GOPATH/bin.
 
 #### Current issues
