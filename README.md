@@ -1,5 +1,7 @@
 
 
+
+
 # CasperAPI provider application.
 CasperAPI is a decentralized data storage.
 We were deeply concerned with the state of the Internet and thought that with the state-of-art decentralized technologies we could at least start changing the way data is stored and distributed right now.
@@ -11,6 +13,9 @@ We were deeply concerned with the state of the Internet and thought that with th
 - [Usage](#usage)
 - [Special thanks](#special-thanks)
 - [License](#license)
+  
+## Installation
+You can download and use pre-built binaries (download them [here](https://github.com/Casper-dev/Casper-server/releases/tag/0.0.1)). If there's none for your OS or you want to build everything from scratch please use the instruction below .
   
 ## Building from source
 ### Debian-based linux
@@ -67,13 +72,19 @@ ipfs: ELF 64-bit LSB executable, x86-64, version 1 (SYSV), dynamically linked, i
 ```
 
 #### Usage
-Provider mostly just serves incoming connections from client, so you only need to run it. As of now, works only with open IP addresses and ~~requires own INFURA Ropsten test network ethereum wallet and some ETH on it~~ for now works on fast private blockchain.
+Provider mostly just serves incoming connections from client, so you only need to run it. 
+If you are using pre-built ipfs binary you need to place it somewhere in the system, open a terminal near and run
 ```bash
-ipfs init 	 			# this will instantiate an id and a repo that provider will use
-ipfs daemon	 			# runs ipfs daemon that will serve incoming commands
+./ipfs init 	 			# this will instantiate an id and a repo that provider will use
+./ipfs daemon	 			# runs ipfs daemon that will serve incoming commands
 # or you can use
-ipfs daemon --init=true # runs ipfs daemon even without previous ipfs init; will make an id and a repo if there's none already instanced
+./ipfs daemon --init=true # runs ipfs daemon even without previous ipfs init; will make an id and a repo if there's none already instanced
 ```
+When under Windows you might want to use a PowerShell to run it.
+If you built binaries yourself then look for them in $GOPATH/bin.
+
+#### Current issues
+As of now, works only with open IP addresses and ~~requires own INFURA Ropsten test network ethereum wallet and some ETH on it~~ for now works on fast private blockchain.
 
 # Special thanks
 We really appreciate all the work that IPFS team done to the moment. 
