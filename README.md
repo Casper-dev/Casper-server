@@ -2,21 +2,23 @@
 
 
 
+
 # CasperAPI provider application.
 CasperAPI is a decentralized data storage.
 We were deeply concerned with the state of the Internet and thought that with the state-of-art decentralized technologies we could at least start changing the way data is stored and distributed right now.
 
 ## Table of Contents
-
-- [Building from source](#building-from-source)
-  - [Debian-based](#debian-based-linux)
-- [Usage](#usage)
+- [Installation](#installation)
+  - [Building from source](#building-from-source)
+    - [Debian-based](#debian-based-linux)
+- [Getting started](#getting-started)
 - [Special thanks](#special-thanks)
 - [License](#license)
   
 ## Installation
-You can download and use pre-built binaries (download them [here](https://github.com/Casper-dev/Casper-server/releases/tag/0.0.1)). If there's none for your OS or you want to build everything from scratch please use the instruction below .
-  
+You can download and use pre-built binaries (download them [here](https://github.com/Casper-dev/Casper-server/releases/tag/0.0.1)). If there's none for your OS or you want to build everything from scratch please use the instruction below.
+For instructions on how to run your own node see [Getting started](#getting-started).
+
 ## Building from source
 ### Debian-based linux
 #### Prerequisites
@@ -44,7 +46,6 @@ go get -v -u -d github.com/whyrusleeping/gx-go
 go get -v -u -d github.com/ethereum/go-ethereum
 go get -v git.apache.org/thrift.git/lib/go/thrift/...
 ```
-Install [Solidity](https://solidity.readthedocs.io/en/latest/installing-solidity.html#) compiler
 
 Install gx from sources
 ```bash
@@ -71,7 +72,7 @@ file ipfs
 ipfs: ELF 64-bit LSB executable, x86-64, version 1 (SYSV), dynamically linked, interpreter /lib64/ld-linux-x86-64.so.2, for GNU/Linux 2.6.32, BuildID[sha1]=2478eaaff91f2846ccfcef826de7d74f4261ed13, not stripped
 ```
 
-#### Usage
+#### Getting started
 Provider mostly just serves incoming connections from client, so you only need to run it. 
 If you are using pre-built ipfs binary you need to place it somewhere in the system, open a terminal near and run
 ```bash
