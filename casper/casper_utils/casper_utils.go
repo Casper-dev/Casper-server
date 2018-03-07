@@ -21,7 +21,7 @@ var fullNodeID string
 func RegisterSC(node *core.IpfsNode, cfg *config.Config) {
 	fmt.Println(node.Identity.Pretty())
 	casper, client, auth := Casper_SC.GetSC()
-	ip := Casper_SC.GetIPv4()
+	ip := cfg.Casper.IPAddress
 	re := regexp.MustCompile("/tcp/.+")
 	port := re.FindString(cfg.Addresses.Swarm[0])
 	fullNodeID = "/ip4/" + ip + port + "/ipfs/" + node.Identity.Pretty()
@@ -29,7 +29,7 @@ func RegisterSC(node *core.IpfsNode, cfg *config.Config) {
 
 	///TODO: debug only: remove as soon as we deploy
 	addTokenClosure := func() (*types.Transaction, error) {
-		return casper.AddToken(auth, big.NewInt(int64(13370000000)))
+		return casper.AddToken(auth, big.NewInt(int64(cfg.Casper.RepoSize)))
 	}
 	Casper_SC.ValidateMineTX(addTokenClosure, client, auth)
 
@@ -38,7 +38,7 @@ func RegisterSC(node *core.IpfsNode, cfg *config.Config) {
 	fmt.Println("registering")
 
 	registerProviderClosure := func() (*types.Transaction, error) {
-		return casper.RegisterProvider(auth, fullNodeID, big.NewInt(int64(13370000000)))
+		return casper.RegisterProvider(auth, fullNodeID, big.NewInt(int64(cfg.Casper.RepoSize)))
 	}
 
 	Casper_SC.ValidateMineTX(registerProviderClosure, client, auth)

@@ -9,6 +9,7 @@ import (
 
 	peer "gx/ipfs/QmXYjuNuxVzXKJCfWasQk1RqkhVLDM9jtUKhqc2WPQmFSB/go-libp2p-peer"
 	ci "gx/ipfs/QmaPbCnUMBohSGo3KnxEa2bHqyJVVeEEcwtqJAYxerieBo/go-libp2p-crypto"
+	"github.com/Casper-dev/Casper-SC/casper_sc"
 )
 
 func Init(out io.Writer, nBitsForKeypair int) (*Config, error) {
@@ -80,6 +81,10 @@ func Init(out io.Writer, nBitsForKeypair int) (*Config, error) {
 				Type:        "basic",
 			},
 		},
+		Casper: Casper{
+			IPAddress: Casper_SC.GetIPv4(),
+			RepoSize: DefaultCasperDiskSize, /// ceil(25.6 * 1024^3)
+		},
 	}
 
 	return conf, nil
@@ -97,10 +102,12 @@ const DefaultConnMgrLowWater = 600
 // grace period
 const DefaultConnMgrGracePeriod = time.Second * 20
 
+const DefaultCasperDiskSize = int64(27487790695) /// ceil(25.6 * 1024^3)
+
 // DefaultDatastoreConfig is an internal function exported to aid in testing.
 func DefaultDatastoreConfig() Datastore {
 	return Datastore{
-		StorageMax:         "10GB",
+		StorageMax:         "25GB",
 		StorageGCWatermark: 90, // 90%
 		GCPeriod:           "1h",
 		BloomFilterSize:    0,

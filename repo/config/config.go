@@ -24,6 +24,7 @@ type Config struct {
 	Gateway   Gateway   // local node's gateway server options
 	API       API       // local node's API settings
 	Swarm     SwarmConfig
+	Casper	  Casper
 
 	Reprovider   Reprovider
 	Experimental Experiments
