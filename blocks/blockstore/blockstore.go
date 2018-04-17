@@ -8,8 +8,11 @@ import (
 	"sync"
 	"sync/atomic"
 
-	dshelp "github.com/Casper-dev/Casper-server/thirdparty/ds-help"
 	blocks "gx/ipfs/QmSn9Td7xgxm9EV7iEjTckpUWmWApggzPxu7eFGWkkpwin/go-block-format"
+
+	bl "gitlab.com/casperDev/Casper-server/blocks"
+
+	dshelp "gitlab.com/casperDev/Casper-server/thirdparty/ds-help"
 
 	cid "gx/ipfs/QmNp85zy9RLrQ5oQD4hPyS39ezrrXpcaa7R4Y9kxdWQLLQ/go-cid"
 	logging "gx/ipfs/QmSpJByNKFX1sCsHBEp3R73FL4NF6FnQTEGyNAXHm2GS52/go-log"
@@ -122,13 +125,16 @@ func (bs *blockstore) Get(k *cid.Cid) (blocks.Block, error) {
 	if err != nil {
 		return nil, err
 	}
+
 	bdata, ok := maybeData.([]byte)
 	if !ok {
 		return nil, ErrValueTypeMismatch
 	}
 
+	//if false {
 	if bs.rehash {
-		rbcid, err := k.Prefix().Sum(bdata)
+		uuid, _ := bl.SplitData(bdata)
+		rbcid, err := k.Prefix().Sum(uuid)
 		if err != nil {
 			return nil, err
 		}
@@ -137,19 +143,20 @@ func (bs *blockstore) Get(k *cid.Cid) (blocks.Block, error) {
 			return nil, ErrHashMismatch
 		}
 
-		return blocks.NewBlockWithCid(bdata, rbcid)
+		return bl.NewBlockWithCid(bdata, k)
 	}
-	return blocks.NewBlockWithCid(bdata, k)
+	return bl.NewBlockWithCid(bdata, k)
 }
 
 func (bs *blockstore) Put(block blocks.Block) error {
 	k := dshelp.CidToDsKey(block.Cid())
 
 	// Has is cheaper than Put, so see if we already have it
-	exists, err := bs.datastore.Has(k)
-	if err == nil && exists {
-		return nil // already stored.
-	}
+	//exists, err := bs.datastore.Has(k)
+	//if err == nil && exists {
+	//	return nil // already stored.
+	//}
+	//return bs.datastore.Put(k, block.RawData())
 	return bs.datastore.Put(k, block.RawData())
 }
 

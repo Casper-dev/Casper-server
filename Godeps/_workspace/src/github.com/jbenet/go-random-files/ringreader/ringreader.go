@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"math/rand"
 
-	random "github.com/Casper-dev/Casper-server/Godeps/_workspace/src/github.com/jbenet/go-random"
+	random "gitlab.com/casperDev/Casper-server/Godeps/_workspace/src/github.com/jbenet/go-random"
 )
 
 type Reader struct {

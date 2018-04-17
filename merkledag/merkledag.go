@@ -4,14 +4,16 @@ package merkledag
 import (
 	"context"
 	"fmt"
+	"runtime/debug"
 	"sync"
-
-	bserv "github.com/Casper-dev/Casper-server/blockservice"
-	offline "github.com/Casper-dev/Casper-server/exchange/offline"
 
 	cid "gx/ipfs/QmNp85zy9RLrQ5oQD4hPyS39ezrrXpcaa7R4Y9kxdWQLLQ/go-cid"
 	node "gx/ipfs/QmPN7cwmpcc4DWXb4KTB9dNAJgjuPY69h3npsMfhRrQL9c/go-ipld-format"
+
 	ipldcbor "gx/ipfs/QmWCs8kMecJwCPK8JThue8TjgM2ieJ2HjTLDu7Cv2NEmZi/go-ipld-cbor"
+
+	bserv "gitlab.com/casperDev/Casper-server/blockservice"
+	offline "gitlab.com/casperDev/Casper-server/exchange/offline"
 )
 
 // TODO: We should move these registrations elsewhere. Really, most of the IPLD
@@ -95,6 +97,11 @@ func (n *dagService) Get(ctx context.Context, c *cid.Cid) (node.Node, error) {
 	defer cancel()
 
 	b, err := n.Blocks.GetBlock(ctx, c)
+	if b == nil {
+		debug.PrintStack()
+		err = ErrNotFound
+	}
+
 	if err != nil {
 		if err == bserv.ErrNotFound {
 			return nil, ErrNotFound

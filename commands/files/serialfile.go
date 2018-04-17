@@ -8,6 +8,8 @@ import (
 	"path/filepath"
 	"strings"
 	"syscall"
+
+	"gitlab.com/casperDev/Casper-server/casper/crypto"
 )
 
 // serialFile implements File, and reads from a path on the OS filesystem.
@@ -19,16 +21,22 @@ type serialFile struct {
 	files             []os.FileInfo
 	stat              os.FileInfo
 	current           *File
+	password          []byte
 	handleHiddenFiles bool
 }
 
-func NewSerialFile(name, path string, hidden bool, stat os.FileInfo) (File, error) {
+func NewSerialFile(name, path string, hidden bool, stat os.FileInfo, passwd []byte) (File, error) {
 
 	switch mode := stat.Mode(); {
 	case mode.IsRegular():
 		file, err := os.Open(path)
 		if err != nil {
 			return nil, err
+		}
+
+		if passwd != nil {
+			fileEnc := crypto.NewAESEncryptReadCloser(file, passwd)
+			return NewReaderPathFile(name, path, fileEnc, stat)
 		}
 		return NewReaderPathFile(name, path, file, stat)
 	case mode.IsDir():
@@ -38,7 +46,8 @@ func NewSerialFile(name, path string, hidden bool, stat os.FileInfo) (File, erro
 		if err != nil {
 			return nil, err
 		}
-		return &serialFile{name, path, contents, stat, nil, hidden}, nil
+
+		return &serialFile{name, path, contents, stat, nil, passwd, hidden}, nil
 	case mode&os.ModeSymlink != 0:
 		target, err := os.Readlink(path)
 		if err != nil {
@@ -94,7 +103,7 @@ func (f *serialFile) NextFile() (File, error) {
 	// recursively call the constructor on the next file
 	// if it's a regular file, we will open it as a ReaderFile
 	// if it's a directory, files in it will be opened serially
-	sf, err := NewSerialFile(fileName, filePath, f.handleHiddenFiles, stat)
+	sf, err := NewSerialFile(fileName, filePath, f.handleHiddenFiles, stat, f.password)
 	if err != nil {
 		return nil, err
 	}

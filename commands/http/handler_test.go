@@ -6,9 +6,9 @@ import (
 	"net/url"
 	"testing"
 
-	cmds "github.com/Casper-dev/Casper-server/commands"
-	ipfscmd "github.com/Casper-dev/Casper-server/core/commands"
-	coremock "github.com/Casper-dev/Casper-server/core/mock"
+	cmds "gitlab.com/casperDev/Casper-server/commands"
+	ipfscmd "gitlab.com/casperDev/Casper-server/core/commands"
+	coremock "gitlab.com/casperDev/Casper-server/core/mock"
 )
 
 func assertHeaders(t *testing.T, resHeaders http.Header, reqHeaders map[string]string) {

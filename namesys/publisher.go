@@ -7,12 +7,12 @@ import (
 	"fmt"
 	"time"
 
-	dag "github.com/Casper-dev/Casper-server/merkledag"
-	pb "github.com/Casper-dev/Casper-server/namesys/pb"
-	path "github.com/Casper-dev/Casper-server/path"
-	pin "github.com/Casper-dev/Casper-server/pin"
-	dshelp "github.com/Casper-dev/Casper-server/thirdparty/ds-help"
-	ft "github.com/Casper-dev/Casper-server/unixfs"
+	dag "gitlab.com/casperDev/Casper-server/merkledag"
+	pb "gitlab.com/casperDev/Casper-server/namesys/pb"
+	path "gitlab.com/casperDev/Casper-server/path"
+	pin "gitlab.com/casperDev/Casper-server/pin"
+	dshelp "gitlab.com/casperDev/Casper-server/thirdparty/ds-help"
+	ft "gitlab.com/casperDev/Casper-server/unixfs"
 
 	routing "gx/ipfs/QmPR2JzfKd9poHx9XBhzoFeBBC31ZM3W5iUPKJZWyaoZZm/go-libp2p-routing"
 	u "gx/ipfs/QmSU6eubNdhXjFBJBSksTp8kv8YRub8mGAPv8tVJHmL2EU/go-ipfs-util"

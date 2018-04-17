@@ -7,7 +7,7 @@ import (
 	"strings"
 	"text/template"
 
-	cmds "github.com/Casper-dev/Casper-server/commands"
+	cmds "gitlab.com/casperDev/Casper-server/commands"
 )
 
 const (

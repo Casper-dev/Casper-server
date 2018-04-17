@@ -12,6 +12,7 @@ package core
 import (
 	"bytes"
 	"context"
+	"encoding/json"
 	"errors"
 	"fmt"
 	"io"
@@ -19,28 +20,31 @@ import (
 	"net"
 	"os"
 	"strings"
+	"sync"
 	"time"
 
-	bstore "github.com/Casper-dev/Casper-server/blocks/blockstore"
-	bserv "github.com/Casper-dev/Casper-server/blockservice"
-	exchange "github.com/Casper-dev/Casper-server/exchange"
-	bitswap "github.com/Casper-dev/Casper-server/exchange/bitswap"
-	bsnet "github.com/Casper-dev/Casper-server/exchange/bitswap/network"
-	rp "github.com/Casper-dev/Casper-server/exchange/reprovide"
-	filestore "github.com/Casper-dev/Casper-server/filestore"
-	mount "github.com/Casper-dev/Casper-server/fuse/mount"
-	merkledag "github.com/Casper-dev/Casper-server/merkledag"
-	mfs "github.com/Casper-dev/Casper-server/mfs"
-	namesys "github.com/Casper-dev/Casper-server/namesys"
-	ipnsrp "github.com/Casper-dev/Casper-server/namesys/republisher"
-	p2p "github.com/Casper-dev/Casper-server/p2p"
-	path "github.com/Casper-dev/Casper-server/path"
-	pin "github.com/Casper-dev/Casper-server/pin"
-	repo "github.com/Casper-dev/Casper-server/repo"
-	config "github.com/Casper-dev/Casper-server/repo/config"
-	nilrouting "github.com/Casper-dev/Casper-server/routing/none"
-	offroute "github.com/Casper-dev/Casper-server/routing/offline"
-	ft "github.com/Casper-dev/Casper-server/unixfs"
+	bl "gitlab.com/casperDev/Casper-server/blocks"
+	bstore "gitlab.com/casperDev/Casper-server/blocks/blockstore"
+	bserv "gitlab.com/casperDev/Casper-server/blockservice"
+	uid "gitlab.com/casperDev/Casper-server/casper/uuid"
+	exchange "gitlab.com/casperDev/Casper-server/exchange"
+	bitswap "gitlab.com/casperDev/Casper-server/exchange/bitswap"
+	bsnet "gitlab.com/casperDev/Casper-server/exchange/bitswap/network"
+	rp "gitlab.com/casperDev/Casper-server/exchange/reprovide"
+	filestore "gitlab.com/casperDev/Casper-server/filestore"
+	mount "gitlab.com/casperDev/Casper-server/fuse/mount"
+	merkledag "gitlab.com/casperDev/Casper-server/merkledag"
+	mfs "gitlab.com/casperDev/Casper-server/mfs"
+	namesys "gitlab.com/casperDev/Casper-server/namesys"
+	ipnsrp "gitlab.com/casperDev/Casper-server/namesys/republisher"
+	p2p "gitlab.com/casperDev/Casper-server/p2p"
+	path "gitlab.com/casperDev/Casper-server/path"
+	pin "gitlab.com/casperDev/Casper-server/pin"
+	repo "gitlab.com/casperDev/Casper-server/repo"
+	config "gitlab.com/casperDev/Casper-server/repo/config"
+	nilrouting "gitlab.com/casperDev/Casper-server/routing/none"
+	offroute "gitlab.com/casperDev/Casper-server/routing/offline"
+	ft "gitlab.com/casperDev/Casper-server/unixfs"
 
 	yamux "gx/ipfs/QmNWCEvi7bPRcvqAV8AKLGVNoQdArWi7NJayka2SM4XtRe/go-smux-yamux"
 	cid "gx/ipfs/QmNp85zy9RLrQ5oQD4hPyS39ezrrXpcaa7R4Y9kxdWQLLQ/go-cid"
@@ -58,6 +62,7 @@ import (
 	floodsub "gx/ipfs/QmUUSLfvihARhCxxgnjW4hmycJpPvzNu12Aaz6JWVdfnLg/go-libp2p-floodsub"
 	addrutil "gx/ipfs/QmVJGsPeK3vwtEyyTxpCs47yjBYMmYsAhEouPDF3Gb2eK3/go-addr-util"
 	ds "gx/ipfs/QmVSase1JP7cq9QkPT46oNwdp9pT6kBkG3oqS14y3QcZjG/go-datastore"
+	query "gx/ipfs/QmVSase1JP7cq9QkPT46oNwdp9pT6kBkG3oqS14y3QcZjG/go-datastore/query"
 	mssmux "gx/ipfs/QmVniQJkdzLZaZwzwMdd3dJTvWiJ1DQEkreVy6hs6h7Vk5/go-smux-multistream"
 	dht "gx/ipfs/QmWRBYr99v8sjrpbyNWMuGkQekn7b9ELoLSCe8Ny7Nxain/go-libp2p-kad-dht"
 	ma "gx/ipfs/QmXY77cVe7rVRQXZZQRioukUM7aRW3BTcAgJe12MCtb3Ji/go-multiaddr"
@@ -69,6 +74,7 @@ import (
 	p2phost "gx/ipfs/Qmc1XhrFEiSeBNn3mpfg6gEuYCt5im2gYmNVmncsvmpeAk/go-libp2p-host"
 	pnet "gx/ipfs/QmcWmYQEQCrezztaQ81nXzMx2jaAEow17wdesDAjjR769r/go-libp2p-pnet"
 	swarm "gx/ipfs/QmdQFrFnPrKRQtpeHKjZ3cVNwxmGKKS2TvhJTuN9C9yduh/go-libp2p-swarm"
+	iaddr "gx/ipfs/QmeS8cCKawUwejVrsBtmC1toTXmwVWZGiRJqzgTURVWeF9/go-ipfs-addr"
 	discovery "gx/ipfs/QmefgzMbKZYsmHFkLqxgaTBG9ypeEjrdWRD5WXH4j1cWDL/go-libp2p/p2p/discovery"
 	p2pbhost "gx/ipfs/QmefgzMbKZYsmHFkLqxgaTBG9ypeEjrdWRD5WXH4j1cWDL/go-libp2p/p2p/host/basic"
 	rhost "gx/ipfs/QmefgzMbKZYsmHFkLqxgaTBG9ypeEjrdWRD5WXH4j1cWDL/go-libp2p/p2p/host/routed"
@@ -709,10 +715,131 @@ func (n *IpfsNode) loadBootstrapPeers() ([]pstore.PeerInfo, error) {
 	return toPeerInfos(parsed), nil
 }
 
+const (
+	uuidDSKeyPrefix = "/local/uuid/"
+	uuidChanBufLen  = 128
+)
+
+type UUIDInfo struct {
+	PubKey string
+}
+
+var UUIDInfoCache = &sync.Map{}
+
+func keyByUUID(uuid string) ds.Key {
+	return ds.NewKey(uuidDSKeyPrefix + uuid)
+}
+
+func (n *IpfsNode) InitUUIDCache(ctx context.Context) error {
+	q := query.Query{KeysOnly: true, Prefix: uuidDSKeyPrefix}
+	res, err := n.Repo.Datastore().Query(q)
+	if err != nil {
+		return err
+	}
+
+	defer res.Close()
+	for {
+		e, ok := res.NextSync()
+		if !ok {
+			return nil
+		}
+		if e.Error != nil {
+			return e.Error
+		}
+		res := strings.Split(e.Key, "/")
+		select {
+		case <-ctx.Done():
+			return ctx.Err()
+		default:
+			info := UUIDInfo{}
+			err := json.Unmarshal(e.Value.([]byte), &info)
+			if err != nil {
+				// no return here because we anyway try to get UUID from DS
+				// if it does not exist in cache
+				log.Error(err)
+			}
+			UUIDInfoCache.Store(res[3], &info)
+		}
+	}
+
+	return nil
+}
+
+func (n *IpfsNode) AddUUID(uuid string, value *UUIDInfo) error {
+	key := keyByUUID(uuid)
+	log.Debugf("adding UUID '%s' to local datastore", uuid)
+
+	b, err := json.Marshal(value)
+	if err != nil {
+		return err
+	}
+
+	UUIDInfoCache.Store(uuid, value)
+	return n.Repo.Datastore().Put(key, b)
+}
+
+func (n *IpfsNode) RemoveUUID(uuid string) error {
+	key := keyByUUID(uuid)
+	log.Debugf("removing UUID '%s' from local datastore", uuid)
+	UUIDInfoCache.Delete(uuid)
+	return n.Repo.Datastore().Delete(key)
+}
+
+func (n *IpfsNode) GetUUID(uuid string) (*UUIDInfo, error) {
+	key := keyByUUID(uuid)
+	val, err := n.Repo.Datastore().Get(key)
+	if err != nil {
+		return nil, err
+	}
+
+	if val, ok := UUIDInfoCache.Load(uuid); ok {
+		return val.(*UUIDInfo), nil
+	}
+
+	info := &UUIDInfo{}
+	if json.Unmarshal(val.([]byte), &info) != nil {
+		return nil, err
+	}
+	return info, err
+}
+
+func (n *IpfsNode) AllUUIDChan(ctx context.Context) (<-chan string, error) {
+	q := query.Query{KeysOnly: true, Prefix: uuidDSKeyPrefix}
+	res, err := n.Repo.Datastore().Query(q)
+	if err != nil {
+		return nil, err
+	}
+
+	output := make(chan string, uuidChanBufLen)
+	go func() {
+		defer close(output)
+		defer res.Close()
+
+		for {
+			e, ok := res.NextSync()
+			if !ok {
+				return
+			}
+			if e.Error != nil {
+				log.Errorf("error while getting UUID channel: %v", e.Error)
+				return
+			}
+			res := strings.Split(e.Key, "/")
+			select {
+			case <-ctx.Done():
+				return
+			case output <- res[3]:
+			}
+		}
+	}()
+
+	return output, nil
+}
+
 func (n *IpfsNode) loadFilesRoot() error {
 	dsk := ds.NewKey("/local/filesroot")
 	pf := func(ctx context.Context, c *cid.Cid) error {
-		return n.Repo.Datastore().Put(dsk, c.Bytes())
+		return n.Repo.Datastore().Put(dsk, append(uid.NullUUID, c.Bytes()...))
 	}
 
 	var nd *merkledag.ProtoNode
@@ -721,12 +848,16 @@ func (n *IpfsNode) loadFilesRoot() error {
 	switch {
 	case err == ds.ErrNotFound || val == nil:
 		nd = ft.EmptyDirNode()
+		fmt.Printf("EmptyDirNode: %+v\n", nd)
 		_, err := n.DAG.Add(nd)
 		if err != nil {
 			return fmt.Errorf("failure writing to dagstore: %s", err)
 		}
 	case err == nil:
-		c, err := cid.Cast(val.([]byte))
+		_, v := bl.SplitData(val.([]byte))
+
+		c, err := cid.Cast(v)
+
 		if err != nil {
 			return err
 		}
@@ -809,6 +940,45 @@ func listenAddresses(cfg *config.Config) ([]ma.Multiaddr, error) {
 	}
 
 	return listen, nil
+}
+
+func (n *IpfsNode) ConnectToPeer(ctx context.Context, saddr string) error {
+	if n.PeerHost == nil {
+		return errors.New("Can connect to peers only on daemon")
+	}
+
+	snet, ok := n.PeerHost.Network().(*swarm.Network)
+	if !ok {
+		return errors.New("Peerhost network is not swarm")
+	}
+
+	ia, err := iaddr.ParseString(saddr)
+	if err != nil {
+		return err
+	}
+	swrm := snet.Swarm()
+	pi := pstore.PeerInfo{
+		ID:    ia.ID(),
+		Addrs: []ma.Multiaddr{ia.Transport()},
+	}
+
+	swrm.Backoff().Clear(pi.ID)
+	return n.PeerHost.Connect(ctx, pi)
+}
+
+func (n *IpfsNode) ConnectToPeers(ctx context.Context, addrs ...string) *sync.WaitGroup {
+	wg := &sync.WaitGroup{}
+	for _, addr := range addrs {
+		wg.Add(1)
+		go func(addr string) {
+			defer wg.Done()
+			err := n.ConnectToPeer(ctx, addr)
+			if err != nil {
+				log.Error(err)
+			}
+		}(addr)
+	}
+	return wg
 }
 
 type ConstructPeerHostOpts struct {

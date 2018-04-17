@@ -18,23 +18,23 @@ import (
 	"syscall"
 	"time"
 
-	cmds "github.com/Casper-dev/Casper-server/commands"
-	cmdsCli "github.com/Casper-dev/Casper-server/commands/cli"
-	cmdsHttp "github.com/Casper-dev/Casper-server/commands/http"
-	core "github.com/Casper-dev/Casper-server/core"
-	coreCmds "github.com/Casper-dev/Casper-server/core/commands"
-	"github.com/Casper-dev/Casper-server/plugin/loader"
-	repo "github.com/Casper-dev/Casper-server/repo"
-	config "github.com/Casper-dev/Casper-server/repo/config"
-	fsrepo "github.com/Casper-dev/Casper-server/repo/fsrepo"
+	cmds "gitlab.com/casperDev/Casper-server/commands"
+	cmdsCli "gitlab.com/casperDev/Casper-server/commands/cli"
+	cmdsHttp "gitlab.com/casperDev/Casper-server/commands/http"
+	core "gitlab.com/casperDev/Casper-server/core"
+	coreCmds "gitlab.com/casperDev/Casper-server/core/commands"
+	"gitlab.com/casperDev/Casper-server/plugin/loader"
+	repo "gitlab.com/casperDev/Casper-server/repo"
+	config "gitlab.com/casperDev/Casper-server/repo/config"
+	fsrepo "gitlab.com/casperDev/Casper-server/repo/fsrepo"
 
 	u "gx/ipfs/QmSU6eubNdhXjFBJBSksTp8kv8YRub8mGAPv8tVJHmL2EU/go-ipfs-util"
 
+	logging "gx/ipfs/QmSpJByNKFX1sCsHBEp3R73FL4NF6FnQTEGyNAXHm2GS52/go-log"
 	loggables "gx/ipfs/QmT4PgCNdv73hnFAqzHqwW44q7M9PWpykSswHDxndquZbc/go-libp2p-loggables"
 	manet "gx/ipfs/QmX3U3YXCQ6UYBxq2LVWF8dARS1hPUTEYLrSx654Qyxyw6/go-multiaddr-net"
 	ma "gx/ipfs/QmXY77cVe7rVRQXZZQRioukUM7aRW3BTcAgJe12MCtb3Ji/go-multiaddr"
 	osh "gx/ipfs/QmXuBJ7DR6k3rmUEKtvVMhwjmXDuJgXXPUt4LQXKBMsU93/go-os-helper"
-	logging "gx/ipfs/QmSpJByNKFX1sCsHBEp3R73FL4NF6FnQTEGyNAXHm2GS52/go-log"
 )
 
 // log is the command logger
@@ -65,18 +65,18 @@ func main() {
 	os.Exit(mainRet())
 }
 
+// we'll call this helper to output errors.
+// this is so we control how to print errors in one place.
+func printErr(err error) {
+	fmt.Fprintf(os.Stderr, "Error: %s\n", err.Error())
+}
+
 func mainRet() int {
 	rand.Seed(time.Now().UnixNano())
 	ctx := logging.ContextWithLoggable(context.Background(), loggables.Uuid("session"))
 	var err error
 	var invoc cmdInvocation
 	defer invoc.close()
-
-	// we'll call this local helper to output errors.
-	// this is so we control how to print errors in one place.
-	printErr := func(err error) {
-		fmt.Fprintf(os.Stderr, "Error: %s\n", err.Error())
-	}
 
 	stopFunc, err := profileIfEnabled()
 	if err != nil {
@@ -102,7 +102,6 @@ func mainRet() int {
 		fmt.Fprintf(w, "Use 'ipfs %s --help' for information about this command\n", cmdPath)
 	}
 
-	// Handle `ipfs help'
 	if len(os.Args) == 2 {
 		if os.Args[1] == "help" {
 			printHelp(false, os.Stdout)
@@ -141,11 +140,6 @@ func mainRet() int {
 			printHelp(false, os.Stderr)
 		}
 		return 1
-	}
-
-	// Start Thrift server only if it is daemon command
-	if invoc.cmd == daemonCmd {
-		go serve(invoc.req.InvocContext().ConfigRoot)
 	}
 
 	// here we handle the cases where
@@ -305,6 +299,10 @@ func callPreCommandHooks(ctx context.Context, details cmdDetails, req cmds.Reque
 
 func callCommand(ctx context.Context, req cmds.Request, root *cmds.Command, cmd *cmds.Command) (cmds.Response, error) {
 	log.Info(config.EnvDir, " ", req.InvocContext().ConfigRoot)
+
+	log.Infof("Setting request type to '%s'", cmds.CallerOptServer)
+	req.SetOption(cmds.CallerOpt, cmds.CallerOptServer)
+
 	var res cmds.Response
 
 	err := req.SetRootContext(ctx)

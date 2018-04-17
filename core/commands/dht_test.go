@@ -3,8 +3,9 @@ package commands
 import (
 	"testing"
 
-	"github.com/Casper-dev/Casper-server/namesys"
 	tu "gx/ipfs/QmWRCn8vruNAzHx8i6SAXinuheRitKEGu8c7m26stKvsYx/go-testutil"
+
+	"gitlab.com/casperDev/Casper-server/namesys"
 )
 
 func TestKeyTranslation(t *testing.T) {

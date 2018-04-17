@@ -18,9 +18,9 @@ type CacheOpts struct {
 // DefaultCacheOpts returns a CacheOpts initialized with default values.
 func DefaultCacheOpts() CacheOpts {
 	return CacheOpts{
-		HasBloomFilterSize:   512 << 10,
-		HasBloomFilterHashes: 7,
-		HasARCCacheSize:      64 << 10,
+		HasBloomFilterSize:   0, //512 << 10,
+		HasBloomFilterHashes: 0, //7,
+		HasARCCacheSize:      0, //64 << 10,
 	}
 }
 

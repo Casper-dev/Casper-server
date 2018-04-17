@@ -5,13 +5,18 @@ import (
 	"fmt"
 	"os"
 
-	dag "github.com/Casper-dev/Casper-server/merkledag"
-	pi "github.com/Casper-dev/Casper-server/thirdparty/posinfo"
-	ft "github.com/Casper-dev/Casper-server/unixfs"
+	logging "gx/ipfs/QmSpJByNKFX1sCsHBEp3R73FL4NF6FnQTEGyNAXHm2GS52/go-log"
+
+	uuid "gitlab.com/casperDev/Casper-server/casper/uuid"
+	dag "gitlab.com/casperDev/Casper-server/merkledag"
+	pi "gitlab.com/casperDev/Casper-server/thirdparty/posinfo"
+	ft "gitlab.com/casperDev/Casper-server/unixfs"
 
 	cid "gx/ipfs/QmNp85zy9RLrQ5oQD4hPyS39ezrrXpcaa7R4Y9kxdWQLLQ/go-cid"
 	node "gx/ipfs/QmPN7cwmpcc4DWXb4KTB9dNAJgjuPY69h3npsMfhRrQL9c/go-ipld-format"
 )
+
+var log = logging.Logger("imp.helpers")
 
 // BlockSizeLimit specifies the maximum size an imported block can have.
 var BlockSizeLimit = 1048576 // 1 MB
@@ -63,6 +68,10 @@ func NewUnixfsNodeFromDag(nd *dag.ProtoNode) (*UnixfsNode, error) {
 // SetPrefix sets the CID Prefix
 func (n *UnixfsNode) SetPrefix(prefix *cid.Prefix) {
 	n.node.SetPrefix(prefix)
+}
+
+func (n *UnixfsNode) SetUUID(uuid []byte) {
+	n.node.SetUUID(uuid)
 }
 
 func (n *UnixfsNode) NumChildren() int {
@@ -127,7 +136,7 @@ func (n *UnixfsNode) SetData(data []byte) {
 
 func (n *UnixfsNode) FileSize() uint64 {
 	if n.raw {
-		return uint64(len(n.rawnode.RawData()))
+		return uint64(len(n.rawnode.RawData()) - uuid.UUIDLen)
 	}
 	return n.ufmt.FileSize()
 }

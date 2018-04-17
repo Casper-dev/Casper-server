@@ -4,10 +4,10 @@ import (
 	"context"
 	"errors"
 
-	bsmsg "github.com/Casper-dev/Casper-server/exchange/bitswap/message"
-	bsnet "github.com/Casper-dev/Casper-server/exchange/bitswap/network"
-	mockrouting "github.com/Casper-dev/Casper-server/routing/mock"
-	delay "github.com/Casper-dev/Casper-server/thirdparty/delay"
+	bsmsg "gitlab.com/casperDev/Casper-server/exchange/bitswap/message"
+	bsnet "gitlab.com/casperDev/Casper-server/exchange/bitswap/network"
+	mockrouting "gitlab.com/casperDev/Casper-server/routing/mock"
+	delay "gitlab.com/casperDev/Casper-server/thirdparty/delay"
 
 	cid "gx/ipfs/QmNp85zy9RLrQ5oQD4hPyS39ezrrXpcaa7R4Y9kxdWQLLQ/go-cid"
 	routing "gx/ipfs/QmPR2JzfKd9poHx9XBhzoFeBBC31ZM3W5iUPKJZWyaoZZm/go-libp2p-routing"

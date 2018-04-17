@@ -6,7 +6,7 @@ import (
 	"sync"
 	"time"
 
-	bsmsg "github.com/Casper-dev/Casper-server/exchange/bitswap/message"
+	bsmsg "gitlab.com/casperDev/Casper-server/exchange/bitswap/message"
 
 	cid "gx/ipfs/QmNp85zy9RLrQ5oQD4hPyS39ezrrXpcaa7R4Y9kxdWQLLQ/go-cid"
 	process "gx/ipfs/QmSF8fPo3jgVBAy8fpdjjYqgG87dkJgUprRBHRd2tmfgpP/goprocess"

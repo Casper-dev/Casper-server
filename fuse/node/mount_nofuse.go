@@ -6,7 +6,7 @@ package node
 import (
 	"errors"
 
-	core "github.com/Casper-dev/Casper-server/core"
+	core "gitlab.com/casperDev/Casper-server/core"
 )
 
 func Mount(node *core.IpfsNode, fsdir, nsdir string) error {

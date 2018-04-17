@@ -1,5 +1,5 @@
 {
-	"ImportPath": "github.com/ipfs/go-ipfs",
+	"ImportPath": "gitlab.com/casperDev/Casper-server",
 	"GoVersion": "go1.5.2",
 	"Packages": [
 		"./..."

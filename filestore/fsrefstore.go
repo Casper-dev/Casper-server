@@ -7,11 +7,12 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/Casper-dev/Casper-server/blocks/blockstore"
-	pb "github.com/Casper-dev/Casper-server/filestore/pb"
-	dshelp "github.com/Casper-dev/Casper-server/thirdparty/ds-help"
-	posinfo "github.com/Casper-dev/Casper-server/thirdparty/posinfo"
 	"gx/ipfs/QmSn9Td7xgxm9EV7iEjTckpUWmWApggzPxu7eFGWkkpwin/go-block-format"
+
+	"gitlab.com/casperDev/Casper-server/blocks/blockstore"
+	pb "gitlab.com/casperDev/Casper-server/filestore/pb"
+	dshelp "gitlab.com/casperDev/Casper-server/thirdparty/ds-help"
+	posinfo "gitlab.com/casperDev/Casper-server/thirdparty/posinfo"
 
 	cid "gx/ipfs/QmNp85zy9RLrQ5oQD4hPyS39ezrrXpcaa7R4Y9kxdWQLLQ/go-cid"
 	proto "gx/ipfs/QmT6n4mspWYEya864BhCUJEgyxiRfmiSY9ruQwTUNpRKaM/protobuf/proto"

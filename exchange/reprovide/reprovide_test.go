@@ -4,15 +4,16 @@ import (
 	"testing"
 
 	context "context"
-	blockstore "github.com/Casper-dev/Casper-server/blocks/blockstore"
-	mock "github.com/Casper-dev/Casper-server/routing/mock"
 	pstore "gx/ipfs/QmPgDWmTmuzvP7QE5zwo1TmjbJme9pmZHNujB2453jkCTr/go-libp2p-peerstore"
 	blocks "gx/ipfs/QmSn9Td7xgxm9EV7iEjTckpUWmWApggzPxu7eFGWkkpwin/go-block-format"
 	ds "gx/ipfs/QmVSase1JP7cq9QkPT46oNwdp9pT6kBkG3oqS14y3QcZjG/go-datastore"
 	dssync "gx/ipfs/QmVSase1JP7cq9QkPT46oNwdp9pT6kBkG3oqS14y3QcZjG/go-datastore/sync"
 	testutil "gx/ipfs/QmWRCn8vruNAzHx8i6SAXinuheRitKEGu8c7m26stKvsYx/go-testutil"
 
-	. "github.com/Casper-dev/Casper-server/exchange/reprovide"
+	blockstore "gitlab.com/casperDev/Casper-server/blocks/blockstore"
+	mock "gitlab.com/casperDev/Casper-server/routing/mock"
+
+	. "gitlab.com/casperDev/Casper-server/exchange/reprovide"
 )
 
 func TestReprovide(t *testing.T) {

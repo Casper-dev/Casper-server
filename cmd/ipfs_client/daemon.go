@@ -11,23 +11,21 @@ import (
 	"sort"
 	"sync"
 
-	cmds "github.com/Casper-dev/Casper-server/commands"
-	"github.com/Casper-dev/Casper-server/core"
-	"github.com/Casper-dev/Casper-server/core/commands"
-	"github.com/Casper-dev/Casper-server/core/corehttp"
-	"github.com/Casper-dev/Casper-server/core/corerepo"
-	nodeMount "github.com/Casper-dev/Casper-server/fuse/node"
-	"github.com/Casper-dev/Casper-server/repo/fsrepo"
-	migrate "github.com/Casper-dev/Casper-server/repo/fsrepo/migrations"
+	utilmain "gitlab.com/casperDev/Casper-server/cmd/ipfs_client/util"
+	cmds "gitlab.com/casperDev/Casper-server/commands"
+	"gitlab.com/casperDev/Casper-server/core"
+	commands "gitlab.com/casperDev/Casper-server/core/commands"
+	corehttp "gitlab.com/casperDev/Casper-server/core/corehttp"
+	corerepo "gitlab.com/casperDev/Casper-server/core/corerepo"
+	nodeMount "gitlab.com/casperDev/Casper-server/fuse/node"
+	fsrepo "gitlab.com/casperDev/Casper-server/repo/fsrepo"
+	migrate "gitlab.com/casperDev/Casper-server/repo/fsrepo/migrations"
 
 	mprome "gx/ipfs/QmSk46nSD78YiuNojYMS8NW6hSCjH95JajqqzzoychZgef/go-metrics-prometheus"
 	"gx/ipfs/QmX3QZ5jHEPidwUrymXV1iSCSUhdGxj15sm2gP4jKMef7B/client_golang/prometheus"
 	"gx/ipfs/QmX3U3YXCQ6UYBxq2LVWF8dARS1hPUTEYLrSx654Qyxyw6/go-multiaddr-net"
 	ma "gx/ipfs/QmXY77cVe7rVRQXZZQRioukUM7aRW3BTcAgJe12MCtb3Ji/go-multiaddr"
 	iconn "gx/ipfs/QmfQAY7YU4fQi3sjGLs1hwkM2Aq7dxgDyoMjaKN4WBWvcB/go-libp2p-interface-conn"
-
-	"github.com/Casper-dev/Casper-server/casper/casper_utils"
-
 )
 
 const (
@@ -48,6 +46,7 @@ const (
 	unrestrictedApiAccessKwd  = "unrestricted-api"
 	writableKwd               = "writable"
 	enableFloodSubKwd         = "enable-pubsub-experiment"
+	enableIPNSPubSubKwd       = "enable-namesys-pubsub"
 	enableMultiplexKwd        = "enable-mplex-experiment"
 	// apiAddrKwd    = "address-api"
 	// swarmAddrKwd  = "address-swarm"
@@ -146,20 +145,22 @@ Headers.
 	},
 
 	Options: []cmds.Option{
-		cmds.BoolOption(initOptionKwd, "Initialize ipfs with default settings if not already initialized").Default(false),
+		cmds.BoolOption(initOptionKwd, "Initialize ipfs with default settings if not already initialized"),
 		cmds.StringOption(routingOptionKwd, "Overrides the routing option").Default("dht"),
-		cmds.BoolOption(mountKwd, "Mounts IPFS to the filesystem").Default(false),
-		cmds.BoolOption(writableKwd, "Enable writing objects (with POST, PUT and DELETE)").Default(false),
+		cmds.BoolOption(mountKwd, "Mounts IPFS to the filesystem"),
+		cmds.BoolOption(writableKwd, "Enable writing objects (with POST, PUT and DELETE)"),
 		cmds.StringOption(ipfsMountKwd, "Path to the mountpoint for IPFS (if using --mount). Defaults to config setting."),
 		cmds.StringOption(ipnsMountKwd, "Path to the mountpoint for IPNS (if using --mount). Defaults to config setting."),
-		cmds.BoolOption(unrestrictedApiAccessKwd, "Allow API access to unlisted hashes").Default(false),
-		cmds.BoolOption(unencryptTransportKwd, "Disable transport encryption (for debugging protocols)").Default(false),
-		cmds.BoolOption(enableGCKwd, "Enable automatic periodic repo garbage collection").Default(false),
+		cmds.BoolOption(unrestrictedApiAccessKwd, "Allow API access to unlisted hashes"),
+		cmds.BoolOption(unencryptTransportKwd, "Disable transport encryption (for debugging protocols)"),
+		cmds.BoolOption(enableGCKwd, "Enable automatic periodic repo garbage collection"),
 		cmds.BoolOption(adjustFDLimitKwd, "Check and raise file descriptor limits if needed").Default(true),
-		cmds.BoolOption(offlineKwd, "Run offline. Do not connect to the rest of the network but provide local API.").Default(false),
+		cmds.BoolOption(offlineKwd, "Run offline. Do not connect to the rest of the network but provide local API."),
 		cmds.BoolOption(migrateKwd, "If true, assume yes at the migrate prompt. If false, assume no."),
 		cmds.BoolOption(enableFloodSubKwd, "Instantiate the ipfs daemon with the experimental pubsub feature enabled."),
+		cmds.BoolOption(enableIPNSPubSubKwd, "Enable IPNS record distribution through pubsub; enables pubsub."),
 		cmds.BoolOption(enableMultiplexKwd, "Add the experimental 'go-multiplex' stream muxer to libp2p on construction.").Default(true),
+
 		// TODO: add way to override addresses. tricky part: updating the config if also --init.
 		// cmds.StringOption(apiAddrKwd, "Address for the daemon rpc API (overrides config)"),
 		// cmds.StringOption(swarmAddrKwd, "Address for the swarm socket (overrides config)"),
@@ -179,8 +180,6 @@ func defaultMux(path string) corehttp.ServeOption {
 	}
 }
 
-var fileDescriptorCheck = func() error { return nil }
-
 func daemonFunc(req cmds.Request, res cmds.Response) {
 	// Inject metrics before we do anything
 
@@ -192,9 +191,8 @@ func daemonFunc(req cmds.Request, res cmds.Response) {
 	// let the user know we're going.
 	fmt.Printf("Initializing daemon...\n")
 
-	managefd, _, _ := req.Option(adjustFDLimitKwd).Bool()
-	if managefd {
-		if err := fileDescriptorCheck(); err != nil {
+	if managed, _, _ := req.Option(adjustFDLimitKwd).Bool(); managed {
+		if err := utilmain.ManageFdLimit(); err != nil {
 			log.Errorf("setting file descriptor limit: %s", err)
 		}
 	}
@@ -284,15 +282,17 @@ func daemonFunc(req cmds.Request, res cmds.Response) {
 
 	offline, _, _ := req.Option(offlineKwd).Bool()
 	pubsub, _, _ := req.Option(enableFloodSubKwd).Bool()
+	ipnsps, _, _ := req.Option(enableIPNSPubSubKwd).Bool()
 	mplex, _, _ := req.Option(enableMultiplexKwd).Bool()
 
 	// Start assembling node config
 	ncfg := &core.BuildCfg{
 		Repo:      repo,
-		Permament: true, // It is temporary way to signify that node is permament
+		Permament: true, // It is temporary way to signify that node is permanent
 		Online:    !offline,
 		ExtraOpts: map[string]bool{
 			"pubsub": pubsub,
+			"ipnsps": ipnsps,
 			"mplex":  mplex,
 		},
 		//TODO(Kubuxu): refactor Online vs Offline by adding Permanent vs Ephemeral
@@ -303,8 +303,6 @@ func daemonFunc(req cmds.Request, res cmds.Response) {
 		res.SetError(err, cmds.ErrNormal)
 		return
 	}
-
-	fmt.Println(routingOption)
 	switch routingOption {
 	case routingOptionSupernodeKwd:
 		res.SetError(errors.New("supernode routing was never fully implemented and has been removed"), cmds.ErrNormal)
@@ -320,9 +318,6 @@ func daemonFunc(req cmds.Request, res cmds.Response) {
 		return
 	}
 
-
-	ncfg.Routing = core.DHTClientOption
-
 	node, err := core.NewNode(req.Context(), ncfg)
 	if err != nil {
 		log.Error("error from node construction: ", err)
@@ -337,9 +332,6 @@ func daemonFunc(req cmds.Request, res cmds.Response) {
 	}
 
 	printSwarmAddrs(node)
-
-	go casper_utils.RegisterSC(node, cfg)
-	//go memory.ServeRPC()
 
 	defer func() {
 		// We wait for the node to close first, as the node has children
@@ -412,6 +404,7 @@ func daemonFunc(req cmds.Request, res cmds.Response) {
 			res.SetError(err, cmds.ErrNormal)
 		}
 	}
+
 }
 
 // serveHTTPApi collects options, creates listener, prints status message and starts serving requests

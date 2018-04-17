@@ -1,0 +1,51 @@
+GetFile: # получение файла
+  method: GET
+  path: /casper/v0/file/name
+  params:
+  - name: base58-encoded UUID or HASH
+  - archive: if 1 then return file as tar-archive
+  response:
+  - success: file contents
+  - error: error text
+
+AddFile: # добавление файла
+  method: POST
+  path: /casper/v0/file
+  response:
+  - success:
+    - Name: always "<root>"
+    - UUID: file UUID
+    - Hash: file HASH
+    - Size: size of raw data
+  - error: error text
+
+PutFile: # замена файла
+  method: PUT
+  path: /casper/v0/file/name
+  - name: base58-encoded UUID or HASH
+  response:
+  - success:
+    - Name: always "<root>"
+    - UUID: file UUID
+    - Hash: file HASH
+    - Size: size of raw data
+  - error: error text
+
+DeleteFile: # удаление файла
+  method: DELETE
+  path: /casper/v0/file/name
+  - name: base58-encoded UUID or HASH
+  response:
+  - error: error text
+
+FileStat: # информация о файле
+  method: GET
+  path: /casper/v0/file/name/stat
+  - name: base58-encoded UUID or HASH
+  response:
+  - success:
+    - Name: filename
+    - UUID: file UUID
+    - Hash: file HASH
+    - Size: size of raw data
+  - error: error text

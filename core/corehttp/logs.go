@@ -5,8 +5,9 @@ import (
 	"net"
 	"net/http"
 
-	core "github.com/Casper-dev/Casper-server/core"
 	logging "gx/ipfs/QmSpJByNKFX1sCsHBEp3R73FL4NF6FnQTEGyNAXHm2GS52/go-log"
+
+	core "gitlab.com/casperDev/Casper-server/core"
 )
 
 type writeErrNotifier struct {

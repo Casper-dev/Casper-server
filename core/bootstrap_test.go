@@ -4,9 +4,10 @@ import (
 	"fmt"
 	"testing"
 
-	config "github.com/Casper-dev/Casper-server/repo/config"
 	pstore "gx/ipfs/QmPgDWmTmuzvP7QE5zwo1TmjbJme9pmZHNujB2453jkCTr/go-libp2p-peerstore"
 	testutil "gx/ipfs/QmWRCn8vruNAzHx8i6SAXinuheRitKEGu8c7m26stKvsYx/go-testutil"
+
+	config "gitlab.com/casperDev/Casper-server/repo/config"
 )
 
 func TestSubsetWhenMaxIsGreaterThanLengthOfSlice(t *testing.T) {

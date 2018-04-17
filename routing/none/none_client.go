@@ -4,7 +4,7 @@ import (
 	"context"
 	"errors"
 
-	repo "github.com/Casper-dev/Casper-server/repo"
+	repo "gitlab.com/casperDev/Casper-server/repo"
 
 	cid "gx/ipfs/QmNp85zy9RLrQ5oQD4hPyS39ezrrXpcaa7R4Y9kxdWQLLQ/go-cid"
 	routing "gx/ipfs/QmPR2JzfKd9poHx9XBhzoFeBBC31ZM3W5iUPKJZWyaoZZm/go-libp2p-routing"

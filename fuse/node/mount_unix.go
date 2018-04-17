@@ -9,11 +9,12 @@ import (
 	"strings"
 	"sync"
 
-	core "github.com/Casper-dev/Casper-server/core"
-	ipns "github.com/Casper-dev/Casper-server/fuse/ipns"
-	mount "github.com/Casper-dev/Casper-server/fuse/mount"
-	rofs "github.com/Casper-dev/Casper-server/fuse/readonly"
 	logging "gx/ipfs/QmSpJByNKFX1sCsHBEp3R73FL4NF6FnQTEGyNAXHm2GS52/go-log"
+
+	core "gitlab.com/casperDev/Casper-server/core"
+	ipns "gitlab.com/casperDev/Casper-server/fuse/ipns"
+	mount "gitlab.com/casperDev/Casper-server/fuse/mount"
+	rofs "gitlab.com/casperDev/Casper-server/fuse/readonly"
 )
 
 var log = logging.Logger("node")

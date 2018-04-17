@@ -1,8 +1,5 @@
-
-
-
-
-
+## ATTENTION 
+As of now we are not providing you folder "vendor", so server won't build, and nor client. Sorry for the inconvenience, we'll think of something the following week.
 # CasperAPI provider application.
 CasperAPI is a decentralized data storage.
 We were deeply concerned with the state of the Internet and thought that with the state-of-art decentralized technologies we could at least start changing the way data is stored and distributed right now.

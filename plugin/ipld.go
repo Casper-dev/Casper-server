@@ -1,7 +1,7 @@
 package plugin
 
 import (
-	"github.com/Casper-dev/Casper-server/core/coredag"
+	"gitlab.com/casperDev/Casper-server/core/coredag"
 
 	node "gx/ipfs/QmPN7cwmpcc4DWXb4KTB9dNAJgjuPY69h3npsMfhRrQL9c/go-ipld-format"
 )

@@ -7,9 +7,10 @@ import (
 	"path/filepath"
 	"testing"
 
-	"github.com/Casper-dev/Casper-server/repo/config"
-	"github.com/Casper-dev/Casper-server/thirdparty/assert"
 	datastore "gx/ipfs/QmVSase1JP7cq9QkPT46oNwdp9pT6kBkG3oqS14y3QcZjG/go-datastore"
+
+	"gitlab.com/casperDev/Casper-server/repo/config"
+	"gitlab.com/casperDev/Casper-server/thirdparty/assert"
 )
 
 // swap arg order

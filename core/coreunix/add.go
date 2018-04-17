@@ -9,25 +9,28 @@ import (
 	gopath "path"
 	"strconv"
 
-	bs "github.com/Casper-dev/Casper-server/blocks/blockstore"
-	bstore "github.com/Casper-dev/Casper-server/blocks/blockstore"
-	bserv "github.com/Casper-dev/Casper-server/blockservice"
-	"github.com/Casper-dev/Casper-server/commands/files"
-	core "github.com/Casper-dev/Casper-server/core"
-	"github.com/Casper-dev/Casper-server/exchange/offline"
-	balanced "github.com/Casper-dev/Casper-server/importer/balanced"
-	"github.com/Casper-dev/Casper-server/importer/chunk"
-	ihelper "github.com/Casper-dev/Casper-server/importer/helpers"
-	trickle "github.com/Casper-dev/Casper-server/importer/trickle"
-	dag "github.com/Casper-dev/Casper-server/merkledag"
-	mfs "github.com/Casper-dev/Casper-server/mfs"
-	"github.com/Casper-dev/Casper-server/pin"
-	posinfo "github.com/Casper-dev/Casper-server/thirdparty/posinfo"
-	unixfs "github.com/Casper-dev/Casper-server/unixfs"
+	bl "gitlab.com/casperDev/Casper-server/blocks"
+	bs "gitlab.com/casperDev/Casper-server/blocks/blockstore"
+	bstore "gitlab.com/casperDev/Casper-server/blocks/blockstore"
+	bserv "gitlab.com/casperDev/Casper-server/blockservice"
+	"gitlab.com/casperDev/Casper-server/commands/files"
+	core "gitlab.com/casperDev/Casper-server/core"
+	"gitlab.com/casperDev/Casper-server/exchange/offline"
+	balanced "gitlab.com/casperDev/Casper-server/importer/balanced"
+	"gitlab.com/casperDev/Casper-server/importer/chunk"
+	ihelper "gitlab.com/casperDev/Casper-server/importer/helpers"
+	trickle "gitlab.com/casperDev/Casper-server/importer/trickle"
+	dag "gitlab.com/casperDev/Casper-server/merkledag"
+	mfs "gitlab.com/casperDev/Casper-server/mfs"
+	"gitlab.com/casperDev/Casper-server/pin"
+	posinfo "gitlab.com/casperDev/Casper-server/thirdparty/posinfo"
+	unixfs "gitlab.com/casperDev/Casper-server/unixfs"
+	//uuid "gitlab.com/casperDev/Casper-server/casper/uuid"
 
 	cid "gx/ipfs/QmNp85zy9RLrQ5oQD4hPyS39ezrrXpcaa7R4Y9kxdWQLLQ/go-cid"
 	node "gx/ipfs/QmPN7cwmpcc4DWXb4KTB9dNAJgjuPY69h3npsMfhRrQL9c/go-ipld-format"
 	logging "gx/ipfs/QmSpJByNKFX1sCsHBEp3R73FL4NF6FnQTEGyNAXHm2GS52/go-log"
+	"gx/ipfs/QmT8rehPR3F6bmwL6zjUN8XpiDBFFpMP2myPdC6ApsWfJf/go-base58"
 	ds "gx/ipfs/QmVSase1JP7cq9QkPT46oNwdp9pT6kBkG3oqS14y3QcZjG/go-datastore"
 	syncds "gx/ipfs/QmVSase1JP7cq9QkPT46oNwdp9pT6kBkG3oqS14y3QcZjG/go-datastore/sync"
 )
@@ -70,6 +73,7 @@ type AddedObject struct {
 	Name  string
 	Hash  string `json:",omitempty"`
 	Bytes int64  `json:",omitempty"`
+	UUID  string `json:",omitempty"`
 	Size  string `json:",omitempty"`
 }
 
@@ -182,12 +186,21 @@ func (adder *Adder) RootNode() (node.Node, error) {
 }
 
 func (adder *Adder) PinRoot() error {
+	return adder.PinRootUUID(nil)
+}
+
+func (adder *Adder) PinRootUUID(uuid []byte) error {
 	root, err := adder.RootNode()
 	if err != nil {
 		return err
 	}
 	if !adder.Pin {
 		return nil
+	}
+
+	if uuid != nil {
+		pn := root.(*dag.ProtoNode)
+		pn.SetUUID(uuid)
 	}
 
 	rnk, err := adder.dagService.Add(root)
@@ -329,7 +342,7 @@ func AddR(n *core.IpfsNode, root string) (key string, err error) {
 		return "", err
 	}
 
-	f, err := files.NewSerialFile(root, root, false, stat)
+	f, err := files.NewSerialFile(root, root, false, stat, nil)
 	if err != nil {
 		return "", err
 	}
@@ -485,6 +498,7 @@ func (adder *Adder) addFile(file files.File) error {
 	}
 
 	dagnode, err := adder.add(reader)
+
 	if err != nil {
 		return err
 	}
@@ -556,9 +570,11 @@ func outputDagnode(out chan interface{}, name string, dn node.Node) error {
 		return err
 	}
 
+	u, _ := bl.SplitData(dn.RawData())
 	out <- &AddedObject{
 		Hash: o.Hash,
 		Name: name,
+		UUID: base58.Encode(u),
 		Size: o.Size,
 	}
 

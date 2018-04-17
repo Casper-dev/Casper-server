@@ -5,9 +5,9 @@ import (
 	"fmt"
 	"testing"
 
-	merkledag "github.com/Casper-dev/Casper-server/merkledag"
-	dagmock "github.com/Casper-dev/Casper-server/merkledag/test"
-	path "github.com/Casper-dev/Casper-server/path"
+	merkledag "gitlab.com/casperDev/Casper-server/merkledag"
+	dagmock "gitlab.com/casperDev/Casper-server/merkledag/test"
+	path "gitlab.com/casperDev/Casper-server/path"
 
 	node "gx/ipfs/QmPN7cwmpcc4DWXb4KTB9dNAJgjuPY69h3npsMfhRrQL9c/go-ipld-format"
 	util "gx/ipfs/QmSU6eubNdhXjFBJBSksTp8kv8YRub8mGAPv8tVJHmL2EU/go-ipfs-util"

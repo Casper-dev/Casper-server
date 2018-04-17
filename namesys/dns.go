@@ -6,7 +6,7 @@ import (
 	"net"
 	"strings"
 
-	path "github.com/Casper-dev/Casper-server/path"
+	path "gitlab.com/casperDev/Casper-server/path"
 
 	isd "gx/ipfs/QmZmmuAXgX73UQmX1jRKjTGmjzq24Jinqkq8vzkBtno4uX/go-is-domain"
 )

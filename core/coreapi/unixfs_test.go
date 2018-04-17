@@ -8,16 +8,17 @@ import (
 	"strings"
 	"testing"
 
-	core "github.com/Casper-dev/Casper-server/core"
-	coreapi "github.com/Casper-dev/Casper-server/core/coreapi"
-	coreiface "github.com/Casper-dev/Casper-server/core/coreapi/interface"
-	coreunix "github.com/Casper-dev/Casper-server/core/coreunix"
-	mdag "github.com/Casper-dev/Casper-server/merkledag"
-	repo "github.com/Casper-dev/Casper-server/repo"
-	config "github.com/Casper-dev/Casper-server/repo/config"
-	ds2 "github.com/Casper-dev/Casper-server/thirdparty/datastore2"
-	unixfs "github.com/Casper-dev/Casper-server/unixfs"
 	cbor "gx/ipfs/QmWCs8kMecJwCPK8JThue8TjgM2ieJ2HjTLDu7Cv2NEmZi/go-ipld-cbor"
+
+	core "gitlab.com/casperDev/Casper-server/core"
+	coreapi "gitlab.com/casperDev/Casper-server/core/coreapi"
+	coreiface "gitlab.com/casperDev/Casper-server/core/coreapi/interface"
+	coreunix "gitlab.com/casperDev/Casper-server/core/coreunix"
+	mdag "gitlab.com/casperDev/Casper-server/merkledag"
+	repo "gitlab.com/casperDev/Casper-server/repo"
+	config "gitlab.com/casperDev/Casper-server/repo/config"
+	ds2 "gitlab.com/casperDev/Casper-server/thirdparty/datastore2"
+	unixfs "gitlab.com/casperDev/Casper-server/unixfs"
 )
 
 // `echo -n 'hello, world!' | ipfs add`

@@ -12,8 +12,8 @@ import (
 	"strings"
 	"sync"
 
-	cmds "github.com/Casper-dev/Casper-server/commands"
-	"github.com/Casper-dev/Casper-server/repo/config"
+	cmds "gitlab.com/casperDev/Casper-server/commands"
+	"gitlab.com/casperDev/Casper-server/repo/config"
 
 	cors "gx/ipfs/QmPG2kW5t27LuHgHnvhUwbHCNHAt2eUcb4gPHqofrESUdB/cors"
 	logging "gx/ipfs/QmSpJByNKFX1sCsHBEp3R73FL4NF6FnQTEGyNAXHm2GS52/go-log"
@@ -190,7 +190,7 @@ func (i internalHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// now handle responding to the client properly
-	sendResponse(w, r, res, req)
+	SendResponse(w, r, res, req)
 }
 
 func guessMimeType(res cmds.Response) (string, error) {
@@ -210,7 +210,7 @@ func guessMimeType(res cmds.Response) (string, error) {
 	return mimeTypes[cmds.JSON], nil
 }
 
-func sendResponse(w http.ResponseWriter, r *http.Request, res cmds.Response, req cmds.Request) {
+func SendResponse(w http.ResponseWriter, r *http.Request, res cmds.Response, req cmds.Request) {
 	h := w.Header()
 	// Expose our agent to allow identification
 	h.Set("Server", "go-ipfs/"+config.CurrentVersionNumber)
@@ -280,14 +280,14 @@ func sendResponse(w http.ResponseWriter, r *http.Request, res cmds.Response, req
 	}
 
 	w.WriteHeader(status)
-	err = flushCopy(w, out)
+	err = FlushCopy(w, out)
 	if err != nil {
 		log.Error("err: ", err)
-		w.Header().Set(StreamErrHeader, sanitizedErrStr(err))
+		w.Header().Set(StreamErrHeader, SanitizedErrStr(err))
 	}
 }
 
-func flushCopy(w io.Writer, r io.Reader) error {
+func FlushCopy(w io.Writer, r io.Reader) error {
 	buf := make([]byte, 4096)
 	f, ok := w.(http.Flusher)
 	if !ok {
@@ -322,7 +322,7 @@ func flushCopy(w io.Writer, r io.Reader) error {
 	}
 }
 
-func sanitizedErrStr(err error) string {
+func SanitizedErrStr(err error) string {
 	s := err.Error()
 	s = strings.Split(s, "\n")[0]
 	s = strings.Split(s, "\r")[0]

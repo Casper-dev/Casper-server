@@ -8,7 +8,7 @@ import (
 	"os/exec"
 	"strings"
 
-	cmds "github.com/Casper-dev/Casper-server/commands"
+	cmds "gitlab.com/casperDev/Casper-server/commands"
 )
 
 func ExternalBinary() *cmds.Command {

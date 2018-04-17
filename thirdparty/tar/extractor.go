@@ -8,9 +8,12 @@ import (
 	gopath "path"
 	fp "path/filepath"
 	"strings"
+
+	"gitlab.com/casperDev/Casper-server/casper/crypto"
 )
 
 type Extractor struct {
+	Password []byte
 	Path     string
 	Progress func(int64) int64
 }
@@ -106,6 +109,10 @@ func (te *Extractor) extractFile(h *tar.Header, r *tar.Reader, depth int, rootEx
 		return err
 	}
 	defer file.Close()
+
+	if te.Password != nil {
+		return copyWithProgress(file, crypto.NewAESReader(r, te.Password), te.Progress)
+	}
 
 	return copyWithProgress(file, r, te.Progress)
 }

@@ -7,11 +7,11 @@ import (
 	"io/ioutil"
 	"testing"
 
-	h "github.com/Casper-dev/Casper-server/importer/helpers"
-	trickle "github.com/Casper-dev/Casper-server/importer/trickle"
+	h "gitlab.com/casperDev/Casper-server/importer/helpers"
+	trickle "gitlab.com/casperDev/Casper-server/importer/trickle"
 
-	uio "github.com/Casper-dev/Casper-server/unixfs/io"
-	testu "github.com/Casper-dev/Casper-server/unixfs/test"
+	uio "gitlab.com/casperDev/Casper-server/unixfs/io"
+	testu "gitlab.com/casperDev/Casper-server/unixfs/test"
 
 	u "gx/ipfs/QmSU6eubNdhXjFBJBSksTp8kv8YRub8mGAPv8tVJHmL2EU/go-ipfs-util"
 )

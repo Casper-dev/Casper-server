@@ -5,18 +5,21 @@ import (
 	"errors"
 	"fmt"
 	"io"
+	"net"
 	"os"
-	gopath "path"
 	"strings"
 
-	"gx/ipfs/QmeWjRodbcZFKe5tMN7poEx3izym6osrLSnTLf9UjJZBbs/pb"
+	"gitlab.com/casperDev/Casper-SC/casper_sc"
+	cu "gitlab.com/casperDev/Casper-server/casper/casper_utils"
+	"gitlab.com/casperDev/Casper-server/client"
+	cmds "gitlab.com/casperDev/Casper-server/commands"
+	"gitlab.com/casperDev/Casper-server/core"
+	dag "gitlab.com/casperDev/Casper-server/merkledag"
+	"gitlab.com/casperDev/Casper-server/path"
+	"gitlab.com/casperDev/Casper-server/thirdparty/tar"
+	uarchive "gitlab.com/casperDev/Casper-server/unixfs/archive"
 
-	cmds "github.com/Casper-dev/Casper-server/commands"
-	core "github.com/Casper-dev/Casper-server/core"
-	dag "github.com/Casper-dev/Casper-server/merkledag"
-	path "github.com/Casper-dev/Casper-server/path"
-	tar "github.com/Casper-dev/Casper-server/thirdparty/tar"
-	uarchive "github.com/Casper-dev/Casper-server/unixfs/archive"
+	"gx/ipfs/QmeWjRodbcZFKe5tMN7poEx3izym6osrLSnTLf9UjJZBbs/pb"
 )
 
 var ErrInvalidCompressionLevel = errors.New("Compression level must be between 1 and 9")
@@ -45,6 +48,7 @@ may also specify the level of compression by specifying '-l=<1-9>'.
 		cmds.BoolOption("archive", "a", "Output a TAR archive.").Default(false),
 		cmds.BoolOption("compress", "C", "Compress the output with GZIP compression.").Default(false),
 		cmds.IntOption("compression-level", "l", "The level of compression (1-9).").Default(-1),
+		cmds.StringOption(passwordOptionName, "Decrypt file(s) using password."),
 	},
 	PreRun: func(req cmds.Request) error {
 		_, err := getCompressOptions(req)
@@ -67,6 +71,35 @@ may also specify the level of compression by specifying '-l=<1-9>'.
 			res.SetError(err, cmds.ErrNormal)
 			return
 		}
+
+		caller, _, _ := req.Option(cmds.CallerOpt).String()
+		if caller == cmds.CallerOptClient {
+			_, _, auth, _ := Casper_SC.GetSC()
+			wallet := auth.From.String()
+			firstHash := req.Arguments()[0]
+			fmt.Println(firstHash)
+
+			peers, err := cu.GetPeersMultiaddrsByHash(firstHash)
+			if err != nil && len(peers) == 0 {
+				res.SetError(err, cmds.ErrNormal)
+				return
+			}
+			for _, peer := range peers {
+				err := node.ConnectToPeer(req.Context(), peer.String())
+				if err != nil {
+					log.Error("Failed to connect: %s", err)
+					continue
+				}
+				addr, _ := cu.MultiaddrToTCPAddr(peer)
+				thriftAddr := net.JoinHostPort(addr.IP.String(), "9090")
+				err = client.HandleClientDownload(req.Context(), thriftAddr, firstHash, wallet)
+				if err == nil {
+					break
+				}
+			}
+			fmt.Println("Success!")
+		}
+
 		p := path.Path(req.Arguments()[0])
 		ctx := req.Context()
 		dn, err := core.Resolve(ctx, node.Namesys, node.Resolver, p)
@@ -92,6 +125,7 @@ may also specify the level of compression by specifying '-l=<1-9>'.
 		}
 
 		archive, _, _ := req.Option("archive").Bool()
+
 		reader, err := uarchive.DagArchive(ctx, dn, p.String(), node.DAG, archive, cmplvl)
 		if err != nil {
 			res.SetError(err, cmds.ErrNormal)
@@ -106,10 +140,14 @@ may also specify the level of compression by specifying '-l=<1-9>'.
 		outReader := res.Output().(io.Reader)
 		res.SetOutput(nil)
 
+		var err error
 		outPath, _, _ := req.Option("output").String()
 		if len(outPath) == 0 {
-			_, outPath = gopath.Split(req.Arguments()[0])
-			outPath = gopath.Clean(outPath)
+			outPath, err = os.Getwd()
+			if err != nil {
+				res.SetError(err, cmds.ErrClient)
+				return
+			}
 		}
 
 		cmplvl, err := getCompressOptions(req)
@@ -119,12 +157,17 @@ may also specify the level of compression by specifying '-l=<1-9>'.
 		}
 
 		archive, _, _ := req.Option("archive").Bool()
+		var password []byte
+		if pwd, pf, _ := req.Option(passwordOptionName).String(); pf {
+			password = []byte(pwd)
+		}
 
 		gw := getWriter{
 			Out:         os.Stdout,
 			Err:         os.Stderr,
 			Archive:     archive,
 			Compression: cmplvl,
+			Password:    password,
 			Size:        int64(res.Length()),
 		}
 
@@ -177,6 +220,7 @@ type getWriter struct {
 
 	Archive     bool
 	Compression int
+	Password    []byte
 	Size        int64
 }
 
@@ -225,7 +269,11 @@ func (gw *getWriter) writeExtracted(r io.Reader, fpath string) error {
 	defer bar.Finish()
 	defer bar.Set64(gw.Size)
 
-	extractor := &tar.Extractor{fpath, bar.Add64}
+	extractor := &tar.Extractor{
+		Password: gw.Password,
+		Path:     fpath,
+		Progress: bar.Add64,
+	}
 	return extractor.Extract(r)
 }
 

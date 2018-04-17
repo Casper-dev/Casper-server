@@ -4,8 +4,8 @@
 package ipns
 
 import (
-	core "github.com/Casper-dev/Casper-server/core"
-	mount "github.com/Casper-dev/Casper-server/fuse/mount"
+	core "gitlab.com/casperDev/Casper-server/core"
+	mount "gitlab.com/casperDev/Casper-server/fuse/mount"
 )
 
 // Mount mounts ipns at a given location, and returns a mount.Mount instance.

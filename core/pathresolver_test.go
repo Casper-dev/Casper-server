@@ -3,9 +3,9 @@ package core_test
 import (
 	"testing"
 
-	core "github.com/Casper-dev/Casper-server/core"
-	coremock "github.com/Casper-dev/Casper-server/core/mock"
-	path "github.com/Casper-dev/Casper-server/path"
+	core "gitlab.com/casperDev/Casper-server/core"
+	coremock "gitlab.com/casperDev/Casper-server/core/mock"
+	path "gitlab.com/casperDev/Casper-server/path"
 )
 
 func TestResolveNoComponents(t *testing.T) {

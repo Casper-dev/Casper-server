@@ -1,7 +1,7 @@
 package node
 
 import (
-	"github.com/Casper-dev/Casper-server/core"
+	"gitlab.com/casperDev/Casper-server/core"
 )
 
 func Mount(node *core.IpfsNode, fsdir, nsdir string) error {

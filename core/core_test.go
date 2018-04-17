@@ -4,9 +4,10 @@ import (
 	"testing"
 
 	context "context"
-	"github.com/Casper-dev/Casper-server/repo"
-	config "github.com/Casper-dev/Casper-server/repo/config"
-	ds2 "github.com/Casper-dev/Casper-server/thirdparty/datastore2"
+
+	"gitlab.com/casperDev/Casper-server/repo"
+	config "gitlab.com/casperDev/Casper-server/repo/config"
+	ds2 "gitlab.com/casperDev/Casper-server/thirdparty/datastore2"
 )
 
 func TestInitialization(t *testing.T) {

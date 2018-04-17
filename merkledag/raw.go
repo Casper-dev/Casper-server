@@ -2,11 +2,16 @@ package merkledag
 
 import (
 	"fmt"
+
+	bl "gitlab.com/casperDev/Casper-server/blocks"
+
 	"gx/ipfs/QmSn9Td7xgxm9EV7iEjTckpUWmWApggzPxu7eFGWkkpwin/go-block-format"
 
 	cid "gx/ipfs/QmNp85zy9RLrQ5oQD4hPyS39ezrrXpcaa7R4Y9kxdWQLLQ/go-cid"
 	node "gx/ipfs/QmPN7cwmpcc4DWXb4KTB9dNAJgjuPY69h3npsMfhRrQL9c/go-ipld-format"
 	u "gx/ipfs/QmSU6eubNdhXjFBJBSksTp8kv8YRub8mGAPv8tVJHmL2EU/go-ipfs-util"
+
+	uuid "gitlab.com/casperDev/Casper-server/casper/uuid"
 )
 
 type RawNode struct {
@@ -16,9 +21,13 @@ type RawNode struct {
 // NewRawNode creates a RawNode using the default sha2-256 hash
 // funcition.
 func NewRawNode(data []byte) *RawNode {
+	//id := uuid.GenUUID()
+	//h := u.Hash(id)
 	h := u.Hash(data)
 	c := cid.NewCidV1(cid.Raw, h)
-	blk, _ := blocks.NewBlockWithCid(data, c)
+
+	log.Debugf("NewRawNode with CID %s", c.String())
+	blk, _ := bl.NewBlockWithCid(append(uuid.NullUUID, data...), c)
 
 	return &RawNode{blk}
 }
@@ -41,11 +50,17 @@ func NewRawNodeWPrefix(data []byte, prefix cid.Prefix) (*RawNode, error) {
 	if prefix.Version == 0 {
 		prefix.Version = 1
 	}
+
+	///id := uuid.GenUUID()
+	///c, err := prefix.Sum(id)
+	id := uuid.NullUUID
 	c, err := prefix.Sum(data)
+	log.Debugf("NewRawNodeWPrefix with CID %s", c.String())
 	if err != nil {
 		return nil, err
 	}
-	blk, err := blocks.NewBlockWithCid(data, c)
+
+	blk, err := blocks.NewBlockWithCid(append(id, data...), c)
 	if err != nil {
 		return nil, err
 	}
@@ -87,7 +102,7 @@ func (rn *RawNode) Size() (uint64, error) {
 func (rn *RawNode) Stat() (*node.NodeStat, error) {
 	return &node.NodeStat{
 		CumulativeSize: len(rn.RawData()),
-		DataSize:       len(rn.RawData()),
+		DataSize:       len(rn.RawData()) - uuid.UUIDLen,
 	}, nil
 }
 

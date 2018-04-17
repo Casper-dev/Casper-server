@@ -4,9 +4,9 @@ import (
 	"fmt"
 	"sort"
 
-	"github.com/Casper-dev/Casper-server/blocks/blockstore"
-	pb "github.com/Casper-dev/Casper-server/filestore/pb"
-	dshelp "github.com/Casper-dev/Casper-server/thirdparty/ds-help"
+	"gitlab.com/casperDev/Casper-server/blocks/blockstore"
+	pb "gitlab.com/casperDev/Casper-server/filestore/pb"
+	dshelp "gitlab.com/casperDev/Casper-server/thirdparty/ds-help"
 
 	cid "gx/ipfs/QmNp85zy9RLrQ5oQD4hPyS39ezrrXpcaa7R4Y9kxdWQLLQ/go-cid"
 	ds "gx/ipfs/QmVSase1JP7cq9QkPT46oNwdp9pT6kBkG3oqS14y3QcZjG/go-datastore"

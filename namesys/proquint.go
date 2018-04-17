@@ -4,8 +4,9 @@ import (
 	"errors"
 
 	context "context"
-	path "github.com/Casper-dev/Casper-server/path"
 	proquint "gx/ipfs/QmYnf27kzqR2cxt6LFZdrAFJuQd6785fTkBvMuEj9EeRxM/proquint"
+
+	path "gitlab.com/casperDev/Casper-server/path"
 )
 
 type ProquintResolver struct{}

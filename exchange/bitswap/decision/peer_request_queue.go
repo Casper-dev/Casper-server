@@ -4,8 +4,8 @@ import (
 	"sync"
 	"time"
 
-	wantlist "github.com/Casper-dev/Casper-server/exchange/bitswap/wantlist"
-	pq "github.com/Casper-dev/Casper-server/thirdparty/pq"
+	wantlist "gitlab.com/casperDev/Casper-server/exchange/bitswap/wantlist"
+	pq "gitlab.com/casperDev/Casper-server/thirdparty/pq"
 
 	cid "gx/ipfs/QmNp85zy9RLrQ5oQD4hPyS39ezrrXpcaa7R4Y9kxdWQLLQ/go-cid"
 	peer "gx/ipfs/QmXYjuNuxVzXKJCfWasQk1RqkhVLDM9jtUKhqc2WPQmFSB/go-libp2p-peer"

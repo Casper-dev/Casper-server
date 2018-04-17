@@ -7,22 +7,26 @@ import (
 	"io/ioutil"
 	"strings"
 
-	util "github.com/Casper-dev/Casper-server/blocks/blockstore/util"
-	cmds "github.com/Casper-dev/Casper-server/commands"
+	bl "gitlab.com/casperDev/Casper-server/blocks"
+	util "gitlab.com/casperDev/Casper-server/blocks/blockstore/util"
+	uuid "gitlab.com/casperDev/Casper-server/casper/uuid"
+	cmds "gitlab.com/casperDev/Casper-server/commands"
 
 	cid "gx/ipfs/QmNp85zy9RLrQ5oQD4hPyS39ezrrXpcaa7R4Y9kxdWQLLQ/go-cid"
 	u "gx/ipfs/QmSU6eubNdhXjFBJBSksTp8kv8YRub8mGAPv8tVJHmL2EU/go-ipfs-util"
 	blocks "gx/ipfs/QmSn9Td7xgxm9EV7iEjTckpUWmWApggzPxu7eFGWkkpwin/go-block-format"
+	"gx/ipfs/QmT8rehPR3F6bmwL6zjUN8XpiDBFFpMP2myPdC6ApsWfJf/go-base58"
 	mh "gx/ipfs/QmU9a9NV9RdPNwZQDYd5uKsm6N6LJLSvLbywDDYFbaaC6P/go-multihash"
 )
 
 type BlockStat struct {
 	Key  string
+	UUID string
 	Size int
 }
 
 func (bs BlockStat) String() string {
-	return fmt.Sprintf("Key: %s\nSize: %d\n", bs.Key, bs.Size)
+	return fmt.Sprintf("Key: %s\nSize: %d\nUUID: %s\n", bs.Key, bs.Size, bs.UUID)
 }
 
 var BlockCmd = &cmds.Command{
@@ -38,6 +42,7 @@ multihash.
 	Subcommands: map[string]*cmds.Command{
 		"stat": blockStatCmd,
 		"get":  blockGetCmd,
+		"list": blockListCmd,
 		"put":  blockPutCmd,
 		"rm":   blockRmCmd,
 	},
@@ -51,6 +56,7 @@ var blockStatCmd = &cmds.Command{
 on raw IPFS blocks. It outputs the following to stdout:
 
 	Key  - the base58 encoded multihash
+	UUID - the base58 UUID
 	Size - the size of the block in bytes
 
 `,
@@ -66,8 +72,10 @@ on raw IPFS blocks. It outputs the following to stdout:
 			return
 		}
 
+		u, _ := bl.SplitData(b.RawData())
 		res.SetOutput(&BlockStat{
 			Key:  b.Cid().String(),
+			UUID: base58.Encode(u),
 			Size: len(b.RawData()),
 		})
 	},
@@ -92,6 +100,7 @@ It outputs to stdout, and <key> is a base58 encoded multihash.
 	Arguments: []cmds.Argument{
 		cmds.StringArg("key", true, false, "The base58 multihash of an existing block to get.").EnableStdin(),
 	},
+	Type: []byte{},
 	Run: func(req cmds.Request, res cmds.Response) {
 		b, err := getBlockForKey(req, req.Arguments()[0])
 		if err != nil {
@@ -99,7 +108,74 @@ It outputs to stdout, and <key> is a base58 encoded multihash.
 			return
 		}
 
-		res.SetOutput(bytes.NewReader(b.RawData()))
+		res.SetOutput(b.RawData())
+	},
+	Marshalers: cmds.MarshalerMap{
+		cmds.Text: func(res cmds.Response) (io.Reader, error) {
+			bs := res.Output().([]byte)
+			u, d := bl.SplitData(bs)
+			return strings.NewReader(fmt.Sprintf("%s\n%s\n", base58.Encode(u), d)), nil
+		},
+	},
+}
+
+type BlockHashList struct {
+	Hashes []string
+}
+
+var blockListCmd = &cmds.Command{
+	Helptext: cmds.HelpText{
+		Tagline: "List hashes of all IPFS blocks in local repository.",
+		ShortDescription: `
+'ipfs block list' is a plumbing command for listing hashes of all IPFS blocks,
+which are available locally.
+`,
+	},
+	Run: func(req cmds.Request, res cmds.Response) {
+		n, err := req.InvocContext().GetNode()
+		if err != nil {
+			res.SetError(err, cmds.ErrNormal)
+			return
+		}
+
+		ch, err := n.Blockstore.AllKeysChan(req.Context())
+		if err != nil {
+			res.SetError(err, cmds.ErrNormal)
+			return
+		}
+
+		var hashes []string
+
+	LOOP:
+		for {
+			select {
+			case hash, ok := <-ch:
+				if !ok {
+					break LOOP
+				}
+
+				hashes = append(hashes, hash.String())
+			case <-req.Context().Done():
+				res.SetError(req.Context().Err(), cmds.ErrNormal)
+				return
+			}
+		}
+
+		res.SetOutput(&BlockHashList{Hashes: hashes})
+	},
+	Type: BlockHashList{},
+	Marshalers: cmds.MarshalerMap{
+		cmds.Text: func(res cmds.Response) (io.Reader, error) {
+			hashList, ok := res.Output().(*BlockHashList)
+			if !ok {
+				return nil, u.ErrCast()
+			}
+			out := new(bytes.Buffer)
+			for _, h := range hashList.Hashes {
+				fmt.Fprintf(out, "%s\n", h)
+			}
+			return out, nil
+		},
 	},
 }
 
@@ -114,6 +190,7 @@ It reads from stdin, and <key> is a base58 encoded multihash.
 
 	Arguments: []cmds.Argument{
 		cmds.FileArg("data", true, false, "The data to be stored as an IPFS block.").EnableStdin(),
+		cmds.StringArg("uuid", false, false, "The base58 UUID of an existing block to replace."),
 	},
 	Options: []cmds.Option{
 		cmds.StringOption("format", "f", "cid format for blocks to be created with.").Default("v0"),
@@ -174,13 +251,23 @@ It reads from stdin, and <key> is a base58 encoded multihash.
 		}
 		pref.MhLength = mhlen
 
-		bcid, err := pref.Sum(data)
+		var id []byte
+		if len(req.StringArguments()) > 0 {
+			id = base58.Decode(req.StringArguments()[0])
+		} else {
+			id = uuid.GenUUID()
+		}
+
+		b58uuid := base58.Encode(id)
+		log.Debugf("UUID for new block: %s", b58uuid)
+
+		bcid, err := pref.Sum(id)
 		if err != nil {
 			res.SetError(err, cmds.ErrNormal)
 			return
 		}
 
-		b, err := blocks.NewBlockWithCid(data, bcid)
+		b, err := bl.NewBlockWithCid(append(id, data...), bcid)
 		if err != nil {
 			res.SetError(err, cmds.ErrNormal)
 			return
@@ -195,13 +282,14 @@ It reads from stdin, and <key> is a base58 encoded multihash.
 
 		res.SetOutput(&BlockStat{
 			Key:  k.String(),
+			UUID: b58uuid,
 			Size: len(data),
 		})
 	},
 	Marshalers: cmds.MarshalerMap{
 		cmds.Text: func(res cmds.Response) (io.Reader, error) {
 			bs := res.Output().(*BlockStat)
-			return strings.NewReader(bs.Key + "\n"), nil
+			return strings.NewReader(bs.UUID + "\n" + bs.Key + "\n"), nil
 		},
 	},
 	Type: BlockStat{},

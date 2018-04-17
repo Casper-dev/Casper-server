@@ -10,18 +10,17 @@ import (
 	"sync/atomic"
 	"time"
 
-	blockstore "github.com/Casper-dev/Casper-server/blocks/blockstore"
-	exchange "github.com/Casper-dev/Casper-server/exchange"
-	decision "github.com/Casper-dev/Casper-server/exchange/bitswap/decision"
-	bsmsg "github.com/Casper-dev/Casper-server/exchange/bitswap/message"
-	bsnet "github.com/Casper-dev/Casper-server/exchange/bitswap/network"
-	notifications "github.com/Casper-dev/Casper-server/exchange/bitswap/notifications"
-	flags "github.com/Casper-dev/Casper-server/flags"
-	"github.com/Casper-dev/Casper-server/thirdparty/delay"
+	blockstore "gitlab.com/casperDev/Casper-server/blocks/blockstore"
+	exchange "gitlab.com/casperDev/Casper-server/exchange"
+	decision "gitlab.com/casperDev/Casper-server/exchange/bitswap/decision"
+	bsmsg "gitlab.com/casperDev/Casper-server/exchange/bitswap/message"
+	bsnet "gitlab.com/casperDev/Casper-server/exchange/bitswap/network"
+	notifications "gitlab.com/casperDev/Casper-server/exchange/bitswap/notifications"
+	flags "gitlab.com/casperDev/Casper-server/flags"
+	"gitlab.com/casperDev/Casper-server/thirdparty/delay"
 
 	cid "gx/ipfs/QmNp85zy9RLrQ5oQD4hPyS39ezrrXpcaa7R4Y9kxdWQLLQ/go-cid"
 	metrics "gx/ipfs/QmRg1gKTHzc3CZXSKzem8aR4E3TubFhbgXwfVuWnSK5CC5/go-metrics-interface"
-
 
 	process "gx/ipfs/QmSF8fPo3jgVBAy8fpdjjYqgG87dkJgUprRBHRd2tmfgpP/goprocess"
 	procctx "gx/ipfs/QmSF8fPo3jgVBAy8fpdjjYqgG87dkJgUprRBHRd2tmfgpP/goprocess/context"
@@ -211,6 +210,9 @@ func (bs *Bitswap) LedgerForPeer(p peer.ID) *decision.Receipt {
 // resources, provide a context with a reasonably short deadline (ie. not one
 // that lasts throughout the lifetime of the server)
 func (bs *Bitswap) GetBlocks(ctx context.Context, keys []*cid.Cid) (<-chan blocks.Block, error) {
+	for _, k := range keys {
+		log.Debugf("Want: %s", k.String())
+	}
 	if len(keys) == 0 {
 		out := make(chan blocks.Block)
 		close(out)

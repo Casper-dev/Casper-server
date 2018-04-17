@@ -1,6 +1,8 @@
 package config
 
 type Casper struct {
-	IPAddress string
-	RepoSize int64
+	DiskSizeBytes   int64
+	IPAddress       string
+	TelegramAddress string
+	ConnectionPort  string
 }

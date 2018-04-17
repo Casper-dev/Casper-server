@@ -5,8 +5,9 @@ import (
 	"errors"
 	"time"
 
-	dshelp "github.com/Casper-dev/Casper-server/thirdparty/ds-help"
 	"gx/ipfs/QmWRCn8vruNAzHx8i6SAXinuheRitKEGu8c7m26stKvsYx/go-testutil"
+
+	dshelp "gitlab.com/casperDev/Casper-server/thirdparty/ds-help"
 
 	cid "gx/ipfs/QmNp85zy9RLrQ5oQD4hPyS39ezrrXpcaa7R4Y9kxdWQLLQ/go-cid"
 	routing "gx/ipfs/QmPR2JzfKd9poHx9XBhzoFeBBC31ZM3W5iUPKJZWyaoZZm/go-libp2p-routing"

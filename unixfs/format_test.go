@@ -6,7 +6,7 @@ import (
 
 	proto "gx/ipfs/QmZ4Qi3GaRbjcx28Sme5eMH7RQjGkt8wHxt2a65oLaeFEV/gogo-protobuf/proto"
 
-	pb "github.com/Casper-dev/Casper-server/unixfs/pb"
+	pb "gitlab.com/casperDev/Casper-server/unixfs/pb"
 )
 
 func TestFSNode(t *testing.T) {

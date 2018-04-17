@@ -4,9 +4,9 @@ import (
 	"errors"
 	"io"
 
-	filestore "github.com/Casper-dev/Casper-server/filestore"
-	keystore "github.com/Casper-dev/Casper-server/keystore"
-	config "github.com/Casper-dev/Casper-server/repo/config"
+	filestore "gitlab.com/casperDev/Casper-server/filestore"
+	keystore "gitlab.com/casperDev/Casper-server/keystore"
+	config "gitlab.com/casperDev/Casper-server/repo/config"
 
 	ds "gx/ipfs/QmVSase1JP7cq9QkPT46oNwdp9pT6kBkG3oqS14y3QcZjG/go-datastore"
 	ma "gx/ipfs/QmXY77cVe7rVRQXZZQRioukUM7aRW3BTcAgJe12MCtb3Ji/go-multiaddr"

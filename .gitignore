@@ -12,6 +12,11 @@
 
 coverage.txt
 
+# for docker
+libdl.so.2
+
+vendor/gitlab.com
+
 .ipfs
 bin/gx
 bin/gx*

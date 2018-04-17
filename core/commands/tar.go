@@ -4,12 +4,12 @@ import (
 	"io"
 	"strings"
 
-	cmds "github.com/Casper-dev/Casper-server/commands"
-	core "github.com/Casper-dev/Casper-server/core"
-	"github.com/Casper-dev/Casper-server/core/coreunix"
-	dag "github.com/Casper-dev/Casper-server/merkledag"
-	path "github.com/Casper-dev/Casper-server/path"
-	tar "github.com/Casper-dev/Casper-server/tar"
+	cmds "gitlab.com/casperDev/Casper-server/commands"
+	core "gitlab.com/casperDev/Casper-server/core"
+	"gitlab.com/casperDev/Casper-server/core/coreunix"
+	dag "gitlab.com/casperDev/Casper-server/merkledag"
+	path "gitlab.com/casperDev/Casper-server/path"
+	tar "gitlab.com/casperDev/Casper-server/tar"
 )
 
 var TarCmd = &cmds.Command{

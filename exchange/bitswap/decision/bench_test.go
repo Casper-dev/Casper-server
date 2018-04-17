@@ -5,11 +5,12 @@ import (
 	"math"
 	"testing"
 
-	"github.com/Casper-dev/Casper-server/exchange/bitswap/wantlist"
 	cid "gx/ipfs/QmNp85zy9RLrQ5oQD4hPyS39ezrrXpcaa7R4Y9kxdWQLLQ/go-cid"
 	u "gx/ipfs/QmSU6eubNdhXjFBJBSksTp8kv8YRub8mGAPv8tVJHmL2EU/go-ipfs-util"
 	"gx/ipfs/QmWRCn8vruNAzHx8i6SAXinuheRitKEGu8c7m26stKvsYx/go-testutil"
 	"gx/ipfs/QmXYjuNuxVzXKJCfWasQk1RqkhVLDM9jtUKhqc2WPQmFSB/go-libp2p-peer"
+
+	"gitlab.com/casperDev/Casper-server/exchange/bitswap/wantlist"
 )
 
 // FWIW: At the time of this commit, including a timestamp in task increases

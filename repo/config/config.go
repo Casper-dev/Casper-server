@@ -9,7 +9,7 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/Casper-dev/Casper-server/Godeps/_workspace/src/github.com/mitchellh/go-homedir"
+	"gitlab.com/casperDev/Casper-server/Godeps/_workspace/src/github.com/mitchellh/go-homedir"
 )
 
 // Config is used to load ipfs config files.
@@ -24,7 +24,7 @@ type Config struct {
 	Gateway   Gateway   // local node's gateway server options
 	API       API       // local node's API settings
 	Swarm     SwarmConfig
-	Casper	  Casper
+	Casper    Casper
 
 	Reprovider   Reprovider
 	Experimental Experiments
@@ -38,7 +38,7 @@ const (
 	// DefaultConfigFile is the filename of the configuration file
 	DefaultConfigFile = "config"
 	// EnvDir is the environment variable used to change the path root.
-	EnvDir = "CASPER_SERVER_PATH"
+	EnvDir = "CASPER_REPO_PATH"
 )
 
 // PathRoot returns the default configuration root directory

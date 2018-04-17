@@ -8,11 +8,11 @@ import (
 	mrand "math/rand"
 	"testing"
 
-	chunk "github.com/Casper-dev/Casper-server/importer/chunk"
-	h "github.com/Casper-dev/Casper-server/importer/helpers"
-	dag "github.com/Casper-dev/Casper-server/merkledag"
-	mdtest "github.com/Casper-dev/Casper-server/merkledag/test"
-	uio "github.com/Casper-dev/Casper-server/unixfs/io"
+	chunk "gitlab.com/casperDev/Casper-server/importer/chunk"
+	h "gitlab.com/casperDev/Casper-server/importer/helpers"
+	dag "gitlab.com/casperDev/Casper-server/merkledag"
+	mdtest "gitlab.com/casperDev/Casper-server/merkledag/test"
+	uio "gitlab.com/casperDev/Casper-server/unixfs/io"
 
 	"context"
 	u "gx/ipfs/QmSU6eubNdhXjFBJBSksTp8kv8YRub8mGAPv8tVJHmL2EU/go-ipfs-util"

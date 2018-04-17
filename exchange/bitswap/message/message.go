@@ -4,15 +4,21 @@ import (
 	"fmt"
 	"io"
 
-	pb "github.com/Casper-dev/Casper-server/exchange/bitswap/message/pb"
-	wantlist "github.com/Casper-dev/Casper-server/exchange/bitswap/wantlist"
 	blocks "gx/ipfs/QmSn9Td7xgxm9EV7iEjTckpUWmWApggzPxu7eFGWkkpwin/go-block-format"
+
+	bl "gitlab.com/casperDev/Casper-server/blocks"
+	uuid "gitlab.com/casperDev/Casper-server/casper/uuid"
+	pb "gitlab.com/casperDev/Casper-server/exchange/bitswap/message/pb"
+	wantlist "gitlab.com/casperDev/Casper-server/exchange/bitswap/wantlist"
 
 	inet "gx/ipfs/QmNa31VPzC561NWwRsJLE7nGYZYuuD2QfpK2b1q9BK54J1/go-libp2p-net"
 	cid "gx/ipfs/QmNp85zy9RLrQ5oQD4hPyS39ezrrXpcaa7R4Y9kxdWQLLQ/go-cid"
+	logging "gx/ipfs/QmSpJByNKFX1sCsHBEp3R73FL4NF6FnQTEGyNAXHm2GS52/go-log"
 	ggio "gx/ipfs/QmZ4Qi3GaRbjcx28Sme5eMH7RQjGkt8wHxt2a65oLaeFEV/gogo-protobuf/io"
 	proto "gx/ipfs/QmZ4Qi3GaRbjcx28Sme5eMH7RQjGkt8wHxt2a65oLaeFEV/gogo-protobuf/proto"
 )
+
+var log = logging.Logger("bitswap.message")
 
 // TODO move message.go into the bitswap package
 // TODO move bs/msg/internal/pb to bs/internal/pb and rename pb package to bitswap_pb
@@ -84,7 +90,7 @@ func newMessageFromProto(pbm pb.Message) (BitSwapMessage, error) {
 	// deprecated
 	for _, d := range pbm.GetBlocks() {
 		// CIDv0, sha256, protobuf only
-		b := blocks.NewBlock(d)
+		b := bl.NewBlockWithUUID(d)
 		m.AddBlock(b)
 	}
 	//
@@ -95,12 +101,17 @@ func newMessageFromProto(pbm pb.Message) (BitSwapMessage, error) {
 			return nil, err
 		}
 
-		c, err := pref.Sum(b.GetData())
+		u, d := bl.SplitData(b.GetData())
+		if uuid.IsUUIDNull(u) {
+			u = d
+		}
+		c, err := pref.Sum(u)
+		log.Debugf("CID: %s", c.String())
 		if err != nil {
 			return nil, err
 		}
 
-		blk, err := blocks.NewBlockWithCid(b.GetData(), c)
+		blk, err := bl.NewBlockWithCid(b.GetData(), c)
 		if err != nil {
 			return nil, err
 		}

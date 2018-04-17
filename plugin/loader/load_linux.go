@@ -7,7 +7,7 @@ import (
 	"path/filepath"
 	"plugin"
 
-	iplugin "github.com/Casper-dev/Casper-server/plugin"
+	iplugin "gitlab.com/casperDev/Casper-server/plugin"
 )
 
 func init() {

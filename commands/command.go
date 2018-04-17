@@ -14,8 +14,9 @@ import (
 	"io"
 	"reflect"
 
-	"github.com/Casper-dev/Casper-server/path"
 	logging "gx/ipfs/QmSpJByNKFX1sCsHBEp3R73FL4NF6FnQTEGyNAXHm2GS52/go-log"
+
+	"gitlab.com/casperDev/Casper-server/path"
 )
 
 var log = logging.Logger("command")
@@ -122,6 +123,7 @@ func (c *Command) Call(req Request) Response {
 	isChan := false
 	actualType := reflect.TypeOf(output)
 	if actualType != nil {
+		log.Debugf("Actual type: %s", actualType.String())
 		if actualType.Kind() == reflect.Ptr {
 			actualType = actualType.Elem()
 		}

@@ -1,16 +1,27 @@
 package commands
 
 import (
+	"context"
+	"fmt"
 	"io"
+	"net"
 
-	cmds "github.com/Casper-dev/Casper-server/commands"
-	core "github.com/Casper-dev/Casper-server/core"
-	coreunix "github.com/Casper-dev/Casper-server/core/coreunix"
+	cu "gitlab.com/casperDev/Casper-server/casper/casper_utils"
+	"gitlab.com/casperDev/Casper-server/casper/crypto"
+	"gitlab.com/casperDev/Casper-server/client"
+	cmds "gitlab.com/casperDev/Casper-server/commands"
+	core "gitlab.com/casperDev/Casper-server/core"
+	coreunix "gitlab.com/casperDev/Casper-server/core/coreunix"
 
-	context "context"
+	"gitlab.com/casperDev/Casper-SC/casper_sc"
+
+	"gx/ipfs/QmeWjRodbcZFKe5tMN7poEx3izym6osrLSnTLf9UjJZBbs/pb"
 )
 
 const progressBarMinSize = 1024 * 1024 * 8 // show progress bar for outputs > 8MiB
+
+// defined in commands/add
+//const passwordOptionName = "password"
 
 var CatCmd = &cmds.Command{
 	Helptext: cmds.HelpText{
@@ -19,13 +30,42 @@ var CatCmd = &cmds.Command{
 	},
 
 	Arguments: []cmds.Argument{
-		cmds.StringArg("ipfs-path", true, true, "The path to the IPFS object(s) to be outputted.").EnableStdin(),
+		cmds.StringArg("ipfs-path", true, false, "The path to the IPFS object(s) to be outputted.").EnableStdin(),
+	},
+	Options: []cmds.Option{
+		cmds.StringOption(passwordOptionName, "Password decryption key"),
 	},
 	Run: func(req cmds.Request, res cmds.Response) {
 		node, err := req.InvocContext().GetNode()
 		if err != nil {
 			res.SetError(err, cmds.ErrNormal)
 			return
+		}
+
+		caller, _, _ := req.Option(cmds.CallerOpt).String()
+		if caller == cmds.CallerOptClient {
+			_, _, auth, _ := Casper_SC.GetSC()
+			wallet := auth.From.String()
+			hash := req.Arguments()[0]
+			peers, err := cu.GetPeersMultiaddrsByHash(hash)
+			if err != nil && len(peers) == 0 {
+				res.SetError(err, cmds.ErrClient)
+				return
+			}
+			for _, peer := range peers {
+				err := node.ConnectToPeer(req.Context(), peer.String())
+				if err != nil {
+					log.Error("Failed to connect: %s", err)
+					continue
+				}
+				addr, _ := cu.MultiaddrToTCPAddr(peer)
+				thriftAddr := net.JoinHostPort(addr.String(), "9090")
+				err = client.HandleClientDownload(req.Context(), thriftAddr, hash, wallet)
+				if err == nil {
+					break
+				}
+			}
+			fmt.Println("Success!")
 		}
 
 		if !node.OnlineMode() {
@@ -49,17 +89,24 @@ var CatCmd = &cmds.Command{
 		*/
 
 		res.SetLength(length)
-
 		reader := io.MultiReader(readers...)
+
 		res.SetOutput(reader)
 	},
 	PostRun: func(req cmds.Request, res cmds.Response) {
-		if res.Length() < progressBarMinSize {
+		if res.Error() != nil {
 			return
 		}
+		reader := res.Output().(io.Reader)
+		if password, pwdset, _ := req.Option(passwordOptionName).String(); pwdset {
+			reader = crypto.NewAESReader(reader, []byte(password))
+		}
 
-		bar, reader := progressBarForReader(res.Stderr(), res.Output().(io.Reader), int64(res.Length()))
-		bar.Start()
+		var bar *pb.ProgressBar
+		if res.Length() >= progressBarMinSize {
+			bar, reader = progressBarForReader(res.Stderr(), reader, int64(res.Length()))
+			bar.Start()
+		}
 
 		res.SetOutput(reader)
 	},

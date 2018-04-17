@@ -9,14 +9,14 @@ import (
 	"path/filepath"
 	"syscall"
 
-	commands "github.com/Casper-dev/Casper-server/commands"
-	core "github.com/Casper-dev/Casper-server/core"
-	corehttp "github.com/Casper-dev/Casper-server/core/corehttp"
-	coreunix "github.com/Casper-dev/Casper-server/core/coreunix"
-	config "github.com/Casper-dev/Casper-server/repo/config"
-	fsrepo "github.com/Casper-dev/Casper-server/repo/fsrepo"
+	commands "gitlab.com/casperDev/Casper-server/commands"
+	core "gitlab.com/casperDev/Casper-server/core"
+	corehttp "gitlab.com/casperDev/Casper-server/core/corehttp"
+	coreunix "gitlab.com/casperDev/Casper-server/core/coreunix"
+	config "gitlab.com/casperDev/Casper-server/repo/config"
+	fsrepo "gitlab.com/casperDev/Casper-server/repo/fsrepo"
 
-	homedir "github.com/Casper-dev/Casper-server/Godeps/_workspace/src/github.com/mitchellh/go-homedir"
+	homedir "gitlab.com/casperDev/Casper-server/Godeps/_workspace/src/github.com/mitchellh/go-homedir"
 
 	process "gx/ipfs/QmSF8fPo3jgVBAy8fpdjjYqgG87dkJgUprRBHRd2tmfgpP/goprocess"
 

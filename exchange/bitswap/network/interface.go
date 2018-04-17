@@ -3,7 +3,7 @@ package network
 import (
 	"context"
 
-	bsmsg "github.com/Casper-dev/Casper-server/exchange/bitswap/message"
+	bsmsg "gitlab.com/casperDev/Casper-server/exchange/bitswap/message"
 
 	cid "gx/ipfs/QmNp85zy9RLrQ5oQD4hPyS39ezrrXpcaa7R4Y9kxdWQLLQ/go-cid"
 	peer "gx/ipfs/QmXYjuNuxVzXKJCfWasQk1RqkhVLDM9jtUKhqc2WPQmFSB/go-libp2p-peer"

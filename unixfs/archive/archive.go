@@ -7,9 +7,9 @@ import (
 	"io"
 	"path"
 
-	mdag "github.com/Casper-dev/Casper-server/merkledag"
-	tar "github.com/Casper-dev/Casper-server/unixfs/archive/tar"
-	uio "github.com/Casper-dev/Casper-server/unixfs/io"
+	mdag "gitlab.com/casperDev/Casper-server/merkledag"
+	tar "gitlab.com/casperDev/Casper-server/unixfs/archive/tar"
+	uio "gitlab.com/casperDev/Casper-server/unixfs/io"
 
 	node "gx/ipfs/QmPN7cwmpcc4DWXb4KTB9dNAJgjuPY69h3npsMfhRrQL9c/go-ipld-format"
 )

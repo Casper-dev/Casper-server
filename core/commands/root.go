@@ -4,12 +4,13 @@ import (
 	"io"
 	"strings"
 
-	cmds "github.com/Casper-dev/Casper-server/commands"
-	dag "github.com/Casper-dev/Casper-server/core/commands/dag"
-	files "github.com/Casper-dev/Casper-server/core/commands/files"
-	ocmd "github.com/Casper-dev/Casper-server/core/commands/object"
-	unixfs "github.com/Casper-dev/Casper-server/core/commands/unixfs"
 	logging "gx/ipfs/QmSpJByNKFX1sCsHBEp3R73FL4NF6FnQTEGyNAXHm2GS52/go-log"
+
+	cmds "gitlab.com/casperDev/Casper-server/commands"
+	dag "gitlab.com/casperDev/Casper-server/core/commands/dag"
+	files "gitlab.com/casperDev/Casper-server/core/commands/files"
+	ocmd "gitlab.com/casperDev/Casper-server/core/commands/object"
+	unixfs "gitlab.com/casperDev/Casper-server/core/commands/unixfs"
 )
 
 var log = logging.Logger("core/commands")
@@ -27,9 +28,11 @@ BASIC COMMANDS
   init          Initialize ipfs local configuration
   add <path>    Add a file to IPFS
   cat <ref>     Show IPFS object data
+  del <ref>     Delete IPFS object from server and locally
   get <ref>     Download IPFS objects
   ls <ref>      List links from an object
   refs <ref>    List hashes of links from an object
+  upd           Update reference to object by UUID
 
 DATA STRUCTURE COMMANDS
   block         Interact with raw blocks in the datastore
@@ -98,6 +101,7 @@ var rootSubcommands = map[string]*cmds.Command{
 	"block":     BlockCmd,
 	"bootstrap": BootstrapCmd,
 	"cat":       CatCmd,
+	"del":       DelCmd,
 	"commands":  CommandsDaemonCmd,
 	"config":    ConfigCmd,
 	"dag":       dag.DagCmd,
@@ -125,9 +129,11 @@ var rootSubcommands = map[string]*cmds.Command{
 	"tar":       TarCmd,
 	"file":      unixfs.UnixFSCmd,
 	"update":    ExternalBinary(),
+	"upd":       UpdCmd,
 	"version":   VersionCmd,
 	"bitswap":   BitswapCmd,
 	"filestore": FileStoreCmd,
+	"validate":  ValidateCmd,
 	"shutdown":  daemonShutdownCmd,
 }
 
@@ -141,6 +147,7 @@ var RefsROCmd = &cmds.Command{}
 var rootROSubcommands = map[string]*cmds.Command{
 	"block": &cmds.Command{
 		Subcommands: map[string]*cmds.Command{
+			"list": blockListCmd,
 			"stat": blockStatCmd,
 			"get":  blockGetCmd,
 		},

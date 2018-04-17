@@ -9,8 +9,8 @@ import (
 	"os"
 	"time"
 
-	randomfiles "github.com/Casper-dev/Casper-server/Godeps/_workspace/src/github.com/jbenet/go-random-files"
-	ringreader "github.com/Casper-dev/Casper-server/Godeps/_workspace/src/github.com/jbenet/go-random-files/ringreader"
+	randomfiles "gitlab.com/casperDev/Casper-server/Godeps/_workspace/src/github.com/jbenet/go-random-files"
+	ringreader "gitlab.com/casperDev/Casper-server/Godeps/_workspace/src/github.com/jbenet/go-random-files/ringreader"
 )
 
 var usage = `usage: %s [options] <path>...

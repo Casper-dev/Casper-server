@@ -5,10 +5,11 @@ import (
 	"fmt"
 	"os"
 
-	mdag "github.com/Casper-dev/Casper-server/merkledag"
-	format "github.com/Casper-dev/Casper-server/unixfs"
-	hamt "github.com/Casper-dev/Casper-server/unixfs/hamt"
 	cid "gx/ipfs/QmNp85zy9RLrQ5oQD4hPyS39ezrrXpcaa7R4Y9kxdWQLLQ/go-cid"
+
+	mdag "gitlab.com/casperDev/Casper-server/merkledag"
+	format "gitlab.com/casperDev/Casper-server/unixfs"
+	hamt "gitlab.com/casperDev/Casper-server/unixfs/hamt"
 
 	node "gx/ipfs/QmPN7cwmpcc4DWXb4KTB9dNAJgjuPY69h3npsMfhRrQL9c/go-ipld-format"
 )

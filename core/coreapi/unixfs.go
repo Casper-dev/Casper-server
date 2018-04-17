@@ -4,9 +4,9 @@ import (
 	"context"
 	"io"
 
-	coreiface "github.com/Casper-dev/Casper-server/core/coreapi/interface"
-	coreunix "github.com/Casper-dev/Casper-server/core/coreunix"
-	uio "github.com/Casper-dev/Casper-server/unixfs/io"
+	coreiface "gitlab.com/casperDev/Casper-server/core/coreapi/interface"
+	coreunix "gitlab.com/casperDev/Casper-server/core/coreunix"
+	uio "gitlab.com/casperDev/Casper-server/unixfs/io"
 
 	cid "gx/ipfs/QmNp85zy9RLrQ5oQD4hPyS39ezrrXpcaa7R4Y9kxdWQLLQ/go-cid"
 	node "gx/ipfs/QmPN7cwmpcc4DWXb4KTB9dNAJgjuPY69h3npsMfhRrQL9c/go-ipld-format"

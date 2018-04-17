@@ -10,7 +10,7 @@ import (
 	"strings"
 	"syscall"
 
-	core "github.com/Casper-dev/Casper-server/core"
+	core "gitlab.com/casperDev/Casper-server/core"
 
 	"gx/ipfs/QmYRGECuvQnRX73fcvPnGbYijBcGN2HbKZQ7jh26qmLiHG/semver"
 )

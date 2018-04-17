@@ -4,11 +4,12 @@ import (
 	"io"
 	"strings"
 
-	cmds "github.com/Casper-dev/Casper-server/commands"
-	"github.com/Casper-dev/Casper-server/core"
-	ns "github.com/Casper-dev/Casper-server/namesys"
-	path "github.com/Casper-dev/Casper-server/path"
 	u "gx/ipfs/QmSU6eubNdhXjFBJBSksTp8kv8YRub8mGAPv8tVJHmL2EU/go-ipfs-util"
+
+	cmds "gitlab.com/casperDev/Casper-server/commands"
+	"gitlab.com/casperDev/Casper-server/core"
+	ns "gitlab.com/casperDev/Casper-server/namesys"
+	path "gitlab.com/casperDev/Casper-server/path"
 )
 
 type ResolvedPath struct {

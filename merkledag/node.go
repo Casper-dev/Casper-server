@@ -5,19 +5,28 @@ import (
 	"encoding/json"
 	"fmt"
 
+	bl "gitlab.com/casperDev/Casper-server/blocks"
+	uid "gitlab.com/casperDev/Casper-server/casper/uuid"
+
+	"bytes"
 	cid "gx/ipfs/QmNp85zy9RLrQ5oQD4hPyS39ezrrXpcaa7R4Y9kxdWQLLQ/go-cid"
 	node "gx/ipfs/QmPN7cwmpcc4DWXb4KTB9dNAJgjuPY69h3npsMfhRrQL9c/go-ipld-format"
+	logging "gx/ipfs/QmSpJByNKFX1sCsHBEp3R73FL4NF6FnQTEGyNAXHm2GS52/go-log"
+	"gx/ipfs/QmT8rehPR3F6bmwL6zjUN8XpiDBFFpMP2myPdC6ApsWfJf/go-base58"
 	mh "gx/ipfs/QmU9a9NV9RdPNwZQDYd5uKsm6N6LJLSvLbywDDYFbaaC6P/go-multihash"
 )
 
 var ErrNotProtobuf = fmt.Errorf("expected protobuf dag node")
 var ErrLinkNotFound = fmt.Errorf("no link by that name")
 
+var log = logging.Logger("dag.node")
+
 // Node represents a node in the IPFS Merkle DAG.
 // nodes have opaque data and a set of navigable links.
 type ProtoNode struct {
 	links []*node.Link
 	data  []byte
+	uuid  []byte
 
 	// cache encoded/marshaled value
 	encoded []byte
@@ -79,8 +88,8 @@ func (ls LinkSlice) Len() int           { return len(ls) }
 func (ls LinkSlice) Swap(a, b int)      { ls[a], ls[b] = ls[b], ls[a] }
 func (ls LinkSlice) Less(a, b int) bool { return ls[a].Name < ls[b].Name }
 
-func NodeWithData(d []byte) *ProtoNode {
-	return &ProtoNode{data: d}
+func NodeWithData(data []byte) *ProtoNode {
+	return &ProtoNode{data: data}
 }
 
 // AddNodeLink adds a link to another node.
@@ -199,22 +208,44 @@ func (n *ProtoNode) Copy() node.Node {
 
 	nnode.Prefix = n.Prefix
 
+	if len(n.uuid) > 0 {
+		nnode.uuid = make([]byte, len(n.uuid))
+		copy(nnode.uuid, n.uuid)
+	}
+
 	return nnode
 }
 
 func (n *ProtoNode) RawData() []byte {
 	out, _ := n.EncodeProtobuf(false)
-	return out
+	if uid.IsUUIDNull(n.uuid) {
+		return append(uid.NullUUID, out...)
+	}
+
+	return append(n.uuid, out...)
 }
 
 func (n *ProtoNode) Data() []byte {
 	return n.data
 }
 
+func (n *ProtoNode) UUID() []byte {
+	if n.uuid == nil {
+		return uid.NullUUID
+	}
+
+	return n.uuid
+}
+
 func (n *ProtoNode) SetData(d []byte) {
 	n.encoded = nil
 	n.cached = nil
 	n.data = d
+}
+
+func (n *ProtoNode) SetUUID(uuid []byte) {
+	n.cached = nil
+	n.uuid = uuid
 }
 
 // UpdateNodeLink return a copy of the node with the link name set to point to
@@ -257,7 +288,7 @@ func (n *ProtoNode) Stat() (*node.NodeStat, error) {
 		Hash:           n.Cid().String(),
 		NumLinks:       len(n.links),
 		BlockSize:      len(enc),
-		LinksSize:      len(enc) - len(n.data), // includes framing.
+		LinksSize:      len(enc) - len(n.data), // - uid.UUIDLen, // includes framing.
 		DataSize:       len(n.data),
 		CumulativeSize: int(cumSize),
 	}, nil
@@ -273,22 +304,32 @@ func (n *ProtoNode) UnmarshalJSON(b []byte) error {
 	s := struct {
 		Data  []byte       `json:"data"`
 		Links []*node.Link `json:"links"`
+		UUID  string       `json:"uuid,omitempty"`
 	}{}
 
+	log.Debugf("JSON %s", b)
 	err := json.Unmarshal(b, &s)
 	if err != nil {
 		return err
 	}
 
-	n.data = s.Data
 	n.links = s.Links
+	n.data = s.Data
+	n.uuid = base58.Decode(s.UUID)
+
 	return nil
 }
 
 func (n *ProtoNode) MarshalJSON() ([]byte, error) {
+	uuid := n.uuid
+	if uuid == nil {
+		uuid = uid.NullUUID
+	}
+
 	out := map[string]interface{}{
 		"data":  n.data,
 		"links": n.links,
+		"uuid":  base58.Encode(uuid),
 	}
 
 	return json.Marshal(out)
@@ -303,7 +344,14 @@ func (n *ProtoNode) Cid() *cid.Cid {
 		n.SetPrefix(nil)
 	}
 
-	c, err := n.Prefix.Sum(n.RawData())
+	id := n.uuid
+	if id == nil || bytes.Equal(id, uid.NullUUID) {
+		_, id = bl.SplitData(n.RawData())
+	}
+
+	//c, err := n.Prefix.Sum(n.RawData())
+	c, err := n.Prefix.Sum(id)
+
 	if err != nil {
 		// programmer error
 		err = fmt.Errorf("invalid CID of length %d: %x: %v", len(n.RawData()), n.RawData(), err)

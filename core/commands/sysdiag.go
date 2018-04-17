@@ -5,8 +5,8 @@ import (
 	"path"
 	"runtime"
 
-	cmds "github.com/Casper-dev/Casper-server/commands"
-	config "github.com/Casper-dev/Casper-server/repo/config"
+	cmds "gitlab.com/casperDev/Casper-server/commands"
+	config "gitlab.com/casperDev/Casper-server/repo/config"
 
 	manet "gx/ipfs/QmX3U3YXCQ6UYBxq2LVWF8dARS1hPUTEYLrSx654Qyxyw6/go-multiaddr-net"
 	sysi "gx/ipfs/QmZRjKbHa6DenStpQJFiaPcEwkZqrx7TH6xTf342LDU3qM/go-sysinfo"
@@ -79,14 +79,14 @@ func runtimeInfo(out map[string]interface{}) error {
 func envVarInfo(out map[string]interface{}) error {
 	ev := make(map[string]interface{})
 	ev["GOPATH"] = os.Getenv("GOPATH")
-	ev["IPFS_PATH"] = os.Getenv("CASPER_SERVER_PATH")
+	ev["IPFS_PATH"] = os.Getenv(config.EnvDir)
 
 	out["environment"] = ev
 	return nil
 }
 
 func ipfsPath() string {
-	p := os.Getenv("CASPER_SERVER_PATH")
+	p := os.Getenv(config.EnvDir)
 	if p == "" {
 		p = path.Join(os.Getenv("HOME"), ".ipfs")
 	}

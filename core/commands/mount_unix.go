@@ -8,9 +8,9 @@ import (
 	"io"
 	"strings"
 
-	cmds "github.com/Casper-dev/Casper-server/commands"
-	nodeMount "github.com/Casper-dev/Casper-server/fuse/node"
-	config "github.com/Casper-dev/Casper-server/repo/config"
+	cmds "gitlab.com/casperDev/Casper-server/commands"
+	nodeMount "gitlab.com/casperDev/Casper-server/fuse/node"
+	config "gitlab.com/casperDev/Casper-server/repo/config"
 )
 
 var MountCmd = &cmds.Command{

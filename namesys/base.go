@@ -5,7 +5,7 @@ import (
 
 	context "context"
 
-	path "github.com/Casper-dev/Casper-server/path"
+	path "gitlab.com/casperDev/Casper-server/path"
 )
 
 type resolver interface {

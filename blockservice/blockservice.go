@@ -8,9 +8,9 @@ import (
 	"errors"
 	"fmt"
 
-	"github.com/Casper-dev/Casper-server/blocks/blockstore"
-	exchange "github.com/Casper-dev/Casper-server/exchange"
-	bitswap "github.com/Casper-dev/Casper-server/exchange/bitswap"
+	"gitlab.com/casperDev/Casper-server/blocks/blockstore"
+	exchange "gitlab.com/casperDev/Casper-server/exchange"
+	bitswap "gitlab.com/casperDev/Casper-server/exchange/bitswap"
 
 	cid "gx/ipfs/QmNp85zy9RLrQ5oQD4hPyS39ezrrXpcaa7R4Y9kxdWQLLQ/go-cid"
 	blocks "gx/ipfs/QmSn9Td7xgxm9EV7iEjTckpUWmWApggzPxu7eFGWkkpwin/go-block-format"
@@ -99,18 +99,23 @@ func NewSession(ctx context.Context, bs BlockService) *Session {
 // TODO pass a context into this if the remote.HasBlock is going to remain here.
 func (s *blockService) AddBlock(o blocks.Block) (*cid.Cid, error) {
 	c := o.Cid()
-	if s.checkFirst {
-		has, err := s.blockstore.Has(c)
-		if err != nil {
-			return nil, err
-		}
 
-		if has {
-			return c, nil
-		}
-	}
+	//debug.PrintStack()
+	log.Debugf("Add Block with CID %s", c.String())
+
+	///if s.checkFirst {
+	///	has, err := s.blockstore.Has(c)
+	///	if err != nil {
+	///		return nil, err
+	///	}
+	///	if has {
+	///		log.Debugf("Block with CID %s already exists", c.String())
+	///		//return c, nil
+	///	}
+	///}
 
 	err := s.blockstore.Put(o)
+
 	if err != nil {
 		return nil, err
 	}
@@ -126,13 +131,12 @@ func (s *blockService) AddBlocks(bs []blocks.Block) ([]*cid.Cid, error) {
 	var toput []blocks.Block
 	if s.checkFirst {
 		for _, b := range bs {
-			has, err := s.blockstore.Has(b.Cid())
+			_, err := s.blockstore.Has(b.Cid())
 			if err != nil {
 				return nil, err
 			}
-			if !has {
-				toput = append(toput, b)
-			}
+
+			toput = append(toput, b)
 		}
 	} else {
 		toput = bs
@@ -157,7 +161,7 @@ func (s *blockService) AddBlocks(bs []blocks.Block) ([]*cid.Cid, error) {
 // GetBlock retrieves a particular block from the service,
 // Getting it from the datastore using the key (hash).
 func (s *blockService) GetBlock(ctx context.Context, c *cid.Cid) (blocks.Block, error) {
-	log.Debugf("BlockService GetBlock: '%s'", c)
+	//log.Debugf("BlockService GetBlock: %s", c)
 
 	var f exchange.Fetcher
 	if s.exchange != nil {

@@ -11,10 +11,11 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/Casper-dev/Casper-server/commands/files"
-	"github.com/Casper-dev/Casper-server/core"
-	"github.com/Casper-dev/Casper-server/repo/config"
 	u "gx/ipfs/QmSU6eubNdhXjFBJBSksTp8kv8YRub8mGAPv8tVJHmL2EU/go-ipfs-util"
+
+	"gitlab.com/casperDev/Casper-server/commands/files"
+	"gitlab.com/casperDev/Casper-server/core"
+	"gitlab.com/casperDev/Casper-server/repo/config"
 )
 
 type OptMap map[string]interface{}

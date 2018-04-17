@@ -4,9 +4,10 @@ import (
 	"io"
 	"strings"
 
-	cmds "github.com/Casper-dev/Casper-server/commands"
-	namesys "github.com/Casper-dev/Casper-server/namesys"
 	util "gx/ipfs/QmSU6eubNdhXjFBJBSksTp8kv8YRub8mGAPv8tVJHmL2EU/go-ipfs-util"
+
+	cmds "gitlab.com/casperDev/Casper-server/commands"
+	namesys "gitlab.com/casperDev/Casper-server/namesys"
 )
 
 var DNSCmd = &cmds.Command{

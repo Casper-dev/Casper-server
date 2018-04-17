@@ -7,12 +7,12 @@ import (
 	"strings"
 	"testing"
 
-	mdag "github.com/Casper-dev/Casper-server/merkledag"
-	"github.com/Casper-dev/Casper-server/unixfs"
+	mdag "gitlab.com/casperDev/Casper-server/merkledag"
+	"gitlab.com/casperDev/Casper-server/unixfs"
 
 	context "context"
 
-	testu "github.com/Casper-dev/Casper-server/unixfs/test"
+	testu "gitlab.com/casperDev/Casper-server/unixfs/test"
 )
 
 func TestBasicRead(t *testing.T) {

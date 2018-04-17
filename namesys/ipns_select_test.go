@@ -8,10 +8,11 @@ import (
 
 	proto "gx/ipfs/QmZ4Qi3GaRbjcx28Sme5eMH7RQjGkt8wHxt2a65oLaeFEV/gogo-protobuf/proto"
 
-	pb "github.com/Casper-dev/Casper-server/namesys/pb"
-	path "github.com/Casper-dev/Casper-server/path"
 	u "gx/ipfs/QmSU6eubNdhXjFBJBSksTp8kv8YRub8mGAPv8tVJHmL2EU/go-ipfs-util"
 	ci "gx/ipfs/QmaPbCnUMBohSGo3KnxEa2bHqyJVVeEEcwtqJAYxerieBo/go-libp2p-crypto"
+
+	pb "gitlab.com/casperDev/Casper-server/namesys/pb"
+	path "gitlab.com/casperDev/Casper-server/path"
 )
 
 func shuffle(a []*pb.IpnsEntry) {

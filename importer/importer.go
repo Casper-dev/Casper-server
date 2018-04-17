@@ -6,12 +6,12 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/Casper-dev/Casper-server/commands/files"
-	bal "github.com/Casper-dev/Casper-server/importer/balanced"
-	"github.com/Casper-dev/Casper-server/importer/chunk"
-	h "github.com/Casper-dev/Casper-server/importer/helpers"
-	trickle "github.com/Casper-dev/Casper-server/importer/trickle"
-	dag "github.com/Casper-dev/Casper-server/merkledag"
+	"gitlab.com/casperDev/Casper-server/commands/files"
+	bal "gitlab.com/casperDev/Casper-server/importer/balanced"
+	"gitlab.com/casperDev/Casper-server/importer/chunk"
+	h "gitlab.com/casperDev/Casper-server/importer/helpers"
+	trickle "gitlab.com/casperDev/Casper-server/importer/trickle"
+	dag "gitlab.com/casperDev/Casper-server/merkledag"
 
 	node "gx/ipfs/QmPN7cwmpcc4DWXb4KTB9dNAJgjuPY69h3npsMfhRrQL9c/go-ipld-format"
 )
@@ -28,7 +28,7 @@ func BuildDagFromFile(fpath string, ds dag.DAGService) (node.Node, error) {
 		return nil, fmt.Errorf("`%s` is a directory", fpath)
 	}
 
-	f, err := files.NewSerialFile(fpath, fpath, false, stat)
+	f, err := files.NewSerialFile(fpath, fpath, false, stat, nil)
 	if err != nil {
 		return nil, err
 	}

@@ -4,6 +4,6 @@
 package randomdep
 
 import (
-	_ "github.com/Casper-dev/Casper-server/Godeps/_workspace/src/github.com/jbenet/go-random"
-	_ "github.com/Casper-dev/Casper-server/Godeps/_workspace/src/github.com/jbenet/go-random-files"
+	_ "gitlab.com/casperDev/Casper-server/Godeps/_workspace/src/github.com/jbenet/go-random"
+	_ "gitlab.com/casperDev/Casper-server/Godeps/_workspace/src/github.com/jbenet/go-random-files"
 )

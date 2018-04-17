@@ -1,10 +1,11 @@
 package coreunix
 
 import (
-	core "github.com/Casper-dev/Casper-server/core"
-	dag "github.com/Casper-dev/Casper-server/merkledag"
-	ft "github.com/Casper-dev/Casper-server/unixfs"
 	cid "gx/ipfs/QmNp85zy9RLrQ5oQD4hPyS39ezrrXpcaa7R4Y9kxdWQLLQ/go-cid"
+
+	core "gitlab.com/casperDev/Casper-server/core"
+	dag "gitlab.com/casperDev/Casper-server/merkledag"
+	ft "gitlab.com/casperDev/Casper-server/unixfs"
 )
 
 func AddMetadataTo(n *core.IpfsNode, skey string, m *ft.Metadata) (string, error) {

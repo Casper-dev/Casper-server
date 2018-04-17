@@ -5,7 +5,7 @@ import (
 	"testing"
 	"time"
 
-	core "github.com/Casper-dev/Casper-server/core"
+	core "gitlab.com/casperDev/Casper-server/core"
 
 	inet "gx/ipfs/QmNa31VPzC561NWwRsJLE7nGYZYuuD2QfpK2b1q9BK54J1/go-libp2p-net"
 	testutil "gx/ipfs/QmQGX417WoxKxDJeHqouMEmmH4G1RCENNSzkZYHrXy3Xb3/go-libp2p-netutil"

@@ -5,8 +5,9 @@ import (
 
 	blocks "gx/ipfs/QmSn9Td7xgxm9EV7iEjTckpUWmWApggzPxu7eFGWkkpwin/go-block-format"
 
-	pubsub "github.com/Casper-dev/Casper-server/Godeps/_workspace/src/github.com/briantigerchow/pubsub"
 	cid "gx/ipfs/QmNp85zy9RLrQ5oQD4hPyS39ezrrXpcaa7R4Y9kxdWQLLQ/go-cid"
+
+	pubsub "gitlab.com/casperDev/Casper-server/Godeps/_workspace/src/github.com/briantigerchow/pubsub"
 )
 
 const bufferSize = 16

@@ -3,8 +3,8 @@ package main
 import (
 	"fmt"
 
-	cmds "github.com/Casper-dev/Casper-server/commands"
-	commands "github.com/Casper-dev/Casper-server/core/commands"
+	cmds "gitlab.com/casperDev/Casper-server/commands"
+	commands "gitlab.com/casperDev/Casper-server/core/commands"
 )
 
 // This is the CLI root, used for executing commands accessible to CLI clients.

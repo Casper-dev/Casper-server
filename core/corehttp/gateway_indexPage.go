@@ -6,7 +6,7 @@ import (
 	"path"
 	"strings"
 
-	"github.com/Casper-dev/Casper-server/assets"
+	"gitlab.com/casperDev/Casper-server/assets"
 )
 
 // structs for directory listing

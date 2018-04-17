@@ -1,12 +1,13 @@
 package memory
 
 import (
-	"net/rpc"
-	"net"
-	"log"
-	"net/http"
-	"github.com/Casper-dev/Casper-server/exchange/bitswap/decision"
 	"fmt"
+	"log"
+	"net"
+	"net/http"
+	"net/rpc"
+
+	"gitlab.com/casperDev/Casper-server/exchange/bitswap/decision"
 )
 
 type Hashes struct {
@@ -38,7 +39,7 @@ func GetRPC() {
 	if err != nil {
 		log.Fatal("arith error:", err)
 	}
-	fmt.Printf("Arith: %d*%d=%d", reply)
+	fmt.Printf("Arith: %s", reply)
 	decision.AllowedHashes = reply
 	return
 }

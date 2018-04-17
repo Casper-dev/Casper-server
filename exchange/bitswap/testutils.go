@@ -4,11 +4,12 @@ import (
 	"context"
 	"time"
 
-	blockstore "github.com/Casper-dev/Casper-server/blocks/blockstore"
-	tn "github.com/Casper-dev/Casper-server/exchange/bitswap/testnet"
-	datastore2 "github.com/Casper-dev/Casper-server/thirdparty/datastore2"
-	delay "github.com/Casper-dev/Casper-server/thirdparty/delay"
 	testutil "gx/ipfs/QmWRCn8vruNAzHx8i6SAXinuheRitKEGu8c7m26stKvsYx/go-testutil"
+
+	blockstore "gitlab.com/casperDev/Casper-server/blocks/blockstore"
+	tn "gitlab.com/casperDev/Casper-server/exchange/bitswap/testnet"
+	datastore2 "gitlab.com/casperDev/Casper-server/thirdparty/datastore2"
+	delay "gitlab.com/casperDev/Casper-server/thirdparty/delay"
 
 	p2ptestutil "gx/ipfs/QmQGX417WoxKxDJeHqouMEmmH4G1RCENNSzkZYHrXy3Xb3/go-libp2p-netutil"
 	ds "gx/ipfs/QmVSase1JP7cq9QkPT46oNwdp9pT6kBkG3oqS14y3QcZjG/go-datastore"

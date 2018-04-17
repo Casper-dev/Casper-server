@@ -176,6 +176,7 @@ func (r *response) Marshal() (io.Reader, error) {
 
 	// Special case: if text encoding and an error, just print it out.
 	if encType == Text && r.Error() != nil {
+
 		return strings.NewReader(r.Error().Error()), nil
 	}
 

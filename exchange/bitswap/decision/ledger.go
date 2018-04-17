@@ -4,13 +4,14 @@ import (
 	"sync"
 	"time"
 
-	wl "github.com/Casper-dev/Casper-server/exchange/bitswap/wantlist"
+	wl "gitlab.com/casperDev/Casper-server/exchange/bitswap/wantlist"
 
-	"fmt"
-	"github.com/ethereum/go-ethereum/common"
-	"github.com/Casper-dev/Casper-SC/casper_sc"
+	"gitlab.com/casperDev/Casper-SC/casper_sc"
+
 	"gx/ipfs/QmNp85zy9RLrQ5oQD4hPyS39ezrrXpcaa7R4Y9kxdWQLLQ/go-cid"
 	"gx/ipfs/QmXYjuNuxVzXKJCfWasQk1RqkhVLDM9jtUKhqc2WPQmFSB/go-libp2p-peer"
+
+	"github.com/ethereum/go-ethereum/common"
 )
 
 func newLedger(p peer.ID) *ledger {
@@ -21,9 +22,33 @@ func newLedger(p peer.ID) *ledger {
 	}
 }
 
+var AllowedHashes map[string][]string
 
-var AllowedHashes map[string]bool
-var Wallet string
+func AllowHash(hash, wallet string) {
+	for _, w := range AllowedHashes[hash] {
+		if w == wallet {
+			return
+		}
+	}
+	AllowedHashes[hash] = append(AllowedHashes[hash], wallet)
+}
+
+func DisallowHash(hash, wallet string) {
+	for i, w := range AllowedHashes[hash] {
+		if w == wallet {
+			if len(AllowedHashes[hash]) == 1 {
+				delete(AllowedHashes, hash)
+			} else {
+				var tail []string
+				if i+1 < len(AllowedHashes[hash]) {
+					tail = AllowedHashes[hash][i+1:]
+				}
+				AllowedHashes[hash] = append(AllowedHashes[hash][:i], tail...)
+			}
+			return
+		}
+	}
+}
 
 // ledger stores the data exchange relationship between two peers.
 // NOT threadsafe
@@ -84,23 +109,20 @@ func (l *ledger) ReceivedBytes(n int) {
 }
 
 func (l *ledger) Wants(k *cid.Cid, priority int) {
+	l.wantList.Add(k, priority)
+	return
 	log.Debugf("peer %s wants %s", l.Partner, k)
-	//fmt.Printf("peer %s wants %s\n", l.Partner.Pretty(), k.String())
-	if AllowedHashes[k.String()] {
-		casperclient, _, _ := Casper_SC.GetSC()
-		isPre, _ := casperclient.IsPrepaid(nil, common.HexToAddress(Wallet))
-		fmt.Println("is prepaid: ", isPre)
+	if wallets, ok := AllowedHashes[k.String()]; ok {
+		casperclient, _, _, _ := Casper_SC.GetSC()
+
+		// TODO check add info to wantlist about wallet
+		isPre, _ := casperclient.IsPrepaid(nil, common.HexToAddress(wallets[0]))
+		log.Debugf("Wallet %s prepaid=%t", isPre)
 		if isPre {
 			l.wantList.Add(k, priority)
-			fmt.Printf("Hash %s was allowed to download w/ wallet %s\n", k.String(), Wallet)
+			log.Infof("Hash %s was allowed to download with wallet %s\n", k.String(), wallets[0])
 		}
-	} else {
-
-		 {
-		 //fmt.Printf("Wanted %s hash, but not expected\n", k.String())
-		 }
 	}
-
 }
 
 func (l *ledger) CancelWant(k *cid.Cid) {

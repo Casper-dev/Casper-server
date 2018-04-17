@@ -9,13 +9,14 @@ import (
 	"path"
 	"strings"
 
-	context "context"
-	assets "github.com/Casper-dev/Casper-server/assets"
-	cmds "github.com/Casper-dev/Casper-server/commands"
-	core "github.com/Casper-dev/Casper-server/core"
-	namesys "github.com/Casper-dev/Casper-server/namesys"
-	config "github.com/Casper-dev/Casper-server/repo/config"
-	fsrepo "github.com/Casper-dev/Casper-server/repo/fsrepo"
+	"context"
+
+	"gitlab.com/casperDev/Casper-server/assets"
+	cmds "gitlab.com/casperDev/Casper-server/commands"
+	"gitlab.com/casperDev/Casper-server/core"
+	"gitlab.com/casperDev/Casper-server/namesys"
+	"gitlab.com/casperDev/Casper-server/repo/config"
+	"gitlab.com/casperDev/Casper-server/repo/fsrepo"
 )
 
 const (
@@ -50,7 +51,7 @@ environment variable:
 	Options: []cmds.Option{
 		cmds.IntOption("bits", "b", "Number of bits to use in the generated RSA private key.").Default(nBitsForKeypairDefault),
 		cmds.BoolOption("empty-repo", "e", "Don't add and pin help files to the local storage.").Default(false),
-		cmds.StringOption("profile", "p", "Apply profile settings to config. Multiple profiles can be separated by ','"),
+		cmds.StringOption("profile", "p", "Apply profile settings to config. Multiple profiles can be separated by ','").Default("nat,server"),
 
 		// TODO need to decide whether to expose the override as a file or a
 		// directory. That is: should we allow the user to also specify the
@@ -130,7 +131,7 @@ Reinitializing would overwrite your keys.
 `)
 
 func initWithDefaults(out io.Writer, repoRoot string) error {
-	return doInit(out, repoRoot, false, nBitsForKeypairDefault, nil, nil)
+	return doInit(out, repoRoot, false, nBitsForKeypairDefault, []string{"nat", "server"}, nil)
 }
 
 func doInit(out io.Writer, repoRoot string, empty bool, nBitsForKeypair int, confProfiles []string, conf *config.Config) error {

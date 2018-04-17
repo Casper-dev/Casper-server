@@ -7,14 +7,20 @@ import (
 	"math"
 	"strings"
 
-	cmds "github.com/Casper-dev/Casper-server/commands"
-	files "github.com/Casper-dev/Casper-server/commands/files"
-	coredag "github.com/Casper-dev/Casper-server/core/coredag"
-	path "github.com/Casper-dev/Casper-server/path"
-	pin "github.com/Casper-dev/Casper-server/pin"
+	"gitlab.com/casperDev/Casper-server/casper/uuid"
+	cval "gitlab.com/casperDev/Casper-server/casper/validation"
+	cmds "gitlab.com/casperDev/Casper-server/commands"
+	dag "gitlab.com/casperDev/Casper-server/merkledag"
+	ft "gitlab.com/casperDev/Casper-server/unixfs"
+
+	files "gitlab.com/casperDev/Casper-server/commands/files"
+	coredag "gitlab.com/casperDev/Casper-server/core/coredag"
+	path "gitlab.com/casperDev/Casper-server/path"
+	pin "gitlab.com/casperDev/Casper-server/pin"
 
 	cid "gx/ipfs/QmNp85zy9RLrQ5oQD4hPyS39ezrrXpcaa7R4Y9kxdWQLLQ/go-cid"
 	u "gx/ipfs/QmSU6eubNdhXjFBJBSksTp8kv8YRub8mGAPv8tVJHmL2EU/go-ipfs-util"
+	"gx/ipfs/QmT8rehPR3F6bmwL6zjUN8XpiDBFFpMP2myPdC6ApsWfJf/go-base58"
 	mh "gx/ipfs/QmU9a9NV9RdPNwZQDYd5uKsm6N6LJLSvLbywDDYFbaaC6P/go-multihash"
 )
 
@@ -29,9 +35,11 @@ to deprecate and replace the existing 'ipfs object' command moving forward.
 		`,
 	},
 	Subcommands: map[string]*cmds.Command{
-		"put":     DagPutCmd,
-		"get":     DagGetCmd,
-		"resolve": DagResolveCmd,
+		"put":      DagPutCmd,
+		"get":      DagGetCmd,
+		"resolve":  DagResolveCmd,
+		"checksum": DagChecksumCmd,
+		"stat":     DagStatCmd,
 	},
 }
 
@@ -183,6 +191,167 @@ into an object of the specified format.
 	},
 }
 
+const (
+	startOptionName = "start"
+	stopOptionName  = "stop"
+	saltOptionName  = "salt"
+	uuidOptionName  = "uuid"
+)
+
+var DagChecksumCmd = &cmds.Command{
+	Helptext: cmds.HelpText{
+		Tagline: "Calculate checksum for a range of file.",
+		ShortDescription: `
+'ipfs dag checksum' calculates sha256-checksum for a range of a file node
+`,
+	},
+	Arguments: []cmds.Argument{
+		cmds.StringArg("ref", true, false, "Hash or UUID of file"),
+	},
+	// TODO: uint64 option
+	Options: []cmds.Option{
+		cmds.IntOption(startOptionName, "First byte number.").Default(0),
+		cmds.IntOption(stopOptionName, "Last byte number. If 0, read till end.").Default(0),
+		cmds.StringOption(saltOptionName, "Salt to add before hashing.").Default(""),
+		cmds.BoolOption(uuidOptionName, "Assume that ref is UUID.").Default(false),
+	},
+	Run: func(req cmds.Request, res cmds.Response) {
+		start, _, _ := req.Option(startOptionName).Int()
+		stop, _, _ := req.Option(stopOptionName).Int()
+		salt, _, _ := req.Option(saltOptionName).String()
+		isUUID, _, _ := req.Option(uuidOptionName).Bool()
+
+		n, err := req.InvocContext().GetNode()
+		if err != nil {
+			res.SetError(err, cmds.ErrNormal)
+			return
+		}
+
+		id := req.Arguments()[0]
+		if isUUID {
+			id = uuid.UUIDToHash(base58.Decode(req.Arguments()[0])).B58String()
+		}
+
+		p, err := path.ParsePath(id)
+		if err != nil {
+			res.SetError(err, cmds.ErrNormal)
+			return
+		}
+
+		obj, _, err := n.Resolver.ResolveToLastNode(req.Context(), p)
+		if err != nil {
+			res.SetError(err, cmds.ErrNormal)
+			return
+		}
+
+		cs, err := cval.ChecksumSalt(req.Context(), obj, int64(start), int64(stop), n.Resolver.DAG, []byte(salt))
+		if err != nil {
+			res.SetError(err, cmds.ErrNormal)
+		}
+
+		//client.InvokeGetFileChecksum(req.Context(), "10.10.10.1:9090", req.Arguments()[0], int64(start), int64(stop), salt)
+
+		res.SetOutput(strings.NewReader(cs.B58String() + "\n"))
+	},
+}
+
+type DagStat struct {
+	Name string
+	Size uint64
+	UUID string
+	Hash string
+}
+
+var DagStatCmd = &cmds.Command{
+	Helptext: cmds.HelpText{
+		Tagline: "Get info about file.",
+		ShortDescription: `
+'ipfs dag stat' returns file information, such as size, name etc.
+`,
+	},
+	Arguments: []cmds.Argument{
+		cmds.StringArg("ref", true, false, "Hash or UUID of file"),
+	},
+	// TODO: uint64 option
+	Options: []cmds.Option{
+		cmds.BoolOption(uuidOptionName, "Assume that ref is UUID.").Default(false),
+	},
+	Type: &DagStat{},
+	Run: func(req cmds.Request, res cmds.Response) {
+		isUUID, _, _ := req.Option(uuidOptionName).Bool()
+
+		n, err := req.InvocContext().GetNode()
+		if err != nil {
+			res.SetError(err, cmds.ErrNormal)
+			return
+		}
+
+		id := req.Arguments()[0]
+		if isUUID {
+			id = uuid.UUIDToHash(base58.Decode(req.Arguments()[0])).B58String()
+		}
+
+		p, err := path.ParsePath(id)
+		if err != nil {
+			res.SetError(err, cmds.ErrNormal)
+			return
+		}
+
+		obj, _, err := n.Resolver.ResolveToLastNode(req.Context(), p)
+		if err != nil {
+			res.SetError(err, cmds.ErrNormal)
+			return
+		}
+
+		stat := &DagStat{}
+		switch v := obj.(type) {
+		case *dag.ProtoNode:
+			fsn, err := ft.FSNodeFromBytes(v.Data())
+			if err != nil {
+				res.SetError(err, cmds.ErrNormal)
+				return
+			}
+			if fsn.Type == ft.TDirectory && len(fsn.Data) == 0 && len(v.Links()) == 1 {
+				// this directory is wrapped over one file
+				// return slice of that file
+				stat.Name = v.Links()[0].Name
+				stat.UUID = base58.Encode(v.UUID())
+				stat.Hash = v.Cid().String()
+
+				child, err := v.Links()[0].GetNode(req.Context(), n.DAG)
+				if err != nil {
+					res.SetError(err, cmds.ErrNormal)
+					return
+				}
+
+				switch c := child.(type) {
+				case *dag.ProtoNode:
+					fsn, err := ft.FSNodeFromBytes(c.Data())
+					if err != nil {
+						res.SetError(err, cmds.ErrNormal)
+						return
+					}
+					stat.Size = fsn.FileSize()
+				case *dag.RawNode:
+					s, err := c.Stat()
+					if err != nil {
+						res.SetError(err, cmds.ErrNormal)
+						return
+					}
+					stat.Size = uint64(s.DataSize)
+				default:
+					res.SetError(err, cmds.ErrNormal)
+					return
+				}
+			}
+		default:
+			res.SetError(fmt.Errorf("Not a DAG node."), cmds.ErrNormal)
+		}
+
+		res.SetOutput(&stat)
+	},
+}
+
 var DagGetCmd = &cmds.Command{
 	Helptext: cmds.HelpText{
 		Tagline: "Get a dag node from ipfs.",
@@ -224,6 +393,12 @@ format.
 		}
 
 		res.SetOutput(out)
+	},
+	Marshalers: cmds.MarshalerMap{
+		///cmds.Text: func(res cmds.Response) (io.Reader, error) {
+		///	output := res.Output().(node.Node)
+		///	return bytes.NewReader(output.RawData()), nil
+		///},
 	},
 }
 

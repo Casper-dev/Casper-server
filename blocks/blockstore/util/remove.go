@@ -8,8 +8,8 @@ import (
 	cid "gx/ipfs/QmNp85zy9RLrQ5oQD4hPyS39ezrrXpcaa7R4Y9kxdWQLLQ/go-cid"
 	ds "gx/ipfs/QmVSase1JP7cq9QkPT46oNwdp9pT6kBkG3oqS14y3QcZjG/go-datastore"
 
-	bs "github.com/Casper-dev/Casper-server/blocks/blockstore"
-	"github.com/Casper-dev/Casper-server/pin"
+	bs "gitlab.com/casperDev/Casper-server/blocks/blockstore"
+	"gitlab.com/casperDev/Casper-server/pin"
 )
 
 // RemovedBlock is used to respresent the result of removing a block.

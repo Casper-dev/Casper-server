@@ -5,10 +5,10 @@ import (
 	"sync"
 	"time"
 
-	engine "github.com/Casper-dev/Casper-server/exchange/bitswap/decision"
-	bsmsg "github.com/Casper-dev/Casper-server/exchange/bitswap/message"
-	bsnet "github.com/Casper-dev/Casper-server/exchange/bitswap/network"
-	wantlist "github.com/Casper-dev/Casper-server/exchange/bitswap/wantlist"
+	engine "gitlab.com/casperDev/Casper-server/exchange/bitswap/decision"
+	bsmsg "gitlab.com/casperDev/Casper-server/exchange/bitswap/message"
+	bsnet "gitlab.com/casperDev/Casper-server/exchange/bitswap/network"
+	wantlist "gitlab.com/casperDev/Casper-server/exchange/bitswap/wantlist"
 
 	cid "gx/ipfs/QmNp85zy9RLrQ5oQD4hPyS39ezrrXpcaa7R4Y9kxdWQLLQ/go-cid"
 	metrics "gx/ipfs/QmRg1gKTHzc3CZXSKzem8aR4E3TubFhbgXwfVuWnSK5CC5/go-metrics-interface"

@@ -1,6 +1,6 @@
 package commands
 
-import cmds "github.com/Casper-dev/Casper-server/commands"
+import cmds "gitlab.com/casperDev/Casper-server/commands"
 
 type IpnsEntry struct {
 	Name  string

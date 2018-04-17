@@ -7,12 +7,12 @@ import (
 	"fmt"
 	"io"
 
-	chunk "github.com/Casper-dev/Casper-server/importer/chunk"
-	help "github.com/Casper-dev/Casper-server/importer/helpers"
-	trickle "github.com/Casper-dev/Casper-server/importer/trickle"
-	mdag "github.com/Casper-dev/Casper-server/merkledag"
-	ft "github.com/Casper-dev/Casper-server/unixfs"
-	uio "github.com/Casper-dev/Casper-server/unixfs/io"
+	chunk "gitlab.com/casperDev/Casper-server/importer/chunk"
+	help "gitlab.com/casperDev/Casper-server/importer/helpers"
+	trickle "gitlab.com/casperDev/Casper-server/importer/trickle"
+	mdag "gitlab.com/casperDev/Casper-server/merkledag"
+	ft "gitlab.com/casperDev/Casper-server/unixfs"
+	uio "gitlab.com/casperDev/Casper-server/unixfs/io"
 
 	cid "gx/ipfs/QmNp85zy9RLrQ5oQD4hPyS39ezrrXpcaa7R4Y9kxdWQLLQ/go-cid"
 	node "gx/ipfs/QmPN7cwmpcc4DWXb4KTB9dNAJgjuPY69h3npsMfhRrQL9c/go-ipld-format"

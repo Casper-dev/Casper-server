@@ -2,6 +2,26 @@ package config
 
 // ConfigProfiles is a map holding configuration transformers
 var ConfigProfiles = map[string]func(*Config) error{
+	"nat": func(c *Config) error {
+		defaultTurnServers := []TurnServer{
+			TurnServer{ // default server for testing purposes
+				Address:  "/ip4/195.201.26.73/tcp/3478",
+				User:     "Casper",
+				Password: "TestPassword",
+			},
+		}
+		defaultStunServers := []string{"195.201.26.73:3478"}
+
+		c.Swarm.NAT.TraversalSC = true
+		c.Swarm.NAT.TurnServers = defaultTurnServers
+		c.Swarm.NAT.StunServers = defaultStunServers
+		return nil
+	},
+	"relay": func(c *Config) error {
+		c.Swarm.DisableRelay = false
+		c.Swarm.EnableRelayHop = true
+		return nil
+	},
 	"server": func(c *Config) error {
 
 		// defaultServerFilters has a list of non-routable IPv4 prefixes

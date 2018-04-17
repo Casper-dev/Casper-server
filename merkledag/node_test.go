@@ -5,8 +5,8 @@ import (
 	"context"
 	"testing"
 
-	. "github.com/Casper-dev/Casper-server/merkledag"
-	mdtest "github.com/Casper-dev/Casper-server/merkledag/test"
+	. "gitlab.com/casperDev/Casper-server/merkledag"
+	mdtest "gitlab.com/casperDev/Casper-server/merkledag/test"
 
 	node "gx/ipfs/QmPN7cwmpcc4DWXb4KTB9dNAJgjuPY69h3npsMfhRrQL9c/go-ipld-format"
 )

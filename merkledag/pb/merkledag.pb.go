@@ -264,6 +264,7 @@ func (m *PBNode) Unmarshal(data []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
+
 			m.Data = append([]byte{}, data[index:postIndex]...)
 			index = postIndex
 		default:

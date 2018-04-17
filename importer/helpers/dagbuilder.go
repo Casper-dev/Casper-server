@@ -4,10 +4,11 @@ import (
 	"io"
 	"os"
 
-	"github.com/Casper-dev/Casper-server/commands/files"
-	"github.com/Casper-dev/Casper-server/importer/chunk"
-	dag "github.com/Casper-dev/Casper-server/merkledag"
-	ft "github.com/Casper-dev/Casper-server/unixfs"
+	uuid "gitlab.com/casperDev/Casper-server/casper/uuid"
+	"gitlab.com/casperDev/Casper-server/commands/files"
+	"gitlab.com/casperDev/Casper-server/importer/chunk"
+	dag "gitlab.com/casperDev/Casper-server/merkledag"
+	ft "gitlab.com/casperDev/Casper-server/unixfs"
 
 	cid "gx/ipfs/QmNp85zy9RLrQ5oQD4hPyS39ezrrXpcaa7R4Y9kxdWQLLQ/go-cid"
 	node "gx/ipfs/QmPN7cwmpcc4DWXb4KTB9dNAJgjuPY69h3npsMfhRrQL9c/go-ipld-format"
@@ -112,8 +113,12 @@ func (db *DagBuilderHelper) GetDagServ() dag.DAGService {
 
 // NewUnixfsNode creates a new Unixfs node to represent a file.
 func (db *DagBuilderHelper) NewUnixfsNode() *UnixfsNode {
+	node := new(dag.ProtoNode)
+	///node.SetUUID(uuid.GenUUID())
+	node.SetUUID(uuid.NullUUID)
+
 	n := &UnixfsNode{
-		node: new(dag.ProtoNode),
+		node: node,
 		ufmt: &ft.FSNode{Type: ft.TFile},
 	}
 	n.SetPrefix(db.prefix)
@@ -122,8 +127,12 @@ func (db *DagBuilderHelper) NewUnixfsNode() *UnixfsNode {
 
 // newUnixfsBlock creates a new Unixfs node to represent a raw data block
 func (db *DagBuilderHelper) newUnixfsBlock() *UnixfsNode {
+	node := new(dag.ProtoNode)
+	///node.SetUUID(uuid.GenUUID())
+	node.SetUUID(uuid.NullUUID)
+
 	n := &UnixfsNode{
-		node: new(dag.ProtoNode),
+		node: node,
 		ufmt: &ft.FSNode{Type: ft.TRaw},
 	}
 	n.SetPrefix(db.prefix)
@@ -194,6 +203,7 @@ func (db *DagBuilderHelper) SetPosInfo(node *UnixfsNode, offset uint64) {
 }
 
 func (db *DagBuilderHelper) Add(node *UnixfsNode) (node.Node, error) {
+	log.Debugf("db add node %+v", node)
 	dn, err := node.GetDagNode()
 	if err != nil {
 		return nil, err

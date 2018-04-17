@@ -8,12 +8,12 @@ import (
 	"io"
 	"strings"
 
-	importer "github.com/Casper-dev/Casper-server/importer"
-	chunk "github.com/Casper-dev/Casper-server/importer/chunk"
-	dag "github.com/Casper-dev/Casper-server/merkledag"
-	dagutil "github.com/Casper-dev/Casper-server/merkledag/utils"
-	path "github.com/Casper-dev/Casper-server/path"
-	uio "github.com/Casper-dev/Casper-server/unixfs/io"
+	importer "gitlab.com/casperDev/Casper-server/importer"
+	chunk "gitlab.com/casperDev/Casper-server/importer/chunk"
+	dag "gitlab.com/casperDev/Casper-server/merkledag"
+	dagutil "gitlab.com/casperDev/Casper-server/merkledag/utils"
+	path "gitlab.com/casperDev/Casper-server/path"
+	uio "gitlab.com/casperDev/Casper-server/unixfs/io"
 
 	node "gx/ipfs/QmPN7cwmpcc4DWXb4KTB9dNAJgjuPY69h3npsMfhRrQL9c/go-ipld-format"
 	logging "gx/ipfs/QmSpJByNKFX1sCsHBEp3R73FL4NF6FnQTEGyNAXHm2GS52/go-log"

@@ -6,9 +6,9 @@ import (
 	"fmt"
 	"io"
 
-	mdag "github.com/Casper-dev/Casper-server/merkledag"
-	ft "github.com/Casper-dev/Casper-server/unixfs"
-	ftpb "github.com/Casper-dev/Casper-server/unixfs/pb"
+	mdag "gitlab.com/casperDev/Casper-server/merkledag"
+	ft "gitlab.com/casperDev/Casper-server/unixfs"
+	ftpb "gitlab.com/casperDev/Casper-server/unixfs/pb"
 
 	proto "gx/ipfs/QmZ4Qi3GaRbjcx28Sme5eMH7RQjGkt8wHxt2a65oLaeFEV/gogo-protobuf/proto"
 )

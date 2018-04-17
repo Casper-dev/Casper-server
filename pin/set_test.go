@@ -5,10 +5,10 @@ import (
 	"encoding/binary"
 	"testing"
 
-	blockstore "github.com/Casper-dev/Casper-server/blocks/blockstore"
-	bserv "github.com/Casper-dev/Casper-server/blockservice"
-	offline "github.com/Casper-dev/Casper-server/exchange/offline"
-	dag "github.com/Casper-dev/Casper-server/merkledag"
+	blockstore "gitlab.com/casperDev/Casper-server/blocks/blockstore"
+	bserv "gitlab.com/casperDev/Casper-server/blockservice"
+	offline "gitlab.com/casperDev/Casper-server/exchange/offline"
+	dag "gitlab.com/casperDev/Casper-server/merkledag"
 
 	cid "gx/ipfs/QmNp85zy9RLrQ5oQD4hPyS39ezrrXpcaa7R4Y9kxdWQLLQ/go-cid"
 	ds "gx/ipfs/QmVSase1JP7cq9QkPT46oNwdp9pT6kBkG3oqS14y3QcZjG/go-datastore"

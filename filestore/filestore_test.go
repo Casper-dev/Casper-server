@@ -7,9 +7,9 @@ import (
 	"math/rand"
 	"testing"
 
-	"github.com/Casper-dev/Casper-server/blocks/blockstore"
-	dag "github.com/Casper-dev/Casper-server/merkledag"
-	posinfo "github.com/Casper-dev/Casper-server/thirdparty/posinfo"
+	"gitlab.com/casperDev/Casper-server/blocks/blockstore"
+	dag "gitlab.com/casperDev/Casper-server/merkledag"
+	posinfo "gitlab.com/casperDev/Casper-server/thirdparty/posinfo"
 
 	cid "gx/ipfs/QmNp85zy9RLrQ5oQD4hPyS39ezrrXpcaa7R4Y9kxdWQLLQ/go-cid"
 	ds "gx/ipfs/QmVSase1JP7cq9QkPT46oNwdp9pT6kBkG3oqS14y3QcZjG/go-datastore"

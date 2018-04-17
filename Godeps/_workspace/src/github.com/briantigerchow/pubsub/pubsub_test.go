@@ -5,10 +5,11 @@
 package pubsub
 
 import (
-	check "gopkg.in/check.v1"
 	"runtime"
 	"testing"
 	"time"
+
+	check "gopkg.in/check.v1"
 )
 
 var _ = check.Suite(new(Suite))

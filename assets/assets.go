@@ -9,14 +9,19 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/Casper-dev/Casper-server/core"
-	"github.com/Casper-dev/Casper-server/core/coreunix"
-	uio "github.com/Casper-dev/Casper-server/unixfs/io"
+	uid "gitlab.com/casperDev/Casper-server/casper/uuid"
+	"gitlab.com/casperDev/Casper-server/core"
+	"gitlab.com/casperDev/Casper-server/core/coreunix"
+	uio "gitlab.com/casperDev/Casper-server/unixfs/io"
+
 	cid "gx/ipfs/QmNp85zy9RLrQ5oQD4hPyS39ezrrXpcaa7R4Y9kxdWQLLQ/go-cid"
+	logging "gx/ipfs/QmSpJByNKFX1sCsHBEp3R73FL4NF6FnQTEGyNAXHm2GS52/go-log"
 
 	// this import keeps gx from thinking the dep isn't used
 	_ "gx/ipfs/QmdZ4PvPHFQVLLEve7DgoKDcSY19wwpGBB1GKjjKi2rEL1/dir-index-html"
 )
+
+var log = logging.Logger("assets")
 
 // initDocPaths lists the paths for the docs we want to seed during --init
 var initDocPaths = []string{
@@ -47,12 +52,15 @@ func SeedInitDirIndex(nd *core.IpfsNode) (*cid.Cid, error) {
 func addAssetList(nd *core.IpfsNode, l []string) (*cid.Cid, error) {
 	dirb := uio.NewDirectory(nd.DAG)
 
+	log.Debugf("%v", l)
 	for _, p := range l {
 		d, err := Asset(p)
 		if err != nil {
 			return nil, fmt.Errorf("assets: could load Asset '%s': %s", p, err)
 		}
 
+		log.Debugf("Few first bytes: %x", d[:uid.UUIDLen])
+		// s, err := coreunix.Add(nd, bytes.NewBuffer(append(bl.NullUUID, d...)))
 		s, err := coreunix.Add(nd, bytes.NewBuffer(d))
 		if err != nil {
 			return nil, fmt.Errorf("assets: could not Add '%s': %s", p, err)
@@ -65,6 +73,7 @@ func addAssetList(nd *core.IpfsNode, l []string) (*cid.Cid, error) {
 			return nil, err
 		}
 
+		log.Debugf("Trying to find CID %s", c.String())
 		node, err := nd.DAG.Get(nd.Context(), c)
 		if err != nil {
 			return nil, err

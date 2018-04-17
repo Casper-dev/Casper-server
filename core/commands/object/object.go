@@ -12,12 +12,12 @@ import (
 	"strings"
 	"text/tabwriter"
 
-	cmds "github.com/Casper-dev/Casper-server/commands"
-	core "github.com/Casper-dev/Casper-server/core"
-	dag "github.com/Casper-dev/Casper-server/merkledag"
-	path "github.com/Casper-dev/Casper-server/path"
-	pin "github.com/Casper-dev/Casper-server/pin"
-	ft "github.com/Casper-dev/Casper-server/unixfs"
+	cmds "gitlab.com/casperDev/Casper-server/commands"
+	core "gitlab.com/casperDev/Casper-server/core"
+	dag "gitlab.com/casperDev/Casper-server/merkledag"
+	path "gitlab.com/casperDev/Casper-server/path"
+	pin "gitlab.com/casperDev/Casper-server/pin"
+	ft "gitlab.com/casperDev/Casper-server/unixfs"
 
 	cid "gx/ipfs/QmNp85zy9RLrQ5oQD4hPyS39ezrrXpcaa7R4Y9kxdWQLLQ/go-cid"
 	node "gx/ipfs/QmPN7cwmpcc4DWXb4KTB9dNAJgjuPY69h3npsMfhRrQL9c/go-ipld-format"

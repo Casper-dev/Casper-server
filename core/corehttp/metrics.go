@@ -4,7 +4,7 @@ import (
 	"net"
 	"net/http"
 
-	core "github.com/Casper-dev/Casper-server/core"
+	core "gitlab.com/casperDev/Casper-server/core"
 
 	prometheus "gx/ipfs/QmX3QZ5jHEPidwUrymXV1iSCSUhdGxj15sm2gP4jKMef7B/client_golang/prometheus"
 )

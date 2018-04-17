@@ -9,13 +9,14 @@ import (
 	"testing"
 
 	context "context"
-	blockstore "github.com/Casper-dev/Casper-server/blocks/blockstore"
-	message "github.com/Casper-dev/Casper-server/exchange/bitswap/message"
 	blocks "gx/ipfs/QmSn9Td7xgxm9EV7iEjTckpUWmWApggzPxu7eFGWkkpwin/go-block-format"
 	ds "gx/ipfs/QmVSase1JP7cq9QkPT46oNwdp9pT6kBkG3oqS14y3QcZjG/go-datastore"
 	dssync "gx/ipfs/QmVSase1JP7cq9QkPT46oNwdp9pT6kBkG3oqS14y3QcZjG/go-datastore/sync"
 	testutil "gx/ipfs/QmWRCn8vruNAzHx8i6SAXinuheRitKEGu8c7m26stKvsYx/go-testutil"
 	peer "gx/ipfs/QmXYjuNuxVzXKJCfWasQk1RqkhVLDM9jtUKhqc2WPQmFSB/go-libp2p-peer"
+
+	blockstore "gitlab.com/casperDev/Casper-server/blocks/blockstore"
+	message "gitlab.com/casperDev/Casper-server/exchange/bitswap/message"
 )
 
 type peerAndEngine struct {

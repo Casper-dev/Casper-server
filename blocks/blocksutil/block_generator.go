@@ -2,7 +2,11 @@
 // with Blocks.
 package blocksutil
 
-import "gx/ipfs/QmSn9Td7xgxm9EV7iEjTckpUWmWApggzPxu7eFGWkkpwin/go-block-format"
+import (
+	blocks "gx/ipfs/QmSn9Td7xgxm9EV7iEjTckpUWmWApggzPxu7eFGWkkpwin/go-block-format"
+
+	bl "gitlab.com/casperDev/Casper-server/blocks"
+)
 
 // NewBlockGenerator returns an object capable of
 // producing blocks.
@@ -19,9 +23,9 @@ type BlockGenerator struct {
 }
 
 // Next generates a new BasicBlock.
-func (bg *BlockGenerator) Next() *blocks.BasicBlock {
+func (bg *BlockGenerator) Next() *bl.BasicBlock {
 	bg.seq++
-	return blocks.NewBlock([]byte(string(bg.seq)))
+	return bl.NewBlock([]byte(string(bg.seq)))
 }
 
 // Blocks generates as many BasicBlocks as specified by n.

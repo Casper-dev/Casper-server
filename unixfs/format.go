@@ -6,9 +6,10 @@ package unixfs
 import (
 	"errors"
 
-	dag "github.com/Casper-dev/Casper-server/merkledag"
-	pb "github.com/Casper-dev/Casper-server/unixfs/pb"
 	proto "gx/ipfs/QmZ4Qi3GaRbjcx28Sme5eMH7RQjGkt8wHxt2a65oLaeFEV/gogo-protobuf/proto"
+
+	dag "gitlab.com/casperDev/Casper-server/merkledag"
+	pb "gitlab.com/casperDev/Casper-server/unixfs/pb"
 )
 
 const (
@@ -163,6 +164,10 @@ func (n *FSNode) AddBlockSize(s uint64) {
 func (n *FSNode) RemoveBlockSize(i int) {
 	n.subtotal -= n.blocksizes[i]
 	n.blocksizes = append(n.blocksizes[:i], n.blocksizes[i+1:]...)
+}
+
+func (n *FSNode) BlockSizes() []uint64 {
+	return n.blocksizes[:]
 }
 
 func (n *FSNode) GetBytes() ([]byte, error) {

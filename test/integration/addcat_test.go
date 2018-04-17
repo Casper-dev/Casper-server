@@ -11,16 +11,18 @@ import (
 	"time"
 
 	context "context"
-	random "github.com/Casper-dev/Casper-server/Godeps/_workspace/src/github.com/jbenet/go-random"
 
-	"github.com/Casper-dev/Casper-server/core"
-	coreunix "github.com/Casper-dev/Casper-server/core/coreunix"
-	mock "github.com/Casper-dev/Casper-server/core/mock"
-	"github.com/Casper-dev/Casper-server/thirdparty/unit"
+	random "gitlab.com/casperDev/Casper-server/Godeps/_workspace/src/github.com/jbenet/go-random"
+
 	pstore "gx/ipfs/QmPgDWmTmuzvP7QE5zwo1TmjbJme9pmZHNujB2453jkCTr/go-libp2p-peerstore"
 	logging "gx/ipfs/QmSpJByNKFX1sCsHBEp3R73FL4NF6FnQTEGyNAXHm2GS52/go-log"
 	testutil "gx/ipfs/QmWRCn8vruNAzHx8i6SAXinuheRitKEGu8c7m26stKvsYx/go-testutil"
 	mocknet "gx/ipfs/QmefgzMbKZYsmHFkLqxgaTBG9ypeEjrdWRD5WXH4j1cWDL/go-libp2p/p2p/net/mock"
+
+	"gitlab.com/casperDev/Casper-server/core"
+	coreunix "gitlab.com/casperDev/Casper-server/core/coreunix"
+	mock "gitlab.com/casperDev/Casper-server/core/mock"
+	"gitlab.com/casperDev/Casper-server/thirdparty/unit"
 )
 
 var log = logging.Logger("epictest")

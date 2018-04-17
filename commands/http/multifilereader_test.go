@@ -7,7 +7,7 @@ import (
 	"strings"
 	"testing"
 
-	files "github.com/Casper-dev/Casper-server/commands/files"
+	files "gitlab.com/casperDev/Casper-server/commands/files"
 )
 
 func TestOutput(t *testing.T) {

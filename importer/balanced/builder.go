@@ -3,12 +3,15 @@ package balanced
 import (
 	"errors"
 
-	h "github.com/Casper-dev/Casper-server/importer/helpers"
-
 	node "gx/ipfs/QmPN7cwmpcc4DWXb4KTB9dNAJgjuPY69h3npsMfhRrQL9c/go-ipld-format"
+	logging "gx/ipfs/QmSpJByNKFX1sCsHBEp3R73FL4NF6FnQTEGyNAXHm2GS52/go-log"
+
+	h "gitlab.com/casperDev/Casper-server/importer/helpers"
 )
 
-func BalancedLayout(db *h.DagBuilderHelper) (node.Node, error) {
+var log = logging.Logger("balanced.builder")
+
+func BalancedLayout(db *h.DagBuilderHelper, uuidList ...[]byte) (node.Node, error) {
 	var offset uint64 = 0
 	var root *h.UnixfsNode
 	for level := 0; !db.Done(); level++ {
@@ -30,10 +33,13 @@ func BalancedLayout(db *h.DagBuilderHelper) (node.Node, error) {
 
 		offset = nroot.FileSize()
 		root = nroot
-
 	}
 	if root == nil {
 		root = db.NewUnixfsNode()
+	}
+
+	if len(uuidList) > 0 {
+		root.SetUUID(uuidList[0])
 	}
 
 	out, err := db.Add(root)

@@ -10,13 +10,14 @@ import (
 
 	context "context"
 
-	core "github.com/Casper-dev/Casper-server/core"
-	coreunix "github.com/Casper-dev/Casper-server/core/coreunix"
-	mock "github.com/Casper-dev/Casper-server/core/mock"
-	"github.com/Casper-dev/Casper-server/thirdparty/unit"
 	pstore "gx/ipfs/QmPgDWmTmuzvP7QE5zwo1TmjbJme9pmZHNujB2453jkCTr/go-libp2p-peerstore"
 	testutil "gx/ipfs/QmWRCn8vruNAzHx8i6SAXinuheRitKEGu8c7m26stKvsYx/go-testutil"
 	mocknet "gx/ipfs/QmefgzMbKZYsmHFkLqxgaTBG9ypeEjrdWRD5WXH4j1cWDL/go-libp2p/p2p/net/mock"
+
+	core "gitlab.com/casperDev/Casper-server/core"
+	coreunix "gitlab.com/casperDev/Casper-server/core/coreunix"
+	mock "gitlab.com/casperDev/Casper-server/core/mock"
+	"gitlab.com/casperDev/Casper-server/thirdparty/unit"
 )
 
 func TestThreeLeggedCatTransfer(t *testing.T) {

@@ -7,10 +7,13 @@ import (
 
 	"gx/ipfs/QmSn9Td7xgxm9EV7iEjTckpUWmWApggzPxu7eFGWkkpwin/go-block-format"
 
-	pb "github.com/Casper-dev/Casper-server/merkledag/pb"
+	pb "gitlab.com/casperDev/Casper-server/merkledag/pb"
 
 	cid "gx/ipfs/QmNp85zy9RLrQ5oQD4hPyS39ezrrXpcaa7R4Y9kxdWQLLQ/go-cid"
 	node "gx/ipfs/QmPN7cwmpcc4DWXb4KTB9dNAJgjuPY69h3npsMfhRrQL9c/go-ipld-format"
+
+	bl "gitlab.com/casperDev/Casper-server/blocks"
+	uid "gitlab.com/casperDev/Casper-server/casper/uuid"
 )
 
 // for now, we use a PBNode intermediate thing.
@@ -78,6 +81,7 @@ func (n *ProtoNode) getPBNode() *pb.PBNode {
 // It may use a cached encoded version, unless the force flag is given.
 func (n *ProtoNode) EncodeProtobuf(force bool) ([]byte, error) {
 	sort.Stable(LinkSlice(n.links)) // keep links sorted
+
 	if n.encoded == nil || force {
 		n.cached = nil
 		var err error
@@ -91,7 +95,12 @@ func (n *ProtoNode) EncodeProtobuf(force bool) ([]byte, error) {
 		if n.Prefix.Codec == 0 { // unset
 			n.Prefix = v0CidPrefix
 		}
-		c, err := n.Prefix.Sum(n.encoded)
+
+		id := n.uuid
+		if uid.IsUUIDNull(n.uuid) {
+			id = n.encoded
+		}
+		c, err := n.Prefix.Sum(id)
 		if err != nil {
 			return nil, err
 		}
@@ -116,11 +125,14 @@ func DecodeProtobuf(encoded []byte) (*ProtoNode, error) {
 // node.DecodeBlockFunc
 func DecodeProtobufBlock(b blocks.Block) (node.Node, error) {
 	c := b.Cid()
+
 	if c.Type() != cid.DagProtobuf {
 		return nil, fmt.Errorf("this function can only decode protobuf nodes")
 	}
 
-	decnd, err := DecodeProtobuf(b.RawData())
+	uuid, data := bl.SplitData(b.RawData())
+	decnd, err := DecodeProtobuf(data)
+
 	if err != nil {
 		if strings.Contains(err.Error(), "Unmarshal failed") {
 			return nil, fmt.Errorf("The block referred to by '%s' was not a valid merkledag node", c)
@@ -128,6 +140,7 @@ func DecodeProtobufBlock(b blocks.Block) (node.Node, error) {
 		return nil, fmt.Errorf("Failed to decode Protocol Buffers: %v", err)
 	}
 
+	decnd.SetUUID(uuid)
 	decnd.cached = c
 	decnd.Prefix = c.Prefix()
 	return decnd, nil

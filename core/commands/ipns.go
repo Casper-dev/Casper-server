@@ -5,10 +5,11 @@ import (
 	"io"
 	"strings"
 
-	cmds "github.com/Casper-dev/Casper-server/commands"
-	namesys "github.com/Casper-dev/Casper-server/namesys"
-	offline "github.com/Casper-dev/Casper-server/routing/offline"
 	u "gx/ipfs/QmSU6eubNdhXjFBJBSksTp8kv8YRub8mGAPv8tVJHmL2EU/go-ipfs-util"
+
+	cmds "gitlab.com/casperDev/Casper-server/commands"
+	namesys "gitlab.com/casperDev/Casper-server/namesys"
+	offline "gitlab.com/casperDev/Casper-server/routing/offline"
 )
 
 var IpnsCmd = &cmds.Command{

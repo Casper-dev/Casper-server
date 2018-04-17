@@ -188,19 +188,26 @@ const (
 	RecLong    = "recursive"
 	ChanOpt    = "stream-channels"
 	TimeoutOpt = "timeout"
+	CallerOpt  = "caller"
+
+	CallerOptServer = "server"
+	CallerOptClient = "client"
+	CallerOptWeb    = "web"
 )
 
 // options that are used by this package
 var OptionEncodingType = StringOption(EncLong, EncShort, "The encoding type the output should be encoded with (json, xml, or text)")
 var OptionRecursivePath = BoolOption(RecLong, RecShort, "Add directory paths recursively").Default(false)
 var OptionStreamChannels = BoolOption(ChanOpt, "Stream channel output")
-var OptionTimeout = StringOption(TimeoutOpt, "set a global timeout on the command")
+var OptionTimeout = StringOption(TimeoutOpt, "Set a global timeout on the command")
+var OptionCaller = StringOption(CallerOpt, "Request type (client or server)")
 
 // global options, added to every command
 var globalOptions = []Option{
 	OptionEncodingType,
 	OptionStreamChannels,
 	OptionTimeout,
+	OptionCaller,
 }
 
 // the above array of Options, wrapped in a Command
