@@ -8,7 +8,7 @@ import (
 	"strings"
 	"testing"
 
-	"gitlab.com/casperDev/Casper-server/commands"
+	"github.com/Casper-dev/Casper-server/commands"
 )
 
 type kvs map[string]interface{}

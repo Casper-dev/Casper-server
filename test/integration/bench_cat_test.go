@@ -12,10 +12,10 @@ import (
 	testutil "gx/ipfs/QmWRCn8vruNAzHx8i6SAXinuheRitKEGu8c7m26stKvsYx/go-testutil"
 	mocknet "gx/ipfs/QmefgzMbKZYsmHFkLqxgaTBG9ypeEjrdWRD5WXH4j1cWDL/go-libp2p/p2p/net/mock"
 
-	"gitlab.com/casperDev/Casper-server/core"
-	coreunix "gitlab.com/casperDev/Casper-server/core/coreunix"
-	mock "gitlab.com/casperDev/Casper-server/core/mock"
-	"gitlab.com/casperDev/Casper-server/thirdparty/unit"
+	"github.com/Casper-dev/Casper-server/core"
+	coreunix "github.com/Casper-dev/Casper-server/core/coreunix"
+	mock "github.com/Casper-dev/Casper-server/core/mock"
+	"github.com/Casper-dev/Casper-server/thirdparty/unit"
 )
 
 func BenchmarkCat1MB(b *testing.B) { benchmarkVarCat(b, unit.MB*1) }

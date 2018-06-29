@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"testing"
 
-	mdtest "gitlab.com/casperDev/Casper-server/merkledag/test"
-	ft "gitlab.com/casperDev/Casper-server/unixfs"
+	mdtest "github.com/Casper-dev/Casper-server/merkledag/test"
+	ft "github.com/Casper-dev/Casper-server/unixfs"
 )
 
 func TestEmptyNode(t *testing.T) {

@@ -8,7 +8,7 @@ import (
 	"text/tabwriter"
 	"time"
 
-	cmds "gitlab.com/casperDev/Casper-server/commands"
+	cmds "github.com/Casper-dev/Casper-server/commands"
 )
 
 var ActiveReqsCmd = &cmds.Command{

@@ -6,7 +6,7 @@ import (
 	"testing"
 	"time"
 
-	blocksutil "gitlab.com/casperDev/Casper-server/blocks/blocksutil"
+	blocksutil "github.com/Casper-dev/Casper-server/blocks/blocksutil"
 
 	cid "gx/ipfs/QmNp85zy9RLrQ5oQD4hPyS39ezrrXpcaa7R4Y9kxdWQLLQ/go-cid"
 	blocks "gx/ipfs/QmSn9Td7xgxm9EV7iEjTckpUWmWApggzPxu7eFGWkkpwin/go-block-format"

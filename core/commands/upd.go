@@ -7,13 +7,13 @@ import (
 	"io"
 	"strings"
 
-	"gitlab.com/casperDev/Casper-server/blocks/blockstore"
-	"gitlab.com/casperDev/Casper-server/blockservice"
-	cmds "gitlab.com/casperDev/Casper-server/commands"
-	"gitlab.com/casperDev/Casper-server/exchange/offline"
-	dag "gitlab.com/casperDev/Casper-server/merkledag"
-	path "gitlab.com/casperDev/Casper-server/path"
-	pin "gitlab.com/casperDev/Casper-server/pin"
+	"github.com/Casper-dev/Casper-server/blocks/blockstore"
+	"github.com/Casper-dev/Casper-server/blockservice"
+	cmds "github.com/Casper-dev/Casper-server/commands"
+	"github.com/Casper-dev/Casper-server/exchange/offline"
+	dag "github.com/Casper-dev/Casper-server/merkledag"
+	path "github.com/Casper-dev/Casper-server/path"
+	pin "github.com/Casper-dev/Casper-server/pin"
 )
 
 var UpdCmd = &cmds.Command{

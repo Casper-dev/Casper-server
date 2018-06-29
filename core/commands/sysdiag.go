@@ -5,8 +5,8 @@ import (
 	"path"
 	"runtime"
 
-	cmds "gitlab.com/casperDev/Casper-server/commands"
-	config "gitlab.com/casperDev/Casper-server/repo/config"
+	cmds "github.com/Casper-dev/Casper-server/commands"
+	config "github.com/Casper-dev/Casper-server/repo/config"
 
 	manet "gx/ipfs/QmX3U3YXCQ6UYBxq2LVWF8dARS1hPUTEYLrSx654Qyxyw6/go-multiaddr-net"
 	sysi "gx/ipfs/QmZRjKbHa6DenStpQJFiaPcEwkZqrx7TH6xTf342LDU3qM/go-sysinfo"

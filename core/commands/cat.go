@@ -6,14 +6,13 @@ import (
 	"io"
 	"net"
 
-	cu "gitlab.com/casperDev/Casper-server/casper/casper_utils"
-	"gitlab.com/casperDev/Casper-server/casper/crypto"
-	"gitlab.com/casperDev/Casper-server/client"
-	cmds "gitlab.com/casperDev/Casper-server/commands"
-	core "gitlab.com/casperDev/Casper-server/core"
-	coreunix "gitlab.com/casperDev/Casper-server/core/coreunix"
-
-	"gitlab.com/casperDev/Casper-SC/casper_sc"
+	cu "github.com/Casper-dev/Casper-server/casper/casper_utils"
+	"github.com/Casper-dev/Casper-server/casper/crypto"
+	sc "github.com/Casper-dev/Casper-server/casper/sc"
+	"github.com/Casper-dev/Casper-server/client"
+	cmds "github.com/Casper-dev/Casper-server/commands"
+	"github.com/Casper-dev/Casper-server/core"
+	"github.com/Casper-dev/Casper-server/core/coreunix"
 
 	"gx/ipfs/QmeWjRodbcZFKe5tMN7poEx3izym6osrLSnTLf9UjJZBbs/pb"
 )
@@ -44,14 +43,15 @@ var CatCmd = &cmds.Command{
 
 		caller, _, _ := req.Option(cmds.CallerOpt).String()
 		if caller == cmds.CallerOptClient {
-			_, _, auth, _ := Casper_SC.GetSC()
-			wallet := auth.From.String()
 			hash := req.Arguments()[0]
 			peers, err := cu.GetPeersMultiaddrsByHash(hash)
 			if err != nil && len(peers) == 0 {
 				res.SetError(err, cmds.ErrClient)
 				return
 			}
+
+			c, _ := sc.GetContract()
+			wallet := c.GetWallet()
 			for _, peer := range peers {
 				err := node.ConnectToPeer(req.Context(), peer.String())
 				if err != nil {
@@ -59,11 +59,13 @@ var CatCmd = &cmds.Command{
 					continue
 				}
 				addr, _ := cu.MultiaddrToTCPAddr(peer)
-				thriftAddr := net.JoinHostPort(addr.String(), "9090")
+				thriftAddr := net.JoinHostPort(addr.IP.String(), "9090")
+
 				err = client.HandleClientDownload(req.Context(), thriftAddr, hash, wallet)
 				if err == nil {
 					break
 				}
+				log.Errorf("error while downloading: %v", err)
 			}
 			fmt.Println("Success!")
 		}

@@ -9,7 +9,7 @@ import (
 	"strings"
 	"syscall"
 
-	"gitlab.com/casperDev/Casper-server/casper/crypto"
+	"github.com/Casper-dev/Casper-server/casper/crypto"
 )
 
 // serialFile implements File, and reads from a path on the OS filesystem.

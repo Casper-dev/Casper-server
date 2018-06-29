@@ -8,7 +8,7 @@ import (
 	"fmt"
 	"runtime/debug"
 
-	"gitlab.com/casperDev/Casper-server/casper/uuid"
+	"github.com/Casper-dev/Casper-server/casper/uuid"
 
 	cid "gx/ipfs/QmNp85zy9RLrQ5oQD4hPyS39ezrrXpcaa7R4Y9kxdWQLLQ/go-cid"
 	u "gx/ipfs/QmSU6eubNdhXjFBJBSksTp8kv8YRub8mGAPv8tVJHmL2EU/go-ipfs-util"

@@ -7,13 +7,13 @@ import (
 
 	"gx/ipfs/QmSn9Td7xgxm9EV7iEjTckpUWmWApggzPxu7eFGWkkpwin/go-block-format"
 
-	pb "gitlab.com/casperDev/Casper-server/merkledag/pb"
+	pb "github.com/Casper-dev/Casper-server/merkledag/pb"
 
 	cid "gx/ipfs/QmNp85zy9RLrQ5oQD4hPyS39ezrrXpcaa7R4Y9kxdWQLLQ/go-cid"
 	node "gx/ipfs/QmPN7cwmpcc4DWXb4KTB9dNAJgjuPY69h3npsMfhRrQL9c/go-ipld-format"
 
-	bl "gitlab.com/casperDev/Casper-server/blocks"
-	uid "gitlab.com/casperDev/Casper-server/casper/uuid"
+	bl "github.com/Casper-dev/Casper-server/blocks"
+	uid "github.com/Casper-dev/Casper-server/casper/uuid"
 )
 
 // for now, we use a PBNode intermediate thing.

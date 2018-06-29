@@ -4,7 +4,7 @@
 package commands
 
 import (
-	cmds "gitlab.com/casperDev/Casper-server/commands"
+	cmds "github.com/Casper-dev/Casper-server/commands"
 )
 
 var MountCmd = &cmds.Command{

@@ -5,9 +5,9 @@ import (
 	"fmt"
 	"io"
 
-	cmds "gitlab.com/casperDev/Casper-server/commands"
-	bitswap "gitlab.com/casperDev/Casper-server/exchange/bitswap"
-	decision "gitlab.com/casperDev/Casper-server/exchange/bitswap/decision"
+	cmds "github.com/Casper-dev/Casper-server/commands"
+	bitswap "github.com/Casper-dev/Casper-server/exchange/bitswap"
+	decision "github.com/Casper-dev/Casper-server/exchange/bitswap/decision"
 
 	cid "gx/ipfs/QmNp85zy9RLrQ5oQD4hPyS39ezrrXpcaa7R4Y9kxdWQLLQ/go-cid"
 	"gx/ipfs/QmPSBJL4momYnE7DcUyk2DVhD6rH488ZmHBGLbxNdhU44K/go-humanize"

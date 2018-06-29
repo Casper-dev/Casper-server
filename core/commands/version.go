@@ -6,9 +6,9 @@ import (
 	"runtime"
 	"strings"
 
-	cmds "gitlab.com/casperDev/Casper-server/commands"
-	config "gitlab.com/casperDev/Casper-server/repo/config"
-	fsrepo "gitlab.com/casperDev/Casper-server/repo/fsrepo"
+	cmds "github.com/Casper-dev/Casper-server/commands"
+	config "github.com/Casper-dev/Casper-server/repo/config"
+	fsrepo "github.com/Casper-dev/Casper-server/repo/fsrepo"
 )
 
 type VersionOutput struct {

@@ -8,12 +8,12 @@ import (
 	"sync"
 	"time"
 
-	cu "gitlab.com/casperDev/Casper-server/casper/casper_utils"
-	thrift "gitlab.com/casperDev/Casper-server/casper/thrift"
-	uid "gitlab.com/casperDev/Casper-server/casper/uuid"
-	"gitlab.com/casperDev/Casper-server/core"
-	"gitlab.com/casperDev/Casper-server/repo/fsrepo"
-	"gitlab.com/casperDev/Casper-thrift/casperproto"
+	cu "github.com/Casper-dev/Casper-server/casper/casper_utils"
+	thrift "github.com/Casper-dev/Casper-server/casper/thrift"
+	uid "github.com/Casper-dev/Casper-server/casper/uuid"
+	"github.com/Casper-dev/Casper-server/core"
+	"github.com/Casper-dev/Casper-server/repo/fsrepo"
+	"github.com/Casper-dev/Casper-thrift/casperproto"
 
 	node "gx/ipfs/QmPN7cwmpcc4DWXb4KTB9dNAJgjuPY69h3npsMfhRrQL9c/go-ipld-format"
 	"gx/ipfs/QmT8rehPR3F6bmwL6zjUN8XpiDBFFpMP2myPdC6ApsWfJf/go-base58"
@@ -155,7 +155,7 @@ func RegisterUUIDProvider(uuid string, ipfsAddr ipfsaddr.IPFSAddr, tAddr net.Add
 		rc := v.(*RunningCheck)
 		rc.mtx.Lock()
 
-		rc.nodes = append(rc.nodes, &cu.ExternalAddr{ipfsAddr, tAddr})
+		rc.nodes = append(rc.nodes, &cu.ExternalAddr{ipfsAddr, tAddr.(*net.TCPAddr)})
 		ninfo := casperproto.NodeInfo{IpfsAddr: ipfsAddr.String(), ThriftAddr: tAddr.String()}
 		rc.info.Providers = append(rc.info.Providers, &ninfo)
 		if len(rc.info.Providers) == NumChunkStoringNodes { // all nodes except current

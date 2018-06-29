@@ -5,11 +5,11 @@ import (
 
 	"fmt"
 
-	core "gitlab.com/casperDev/Casper-server/core"
-	"gitlab.com/casperDev/Casper-server/merkledag"
-	path "gitlab.com/casperDev/Casper-server/path"
-	ft "gitlab.com/casperDev/Casper-server/unixfs"
-	uio "gitlab.com/casperDev/Casper-server/unixfs/io"
+	core "github.com/Casper-dev/Casper-server/core"
+	"github.com/Casper-dev/Casper-server/merkledag"
+	path "github.com/Casper-dev/Casper-server/path"
+	ft "github.com/Casper-dev/Casper-server/unixfs"
+	uio "github.com/Casper-dev/Casper-server/unixfs/io"
 )
 
 func Cat(ctx context.Context, n *core.IpfsNode, pstr string) (uio.DagReader, error) {

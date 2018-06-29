@@ -4,14 +4,11 @@ import (
 	"sync"
 	"time"
 
-	wl "gitlab.com/casperDev/Casper-server/exchange/bitswap/wantlist"
-
-	"gitlab.com/casperDev/Casper-SC/casper_sc"
+	"github.com/Casper-dev/Casper-server/casper/sc"
+	wl "github.com/Casper-dev/Casper-server/exchange/bitswap/wantlist"
 
 	"gx/ipfs/QmNp85zy9RLrQ5oQD4hPyS39ezrrXpcaa7R4Y9kxdWQLLQ/go-cid"
 	"gx/ipfs/QmXYjuNuxVzXKJCfWasQk1RqkhVLDM9jtUKhqc2WPQmFSB/go-libp2p-peer"
-
-	"github.com/ethereum/go-ethereum/common"
 )
 
 func newLedger(p peer.ID) *ledger {
@@ -22,7 +19,7 @@ func newLedger(p peer.ID) *ledger {
 	}
 }
 
-var AllowedHashes map[string][]string
+var AllowedHashes = make(map[string][]string)
 
 func AllowHash(hash, wallet string) {
 	for _, w := range AllowedHashes[hash] {
@@ -113,10 +110,10 @@ func (l *ledger) Wants(k *cid.Cid, priority int) {
 	return
 	log.Debugf("peer %s wants %s", l.Partner, k)
 	if wallets, ok := AllowedHashes[k.String()]; ok {
-		casperclient, _, _, _ := Casper_SC.GetSC()
+		c, _ := sc.GetContract()
 
 		// TODO check add info to wantlist about wallet
-		isPre, _ := casperclient.IsPrepaid(nil, common.HexToAddress(wallets[0]))
+		isPre, _ := c.IsPrepaid(wallets[0])
 		log.Debugf("Wallet %s prepaid=%t", isPre)
 		if isPre {
 			l.wantList.Add(k, priority)

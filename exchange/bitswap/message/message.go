@@ -6,10 +6,10 @@ import (
 
 	blocks "gx/ipfs/QmSn9Td7xgxm9EV7iEjTckpUWmWApggzPxu7eFGWkkpwin/go-block-format"
 
-	bl "gitlab.com/casperDev/Casper-server/blocks"
-	uuid "gitlab.com/casperDev/Casper-server/casper/uuid"
-	pb "gitlab.com/casperDev/Casper-server/exchange/bitswap/message/pb"
-	wantlist "gitlab.com/casperDev/Casper-server/exchange/bitswap/wantlist"
+	bl "github.com/Casper-dev/Casper-server/blocks"
+	uuid "github.com/Casper-dev/Casper-server/casper/uuid"
+	pb "github.com/Casper-dev/Casper-server/exchange/bitswap/message/pb"
+	wantlist "github.com/Casper-dev/Casper-server/exchange/bitswap/wantlist"
 
 	inet "gx/ipfs/QmNa31VPzC561NWwRsJLE7nGYZYuuD2QfpK2b1q9BK54J1/go-libp2p-net"
 	cid "gx/ipfs/QmNp85zy9RLrQ5oQD4hPyS39ezrrXpcaa7R4Y9kxdWQLLQ/go-cid"

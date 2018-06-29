@@ -5,10 +5,10 @@ import (
 
 	ci "gx/ipfs/QmaPbCnUMBohSGo3KnxEa2bHqyJVVeEEcwtqJAYxerieBo/go-libp2p-crypto"
 
-	"gitlab.com/casperDev/Casper-server/core"
-	nsys "gitlab.com/casperDev/Casper-server/namesys"
-	path "gitlab.com/casperDev/Casper-server/path"
-	ft "gitlab.com/casperDev/Casper-server/unixfs"
+	"github.com/Casper-dev/Casper-server/core"
+	nsys "github.com/Casper-dev/Casper-server/namesys"
+	path "github.com/Casper-dev/Casper-server/path"
+	ft "github.com/Casper-dev/Casper-server/unixfs"
 )
 
 // InitializeKeyspace sets the ipns record for the given key to

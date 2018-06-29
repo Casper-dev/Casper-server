@@ -3,60 +3,47 @@ package main
 import (
 	"context"
 	"fmt"
-	"math/big"
-	"math/rand"
 	"net"
-	"regexp"
-	"strings"
 	"time"
 
-	cu "gitlab.com/casperDev/Casper-server/casper/casper_utils"
-	"gitlab.com/casperDev/Casper-server/casper/thrift"
-	"gitlab.com/casperDev/Casper-server/commands"
-	"gitlab.com/casperDev/Casper-server/repo/fsrepo"
-
-	"gitlab.com/casperDev/Casper-SC/casper"
-	"gitlab.com/casperDev/Casper-SC/casper_sc"
-	"gitlab.com/casperDev/Casper-server/casper/casper_utils"
+	cu "github.com/Casper-dev/Casper-server/casper/casper_utils"
+	"github.com/Casper-dev/Casper-server/casper/sc"
+	"github.com/Casper-dev/Casper-server/casper/thrift"
+	"github.com/Casper-dev/Casper-server/commands"
+	"github.com/Casper-dev/Casper-server/core"
+	"github.com/Casper-dev/Casper-server/repo/fsrepo"
 
 	"gx/ipfs/QmX3U3YXCQ6UYBxq2LVWF8dARS1hPUTEYLrSx654Qyxyw6/go-multiaddr-net"
 	ma "gx/ipfs/QmXY77cVe7rVRQXZZQRioukUM7aRW3BTcAgJe12MCtb3Ji/go-multiaddr"
 
-	"github.com/ethereum/go-ethereum/core/types"
+	"github.com/fatih/color"
 	reuse "github.com/libp2p/go-reuseport"
 	"github.com/willscott/goturn/client"
-	"github.com/fatih/color"
-	val "gitlab.com/casperDev/Casper-server/casper/validation"
-	"gitlab.com/casperDev/Casper-server/core"
 )
 
 var pingTimeout = 30 * time.Second
 
 const (
-	defaultStatusCheckInterval = 5 * time.Minute
+	defaultStatusCheckInterval            = 5 * time.Minute
+	defaultStatusCheckTimeout             = 1 * time.Minute
 	defaultVerificationInitiationInterval = 60 * time.Minute
+	defaultVerificationInitiationTimeout  = 1 * time.Minute
 )
 
 func serveThrift(ctx context.Context, cctx *commands.Context) error {
 	log.Infof("Initializing thrift server...")
-	///TODO: to use a custom port we need to find way for other providers to get that port
-	var thriftIP, thriftPort string
+
+	thriftIP := "0.0.0.0"
+	thriftPort := "9090"
 	if cctx.ConfigRoot != "" {
 		if cfg, err := fsrepo.ConfigAt(cctx.ConfigRoot); err == nil && cfg != nil {
 			// TODO: Find out if API can be not IP4 or thrift can use IP6
-			thriftIP, _ = ma.StringCast(cfg.Addresses.API).ValueForProtocol(ma.P_IP4)
+			//thriftIP, _ = ma.StringCast(cfg.Addresses.API).ValueForProtocol(ma.P_IP4)
 			thriftPort = cfg.Casper.ConnectionPort
 		}
 	} else {
 		log.Error("config is not provided")
 	}
-
-	if thriftIP == "" {
-		thriftIP = cu.GetLocalIP()
-		thriftPort = "9090"
-	}
-
-	thriftIP = "0.0.0.0"
 
 	// always run server here
 	thriftAddr := net.JoinHostPort(thriftIP, thriftPort)
@@ -70,61 +57,100 @@ func serveThrift(ctx context.Context, cctx *commands.Context) error {
 	return nil
 }
 
-func statusChecker() {
+func statusChecker(ctx context.Context) {
 	time.Sleep(10 * time.Second) ///TODO: wait for daemon to initialize
-	for ; ; {
-		casper, _, _, err := Casper_SC.GetSC()
+
+	// This is in separate function, because first tick in time.Ticker
+	// does not occur instantly.
+	checkStatus := func(ctx context.Context) {
+		c, err := sc.GetContract()
 		if err != nil {
-			fmt.Println(err)
+			log.Errorf("error while getting SC: %v", err)
+			return
 		}
-		isBanned, err := casper.VerifyReplication(nil, casper_utils.GetLocalAddr().ID())
+
+		// TODO implement timeout
+		//tctx, cancel := context.WithTimeout(ctx, defaultStatusCheckTimeout)
+		isBanned, err := c.VerifyReplication(cu.GetLocalAddr().NodeHash())
+		//cancel()
+		if err != nil {
+			log.Error(err)
+		}
+
 		fmt.Println()
 		if isBanned {
-			bgGreen := color.New(color.BgRed).PrintfFunc()
-			bgGreen("    Node is banned    ")
-			fmt.Println()
+			color.New(color.BgRed).Print("    Node is banned    ")
 		} else {
-			bgGreen := color.New(color.BgGreen).PrintfFunc()
-			bgGreen("    Node is online    ")
-			fmt.Println()
+			color.New(color.BgGreen).Print("    Node is online    ")
 		}
-		time.Sleep(defaultStatusCheckInterval) /// Node online check doesn't need to be frequent; we can even change it to subscription model
+		fmt.Println()
+	}
+
+	/// Node online check doesn't need to be frequent; we can even change it to subscription model
+	ticker := time.NewTicker(defaultStatusCheckInterval)
+	checkStatus(ctx)
+	for {
+		select {
+		case <-ticker.C:
+			checkStatus(ctx)
+		case <-ctx.Done():
+			log.Error(ctx.Err())
+			return
+		}
 	}
 }
 
 var initiatedCheck string
 
 func verificationRunner(ctx context.Context) {
-	for ;; {
-		time.Sleep(defaultVerificationInitiationInterval) /// Node will run random uuid verification every defaultVerificationInitiationInterval(60 as of now) minutes
-		casperClient, _, auth, _ := Casper_SC.GetSC()
-		uuid := "lol"
-		casperClient.NotifyVerificationTarget(auth, uuid, casper_utils.GetLocalAddr().ID())
+	/// Node will run random uuid verification every defaultVerificationInitiationInterval(60 as of now) minutes
+	ticker := time.NewTicker(defaultVerificationInitiationInterval)
+	for {
+		select {
+		case <-ticker.C:
+			c, err := sc.GetContract()
+			if err != nil {
+				log.Errorf("error while getting SC: %v", err)
+				continue
+			}
+			//tctx, cancel := context.WithTimeout(ctx, defaultVerificationInitiationTimeout)
+			//auth.Context = tctx
+			// FIXME UUID
+			err = c.NotifyVerificationTarget("123", cu.GetLocalAddr().NodeHash())
+			//cancel()
+			if err != nil {
+				/// Non-critical error; logging to info/debug is ok
+				log.Info(err)
+				continue
+			}
+		case <-ctx.Done():
+			log.Error(ctx.Err())
+			return
+		}
 	}
 }
 
+// TODO move to interface somehow
 func verificationWatcher(ctx context.Context, node *core.IpfsNode) {
-	verificationTargetWatcher := func(ctx context.Context, node *core.IpfsNode) (func(log *casper.CasperVerificationTarget)) {
-		return func(log *casper.CasperVerificationTarget) {
-			if _, isStored := core.UUIDInfoCache.Load(log.UUID); isStored {
-				val.PerformValidation(ctx, node, log.UUID)
-			}
-		}
-	}(ctx, node)
-	casper_utils.SubscribeToVerificationTargetLogs(ctx, verificationTargetWatcher)
+	// FIXME when we come up with new algorithm without events subscribing
+	return
+	//c, _ := sc.GetContract()
+	//c.SubscribeVerificationTarget(ctx, func(uuid string, id string) {
+	//	if _, ok := core.UUIDInfoCache.Load(uuid); ok {
+	//		val.PerformValidation(ctx, node, uuid)
+	//	}
+	//})
 
-	verificationConsensusWatcher := func(ctx context.Context) (func(log *casper.CasperConsensusResult)) {
-		return func(log *casper.CasperConsensusResult) {
-			if _, isStored := core.UUIDInfoCache.Load(log.UUID); isStored {
-				for _, peer := range log.Consensus {
-					if string(peer[:31]) == casper_utils.GetLocalAddr().ID() {
-						repairFile(ctx, log.UUID)
-					}
-				}
-			}
-		}
-	}(ctx)
-	casper_utils.SubscribeToVerificationConsensusLogs(ctx, verificationConsensusWatcher)
+	//c.SubscribeConsensusResult(ctx, func(uuid string, consensus [4][32]byte) {
+	//	if _, ok := core.UUIDInfoCache.Load(uuid); ok {
+	//		for _, peer := range consensus {
+	//			// FIXME
+	//			if string(peer[:31]) == cu.GetLocalAddr().NodeHash() {
+	//				repairFile(ctx, uuid)
+	//			}
+	//		}
+	//	}
+	//})
 }
 
 func repairFile(ctx context.Context, UUID string) {
@@ -174,127 +200,4 @@ func connectStun(laddr, raddr string) (ma.Multiaddr, error) {
 	}
 
 	return manet.FromNetAddr(tcp)
-}
-
-func runPinger(ctx context.Context) {
-	///beforeTimeout := time.Duration(60 - time.Now().Minute()) * time.Second
-	beforeTimeout := time.Duration(30) * time.Second
-	fmt.Printf("Waiting for %s\n", beforeTimeout)
-	time.Sleep(beforeTimeout)
-
-	for {
-		casperclient, client, auth, _ := Casper_SC.GetSC()
-		fmt.Println("auth nonce", auth.Nonce)
-		nonce, _ := client.PendingNonceAt(ctx, auth.From)
-		fmt.Println("pending nonce", nonce)
-		//sink := make(chan *casper.CasperReturnString)
-		//_, err = casperclient.WatchReturnString(nil, sink)
-		nonce, _ = client.PendingNonceAt(ctx, auth.From)
-		fmt.Println("pending nonce", nonce)
-
-		rer := regexp.MustCompile("(/ip4/[/\\d\\w.]+)")
-		ipRet := strings.TrimSpace(Casper_SC.ValidateMineTX(func() (*types.Transaction, error) {
-			return casperclient.GetPingTarget(auth, cu.GetLocalAddr().String())
-		}, client, auth))
-		fmt.Println("waiting for event")
-		//retString := <-sink
-		//fmt.Println("event ret ", retString.Val)
-
-		re := regexp.MustCompile("/.+?/(.+?)/")
-		fmt.Println("got ip !!", ipRet, "!!")
-		ipRet = rer.FindString(ipRet)
-		fmt.Println("got ip !!", ipRet, "!!")
-		fmt.Println(len(ipRet))
-		ips := re.FindStringSubmatch(ipRet)
-		if len(ips) >= 1 {
-			log.Debugf("Ping: %s", ips[0])
-			if timestamp, err := callPing(ctx, net.JoinHostPort(ips[0], "9090")); err == nil {
-				log.Debugf("Ping timestamp: %d", timestamp)
-				success := timestamp >= time.Now().Unix()-int64(pingTimeout.Seconds())
-				nonce, _ = client.PendingNonceAt(ctx, auth.From)
-				log.Debugf("Pending nonce", nonce)
-				resultData := Casper_SC.ValidateMineTX(func() (*types.Transaction, error) {
-					return casperclient.SendPingResult(auth, ipRet, success)
-				}, client, auth)
-
-				///TODO: change to working regex
-				re := regexp.MustCompile("Banned!")
-				fmt.Println("res data ", resultData)
-				if re.FindString(resultData) != "" {
-					fmt.Println("Go go replication~!")
-					go startReplication(ctx, ipRet, casperclient)
-				}
-			}
-		}
-
-		///pingTimeout := time.Duration(60-time.Now().Minute()+(rand.Int()%59)) * time.Second
-		pingWait := time.Duration(10+rand.Intn(20)) * time.Second
-		fmt.Printf("Sleeping for %s\n", pingWait)
-		time.Sleep(pingTimeout)
-	}
-}
-
-func callPing(ctx context.Context, ip string) (timestamp int64, err error) {
-	defer func() {
-		if r := recover(); r != nil {
-			fmt.Println("Recovered in f", r)
-		}
-	}()
-
-	ts, err := thrift.RunClientClosure(ip, func(client *thrift.ThriftClient) (interface{}, error) {
-		return client.Ping(ctx)
-	})
-	if err != nil {
-		return 0, err
-	}
-	return ts.(int64), nil
-}
-
-func startReplication(ctx context.Context, ip string, casperclient *casper.Casper) {
-	// We get number of banned provider files
-	n, err := casperclient.GetNumberOfFiles(nil, ip)
-	if err != nil {
-		log.Error(err)
-		return
-	}
-
-	for i := int64(0); i < n.Int64(); i++ {
-		// For each file we get its hash and size
-		hash, size, err := casperclient.GetFile(nil, ip, big.NewInt(i))
-		if err != nil {
-			log.Error(err)
-			continue
-		}
-
-		log.Debug("hs", hash, size)
-
-		// Search for a new peer to store the file
-		go replicateFile(ctx, hash, size, casperclient)
-	}
-}
-
-func replicateFile(ctx context.Context, hash string, size *big.Int, casperclient *casper.Casper) (ret string) {
-	defer func() {
-		if re := recover(); re != nil {
-			fmt.Println(re)
-		}
-	}()
-
-	tx, err := casperclient.GetPeers(nil, size)
-	if err != nil {
-		fmt.Println(err)
-	}
-	// GetPeers returns 4 ips, but we need only one of them
-	filteredIP, err := casperclient.GetIpPort(nil, tx.Id1)
-	if err != nil {
-		fmt.Println(err)
-	}
-
-	if filteredIP != "" {
-		ip := net.JoinHostPort(filteredIP, "9090")
-		thrift.RunClientClosure(ip, func(client *thrift.ThriftClient) (interface{}, error) {
-			return client.SendReplicationQuery(ctx, hash, ip, size.Int64())
-		})
-	}
-	return
 }

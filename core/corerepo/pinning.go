@@ -17,9 +17,9 @@ import (
 	"context"
 	"fmt"
 
-	"gitlab.com/casperDev/Casper-server/core"
-	path "gitlab.com/casperDev/Casper-server/path"
-	uio "gitlab.com/casperDev/Casper-server/unixfs/io"
+	"github.com/Casper-dev/Casper-server/core"
+	path "github.com/Casper-dev/Casper-server/path"
+	uio "github.com/Casper-dev/Casper-server/unixfs/io"
 
 	cid "gx/ipfs/QmNp85zy9RLrQ5oQD4hPyS39ezrrXpcaa7R4Y9kxdWQLLQ/go-cid"
 	node "gx/ipfs/QmPN7cwmpcc4DWXb4KTB9dNAJgjuPY69h3npsMfhRrQL9c/go-ipld-format"

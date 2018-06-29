@@ -10,12 +10,12 @@ import (
 	"path"
 	"strings"
 
-	"gitlab.com/casperDev/Casper-server/assets"
-	cmds "gitlab.com/casperDev/Casper-server/commands"
-	"gitlab.com/casperDev/Casper-server/core"
-	"gitlab.com/casperDev/Casper-server/namesys"
-	"gitlab.com/casperDev/Casper-server/repo/config"
-	"gitlab.com/casperDev/Casper-server/repo/fsrepo"
+	"github.com/Casper-dev/Casper-server/assets"
+	cmds "github.com/Casper-dev/Casper-server/commands"
+	"github.com/Casper-dev/Casper-server/core"
+	"github.com/Casper-dev/Casper-server/namesys"
+	"github.com/Casper-dev/Casper-server/repo/config"
+	"github.com/Casper-dev/Casper-server/repo/fsrepo"
 )
 
 const (
@@ -49,7 +49,7 @@ environment variable:
 	},
 	Options: []cmds.Option{
 		cmds.IntOption("bits", "b", "Number of bits to use in the generated RSA private key.").Default(nBitsForKeypairDefault),
-		cmds.BoolOption("empty-repo", "e", "Don't add and pin help files to the local storage."),
+		cmds.BoolOption("empty-repo", "e", "Don't add and pin help files to the local storage.").Default(true),
 		cmds.StringOption("profile", "p", "Apply profile settings to config. Multiple profiles can be separated by ','"),
 
 		// TODO need to decide whether to expose the override as a file or a
@@ -133,11 +133,11 @@ Reinitializing would overwrite your keys.
 `)
 
 func initWithDefaults(out io.Writer, repoRoot string) error {
-	return doInit(out, repoRoot, false, nBitsForKeypairDefault, nil, nil)
+	return doInit(out, repoRoot, true, nBitsForKeypairDefault, nil, nil)
 }
 
 func doInit(out io.Writer, repoRoot string, empty bool, nBitsForKeypair int, confProfiles []string, conf *config.Config) error {
-	if _, err := fmt.Fprintf(out, "initializing IPFS node at %s\n", repoRoot); err != nil {
+	if _, err := fmt.Fprintf(out, "initializing Csper node at %s\n", repoRoot); err != nil {
 		return err
 	}
 

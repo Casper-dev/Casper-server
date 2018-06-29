@@ -3,7 +3,7 @@ package merkledag
 import (
 	"fmt"
 
-	bl "gitlab.com/casperDev/Casper-server/blocks"
+	bl "github.com/Casper-dev/Casper-server/blocks"
 
 	"gx/ipfs/QmSn9Td7xgxm9EV7iEjTckpUWmWApggzPxu7eFGWkkpwin/go-block-format"
 
@@ -11,7 +11,7 @@ import (
 	node "gx/ipfs/QmPN7cwmpcc4DWXb4KTB9dNAJgjuPY69h3npsMfhRrQL9c/go-ipld-format"
 	u "gx/ipfs/QmSU6eubNdhXjFBJBSksTp8kv8YRub8mGAPv8tVJHmL2EU/go-ipfs-util"
 
-	uuid "gitlab.com/casperDev/Casper-server/casper/uuid"
+	uuid "github.com/Casper-dev/Casper-server/casper/uuid"
 )
 
 type RawNode struct {

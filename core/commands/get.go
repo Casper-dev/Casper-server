@@ -9,15 +9,16 @@ import (
 	"os"
 	"strings"
 
-	"gitlab.com/casperDev/Casper-SC/casper_sc"
-	cu "gitlab.com/casperDev/Casper-server/casper/casper_utils"
-	"gitlab.com/casperDev/Casper-server/client"
-	cmds "gitlab.com/casperDev/Casper-server/commands"
-	"gitlab.com/casperDev/Casper-server/core"
-	dag "gitlab.com/casperDev/Casper-server/merkledag"
-	"gitlab.com/casperDev/Casper-server/path"
-	"gitlab.com/casperDev/Casper-server/thirdparty/tar"
-	uarchive "gitlab.com/casperDev/Casper-server/unixfs/archive"
+	cu "github.com/Casper-dev/Casper-server/casper/casper_utils"
+	sc "github.com/Casper-dev/Casper-server/casper/sc"
+	"github.com/Casper-dev/Casper-server/client"
+	cmds "github.com/Casper-dev/Casper-server/commands"
+	"github.com/Casper-dev/Casper-server/core"
+	dag "github.com/Casper-dev/Casper-server/merkledag"
+	"github.com/Casper-dev/Casper-server/path"
+	"github.com/Casper-dev/Casper-server/repo/fsrepo"
+	"github.com/Casper-dev/Casper-server/thirdparty/tar"
+	uarchive "github.com/Casper-dev/Casper-server/unixfs/archive"
 
 	"gx/ipfs/QmeWjRodbcZFKe5tMN7poEx3izym6osrLSnTLf9UjJZBbs/pb"
 )
@@ -74,16 +75,23 @@ may also specify the level of compression by specifying '-l=<1-9>'.
 
 		caller, _, _ := req.Option(cmds.CallerOpt).String()
 		if caller == cmds.CallerOptClient {
-			_, _, auth, _ := Casper_SC.GetSC()
-			wallet := auth.From.String()
 			firstHash := req.Arguments()[0]
 			fmt.Println(firstHash)
+
+			cfg, _ := fsrepo.ConfigAt(req.InvocContext().ConfigRoot)
+			c, err := sc.GetContract(cfg.Casper.Blockchain[cfg.Casper.UsedChain])
+			if err != nil {
+				log.Error(err)
+				return
+			}
 
 			peers, err := cu.GetPeersMultiaddrsByHash(firstHash)
 			if err != nil && len(peers) == 0 {
 				res.SetError(err, cmds.ErrNormal)
 				return
 			}
+
+			wallet := c.GetWallet()
 			for _, peer := range peers {
 				err := node.ConnectToPeer(req.Context(), peer.String())
 				if err != nil {
@@ -92,6 +100,7 @@ may also specify the level of compression by specifying '-l=<1-9>'.
 				}
 				addr, _ := cu.MultiaddrToTCPAddr(peer)
 				thriftAddr := net.JoinHostPort(addr.IP.String(), "9090")
+
 				err = client.HandleClientDownload(req.Context(), thriftAddr, firstHash, wallet)
 				if err == nil {
 					break

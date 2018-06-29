@@ -10,7 +10,7 @@ import (
 	"strings"
 	"text/tabwriter"
 
-	cmds "gitlab.com/casperDev/Casper-server/commands"
+	cmds "github.com/Casper-dev/Casper-server/commands"
 
 	peer "gx/ipfs/QmXYjuNuxVzXKJCfWasQk1RqkhVLDM9jtUKhqc2WPQmFSB/go-libp2p-peer"
 	ci "gx/ipfs/QmaPbCnUMBohSGo3KnxEa2bHqyJVVeEEcwtqJAYxerieBo/go-libp2p-crypto"

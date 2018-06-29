@@ -3,10 +3,10 @@ package coreapi
 import (
 	"context"
 
-	core "gitlab.com/casperDev/Casper-server/core"
-	coreiface "gitlab.com/casperDev/Casper-server/core/coreapi/interface"
-	ipfspath "gitlab.com/casperDev/Casper-server/path"
-	uio "gitlab.com/casperDev/Casper-server/unixfs/io"
+	core "github.com/Casper-dev/Casper-server/core"
+	coreiface "github.com/Casper-dev/Casper-server/core/coreapi/interface"
+	ipfspath "github.com/Casper-dev/Casper-server/path"
+	uio "github.com/Casper-dev/Casper-server/unixfs/io"
 
 	cid "gx/ipfs/QmNp85zy9RLrQ5oQD4hPyS39ezrrXpcaa7R4Y9kxdWQLLQ/go-cid"
 )

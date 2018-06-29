@@ -6,11 +6,11 @@ import (
 
 	testutil "gx/ipfs/QmWRCn8vruNAzHx8i6SAXinuheRitKEGu8c7m26stKvsYx/go-testutil"
 
-	commands "gitlab.com/casperDev/Casper-server/commands"
-	core "gitlab.com/casperDev/Casper-server/core"
-	"gitlab.com/casperDev/Casper-server/repo"
-	config "gitlab.com/casperDev/Casper-server/repo/config"
-	ds2 "gitlab.com/casperDev/Casper-server/thirdparty/datastore2"
+	commands "github.com/Casper-dev/Casper-server/commands"
+	core "github.com/Casper-dev/Casper-server/core"
+	"github.com/Casper-dev/Casper-server/repo"
+	config "github.com/Casper-dev/Casper-server/repo/config"
+	ds2 "github.com/Casper-dev/Casper-server/thirdparty/datastore2"
 
 	pstore "gx/ipfs/QmPgDWmTmuzvP7QE5zwo1TmjbJme9pmZHNujB2453jkCTr/go-libp2p-peerstore"
 	metrics "gx/ipfs/QmQbh3Rb7KM37As3vkHYnEFnzkVXNCP8EYGtHz6g2fXk14/go-libp2p-metrics"

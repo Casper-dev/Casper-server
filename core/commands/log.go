@@ -6,7 +6,7 @@ import (
 
 	logging "gx/ipfs/QmSpJByNKFX1sCsHBEp3R73FL4NF6FnQTEGyNAXHm2GS52/go-log"
 
-	cmds "gitlab.com/casperDev/Casper-server/commands"
+	cmds "github.com/Casper-dev/Casper-server/commands"
 )
 
 // Golang os.Args overrides * and replaces the character argument with

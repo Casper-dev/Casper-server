@@ -4,7 +4,7 @@ import (
 	"net"
 	"net/http"
 
-	core "gitlab.com/casperDev/Casper-server/core"
+	core "github.com/Casper-dev/Casper-server/core"
 )
 
 func RedirectOption(path string, redirect string) ServeOption {

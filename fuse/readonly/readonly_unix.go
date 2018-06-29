@@ -10,11 +10,11 @@ import (
 	"os"
 	"syscall"
 
-	core "gitlab.com/casperDev/Casper-server/core"
-	mdag "gitlab.com/casperDev/Casper-server/merkledag"
-	path "gitlab.com/casperDev/Casper-server/path"
-	uio "gitlab.com/casperDev/Casper-server/unixfs/io"
-	ftpb "gitlab.com/casperDev/Casper-server/unixfs/pb"
+	core "github.com/Casper-dev/Casper-server/core"
+	mdag "github.com/Casper-dev/Casper-server/merkledag"
+	path "github.com/Casper-dev/Casper-server/path"
+	uio "github.com/Casper-dev/Casper-server/unixfs/io"
+	ftpb "github.com/Casper-dev/Casper-server/unixfs/pb"
 
 	format "gx/ipfs/QmPN7cwmpcc4DWXb4KTB9dNAJgjuPY69h3npsMfhRrQL9c/go-ipld-format"
 	logging "gx/ipfs/QmSpJByNKFX1sCsHBEp3R73FL4NF6FnQTEGyNAXHm2GS52/go-log"

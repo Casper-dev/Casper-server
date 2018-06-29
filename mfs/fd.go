@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"io"
 
-	mod "gitlab.com/casperDev/Casper-server/unixfs/mod"
+	mod "github.com/Casper-dev/Casper-server/unixfs/mod"
 
 	context "context"
 )

@@ -5,11 +5,11 @@ import (
 	"errors"
 	"time"
 
-	keystore "gitlab.com/casperDev/Casper-server/keystore"
-	namesys "gitlab.com/casperDev/Casper-server/namesys"
-	pb "gitlab.com/casperDev/Casper-server/namesys/pb"
-	path "gitlab.com/casperDev/Casper-server/path"
-	dshelp "gitlab.com/casperDev/Casper-server/thirdparty/ds-help"
+	keystore "github.com/Casper-dev/Casper-server/keystore"
+	namesys "github.com/Casper-dev/Casper-server/namesys"
+	pb "github.com/Casper-dev/Casper-server/namesys/pb"
+	path "github.com/Casper-dev/Casper-server/path"
+	dshelp "github.com/Casper-dev/Casper-server/thirdparty/ds-help"
 
 	routing "gx/ipfs/QmPR2JzfKd9poHx9XBhzoFeBBC31ZM3W5iUPKJZWyaoZZm/go-libp2p-routing"
 	goprocess "gx/ipfs/QmSF8fPo3jgVBAy8fpdjjYqgG87dkJgUprRBHRd2tmfgpP/goprocess"

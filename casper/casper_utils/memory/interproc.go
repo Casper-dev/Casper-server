@@ -7,7 +7,7 @@ import (
 	"net/http"
 	"net/rpc"
 
-	"gitlab.com/casperDev/Casper-server/exchange/bitswap/decision"
+	"github.com/Casper-dev/Casper-server/exchange/bitswap/decision"
 )
 
 type Hashes struct {

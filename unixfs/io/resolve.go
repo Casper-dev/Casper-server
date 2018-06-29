@@ -3,9 +3,9 @@ package io
 import (
 	"context"
 
-	dag "gitlab.com/casperDev/Casper-server/merkledag"
-	ft "gitlab.com/casperDev/Casper-server/unixfs"
-	hamt "gitlab.com/casperDev/Casper-server/unixfs/hamt"
+	dag "github.com/Casper-dev/Casper-server/merkledag"
+	ft "github.com/Casper-dev/Casper-server/unixfs"
+	hamt "github.com/Casper-dev/Casper-server/unixfs/hamt"
 
 	node "gx/ipfs/QmPN7cwmpcc4DWXb4KTB9dNAJgjuPY69h3npsMfhRrQL9c/go-ipld-format"
 )

@@ -8,10 +8,10 @@ import (
 	"path"
 	"time"
 
-	mdag "gitlab.com/casperDev/Casper-server/merkledag"
-	ft "gitlab.com/casperDev/Casper-server/unixfs"
-	uio "gitlab.com/casperDev/Casper-server/unixfs/io"
-	upb "gitlab.com/casperDev/Casper-server/unixfs/pb"
+	mdag "github.com/Casper-dev/Casper-server/merkledag"
+	ft "github.com/Casper-dev/Casper-server/unixfs"
+	uio "github.com/Casper-dev/Casper-server/unixfs/io"
+	upb "github.com/Casper-dev/Casper-server/unixfs/pb"
 
 	node "gx/ipfs/QmPN7cwmpcc4DWXb4KTB9dNAJgjuPY69h3npsMfhRrQL9c/go-ipld-format"
 	proto "gx/ipfs/QmZ4Qi3GaRbjcx28Sme5eMH7RQjGkt8wHxt2a65oLaeFEV/gogo-protobuf/proto"

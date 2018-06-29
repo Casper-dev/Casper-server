@@ -5,10 +5,10 @@ import (
 	"fmt"
 	"sync"
 
-	chunk "gitlab.com/casperDev/Casper-server/importer/chunk"
-	dag "gitlab.com/casperDev/Casper-server/merkledag"
-	ft "gitlab.com/casperDev/Casper-server/unixfs"
-	mod "gitlab.com/casperDev/Casper-server/unixfs/mod"
+	chunk "github.com/Casper-dev/Casper-server/importer/chunk"
+	dag "github.com/Casper-dev/Casper-server/merkledag"
+	ft "github.com/Casper-dev/Casper-server/unixfs"
+	mod "github.com/Casper-dev/Casper-server/unixfs/mod"
 
 	node "gx/ipfs/QmPN7cwmpcc4DWXb4KTB9dNAJgjuPY69h3npsMfhRrQL9c/go-ipld-format"
 )

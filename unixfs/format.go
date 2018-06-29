@@ -8,8 +8,8 @@ import (
 
 	proto "gx/ipfs/QmZ4Qi3GaRbjcx28Sme5eMH7RQjGkt8wHxt2a65oLaeFEV/gogo-protobuf/proto"
 
-	dag "gitlab.com/casperDev/Casper-server/merkledag"
-	pb "gitlab.com/casperDev/Casper-server/unixfs/pb"
+	dag "github.com/Casper-dev/Casper-server/merkledag"
+	pb "github.com/Casper-dev/Casper-server/unixfs/pb"
 )
 
 const (

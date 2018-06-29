@@ -14,11 +14,11 @@ import (
 
 	ci "gx/ipfs/QmWRCn8vruNAzHx8i6SAXinuheRitKEGu8c7m26stKvsYx/go-testutil/ci"
 
-	core "gitlab.com/casperDev/Casper-server/core"
-	namesys "gitlab.com/casperDev/Casper-server/namesys"
-	offroute "gitlab.com/casperDev/Casper-server/routing/offline"
+	core "github.com/Casper-dev/Casper-server/core"
+	namesys "github.com/Casper-dev/Casper-server/namesys"
+	offroute "github.com/Casper-dev/Casper-server/routing/offline"
 
-	racedet "gitlab.com/casperDev/Casper-server/Godeps/_workspace/src/github.com/jbenet/go-detect-race"
+	racedet "github.com/Casper-dev/Casper-server/Godeps/_workspace/src/github.com/jbenet/go-detect-race"
 
 	u "gx/ipfs/QmSU6eubNdhXjFBJBSksTp8kv8YRub8mGAPv8tVJHmL2EU/go-ipfs-util"
 	fstest "gx/ipfs/QmaFNtBAXX4nVMQWbUqNysXyhevUj1k4B1y5uS45LC7Vw9/fuse/fs/fstestutil"

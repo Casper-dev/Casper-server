@@ -9,9 +9,9 @@ import (
 
 	blocks "gx/ipfs/QmSn9Td7xgxm9EV7iEjTckpUWmWApggzPxu7eFGWkkpwin/go-block-format"
 
-	blockstore "gitlab.com/casperDev/Casper-server/blocks/blockstore"
-	. "gitlab.com/casperDev/Casper-server/blockservice"
-	offline "gitlab.com/casperDev/Casper-server/exchange/offline"
+	blockstore "github.com/Casper-dev/Casper-server/blocks/blockstore"
+	. "github.com/Casper-dev/Casper-server/blockservice"
+	offline "github.com/Casper-dev/Casper-server/exchange/offline"
 
 	cid "gx/ipfs/QmNp85zy9RLrQ5oQD4hPyS39ezrrXpcaa7R4Y9kxdWQLLQ/go-cid"
 	u "gx/ipfs/QmSU6eubNdhXjFBJBSksTp8kv8YRub8mGAPv8tVJHmL2EU/go-ipfs-util"

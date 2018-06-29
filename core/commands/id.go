@@ -12,8 +12,8 @@ import (
 
 	kb "gx/ipfs/QmSAFA8v42u4gpJNy1tb7vW3JiiXiaYDC2b845c2RnNSJL/go-libp2p-kbucket"
 
-	cmds "gitlab.com/casperDev/Casper-server/commands"
-	core "gitlab.com/casperDev/Casper-server/core"
+	cmds "github.com/Casper-dev/Casper-server/commands"
+	core "github.com/Casper-dev/Casper-server/core"
 
 	pstore "gx/ipfs/QmPgDWmTmuzvP7QE5zwo1TmjbJme9pmZHNujB2453jkCTr/go-libp2p-peerstore"
 	u "gx/ipfs/QmSU6eubNdhXjFBJBSksTp8kv8YRub8mGAPv8tVJHmL2EU/go-ipfs-util"

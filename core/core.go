@@ -23,28 +23,28 @@ import (
 	"sync"
 	"time"
 
-	bl "gitlab.com/casperDev/Casper-server/blocks"
-	bstore "gitlab.com/casperDev/Casper-server/blocks/blockstore"
-	bserv "gitlab.com/casperDev/Casper-server/blockservice"
-	uid "gitlab.com/casperDev/Casper-server/casper/uuid"
-	exchange "gitlab.com/casperDev/Casper-server/exchange"
-	bitswap "gitlab.com/casperDev/Casper-server/exchange/bitswap"
-	bsnet "gitlab.com/casperDev/Casper-server/exchange/bitswap/network"
-	rp "gitlab.com/casperDev/Casper-server/exchange/reprovide"
-	filestore "gitlab.com/casperDev/Casper-server/filestore"
-	mount "gitlab.com/casperDev/Casper-server/fuse/mount"
-	merkledag "gitlab.com/casperDev/Casper-server/merkledag"
-	mfs "gitlab.com/casperDev/Casper-server/mfs"
-	namesys "gitlab.com/casperDev/Casper-server/namesys"
-	ipnsrp "gitlab.com/casperDev/Casper-server/namesys/republisher"
-	p2p "gitlab.com/casperDev/Casper-server/p2p"
-	path "gitlab.com/casperDev/Casper-server/path"
-	pin "gitlab.com/casperDev/Casper-server/pin"
-	repo "gitlab.com/casperDev/Casper-server/repo"
-	config "gitlab.com/casperDev/Casper-server/repo/config"
-	nilrouting "gitlab.com/casperDev/Casper-server/routing/none"
-	offroute "gitlab.com/casperDev/Casper-server/routing/offline"
-	ft "gitlab.com/casperDev/Casper-server/unixfs"
+	bl "github.com/Casper-dev/Casper-server/blocks"
+	bstore "github.com/Casper-dev/Casper-server/blocks/blockstore"
+	bserv "github.com/Casper-dev/Casper-server/blockservice"
+	uid "github.com/Casper-dev/Casper-server/casper/uuid"
+	exchange "github.com/Casper-dev/Casper-server/exchange"
+	bitswap "github.com/Casper-dev/Casper-server/exchange/bitswap"
+	bsnet "github.com/Casper-dev/Casper-server/exchange/bitswap/network"
+	rp "github.com/Casper-dev/Casper-server/exchange/reprovide"
+	filestore "github.com/Casper-dev/Casper-server/filestore"
+	mount "github.com/Casper-dev/Casper-server/fuse/mount"
+	merkledag "github.com/Casper-dev/Casper-server/merkledag"
+	mfs "github.com/Casper-dev/Casper-server/mfs"
+	namesys "github.com/Casper-dev/Casper-server/namesys"
+	ipnsrp "github.com/Casper-dev/Casper-server/namesys/republisher"
+	p2p "github.com/Casper-dev/Casper-server/p2p"
+	path "github.com/Casper-dev/Casper-server/path"
+	pin "github.com/Casper-dev/Casper-server/pin"
+	repo "github.com/Casper-dev/Casper-server/repo"
+	config "github.com/Casper-dev/Casper-server/repo/config"
+	nilrouting "github.com/Casper-dev/Casper-server/routing/none"
+	offroute "github.com/Casper-dev/Casper-server/routing/offline"
+	ft "github.com/Casper-dev/Casper-server/unixfs"
 
 	yamux "gx/ipfs/QmNWCEvi7bPRcvqAV8AKLGVNoQdArWi7NJayka2SM4XtRe/go-smux-yamux"
 	cid "gx/ipfs/QmNp85zy9RLrQ5oQD4hPyS39ezrrXpcaa7R4Y9kxdWQLLQ/go-cid"
@@ -272,7 +272,9 @@ func (n *IpfsNode) startOnlineServices(ctx context.Context, routingOption Routin
 		}
 	}
 
-	return n.Bootstrap(DefaultBootstrapConfig)
+	// we need no bootstrap
+	//return n.Bootstrap(DefaultBootstrapConfig)
+	return nil
 }
 
 func constructConnMgr(cfg config.ConnMgr) (ifconnmgr.ConnManager, error) {
@@ -761,7 +763,6 @@ func (n *IpfsNode) InitUUIDCache(ctx context.Context) error {
 			UUIDInfoCache.Store(res[3], &info)
 		}
 	}
-
 	return nil
 }
 

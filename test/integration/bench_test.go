@@ -5,7 +5,7 @@ import (
 
 	testutil "gx/ipfs/QmWRCn8vruNAzHx8i6SAXinuheRitKEGu8c7m26stKvsYx/go-testutil"
 
-	"gitlab.com/casperDev/Casper-server/thirdparty/unit"
+	"github.com/Casper-dev/Casper-server/thirdparty/unit"
 )
 
 func benchmarkAddCat(numBytes int64, conf testutil.LatencyConfig, b *testing.B) {

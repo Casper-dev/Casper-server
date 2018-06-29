@@ -6,9 +6,9 @@ import (
 	"testing"
 	"time"
 
-	path "gitlab.com/casperDev/Casper-server/path"
-	mockrouting "gitlab.com/casperDev/Casper-server/routing/mock"
-	dshelp "gitlab.com/casperDev/Casper-server/thirdparty/ds-help"
+	path "github.com/Casper-dev/Casper-server/path"
+	mockrouting "github.com/Casper-dev/Casper-server/routing/mock"
+	dshelp "github.com/Casper-dev/Casper-server/thirdparty/ds-help"
 
 	ds "gx/ipfs/QmVSase1JP7cq9QkPT46oNwdp9pT6kBkG3oqS14y3QcZjG/go-datastore"
 	dssync "gx/ipfs/QmVSase1JP7cq9QkPT46oNwdp9pT6kBkG3oqS14y3QcZjG/go-datastore/sync"

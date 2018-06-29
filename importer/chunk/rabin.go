@@ -4,7 +4,7 @@ import (
 	"hash/fnv"
 	"io"
 
-	"gitlab.com/casperDev/Casper-server/Godeps/_workspace/src/github.com/whyrusleeping/chunker"
+	"github.com/Casper-dev/Casper-server/Godeps/_workspace/src/github.com/whyrusleeping/chunker"
 )
 
 var IpfsRabinPoly = chunker.Pol(17437180132763653)

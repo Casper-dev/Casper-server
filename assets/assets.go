@@ -9,10 +9,10 @@ import (
 	"os"
 	"path/filepath"
 
-	uid "gitlab.com/casperDev/Casper-server/casper/uuid"
-	"gitlab.com/casperDev/Casper-server/core"
-	"gitlab.com/casperDev/Casper-server/core/coreunix"
-	uio "gitlab.com/casperDev/Casper-server/unixfs/io"
+	uid "github.com/Casper-dev/Casper-server/casper/uuid"
+	"github.com/Casper-dev/Casper-server/core"
+	"github.com/Casper-dev/Casper-server/core/coreunix"
+	uio "github.com/Casper-dev/Casper-server/unixfs/io"
 
 	cid "gx/ipfs/QmNp85zy9RLrQ5oQD4hPyS39ezrrXpcaa7R4Y9kxdWQLLQ/go-cid"
 	logging "gx/ipfs/QmSpJByNKFX1sCsHBEp3R73FL4NF6FnQTEGyNAXHm2GS52/go-log"

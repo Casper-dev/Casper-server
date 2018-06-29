@@ -5,8 +5,8 @@ import (
 	"sort"
 	"strings"
 
-	levenshtein "gitlab.com/casperDev/Casper-server/Godeps/_workspace/src/github.com/texttheater/golang-levenshtein/levenshtein"
-	cmds "gitlab.com/casperDev/Casper-server/commands"
+	levenshtein "github.com/Casper-dev/Casper-server/Godeps/_workspace/src/github.com/texttheater/golang-levenshtein/levenshtein"
+	cmds "github.com/Casper-dev/Casper-server/commands"
 )
 
 // Make a custom slice that can be sorted by its levenshtein value

@@ -7,10 +7,10 @@ import (
 	"io/ioutil"
 	"testing"
 
-	chunk "gitlab.com/casperDev/Casper-server/importer/chunk"
-	dag "gitlab.com/casperDev/Casper-server/merkledag"
-	mdtest "gitlab.com/casperDev/Casper-server/merkledag/test"
-	uio "gitlab.com/casperDev/Casper-server/unixfs/io"
+	chunk "github.com/Casper-dev/Casper-server/importer/chunk"
+	dag "github.com/Casper-dev/Casper-server/merkledag"
+	mdtest "github.com/Casper-dev/Casper-server/merkledag/test"
+	uio "github.com/Casper-dev/Casper-server/unixfs/io"
 
 	node "gx/ipfs/QmPN7cwmpcc4DWXb4KTB9dNAJgjuPY69h3npsMfhRrQL9c/go-ipld-format"
 	u "gx/ipfs/QmSU6eubNdhXjFBJBSksTp8kv8YRub8mGAPv8tVJHmL2EU/go-ipfs-util"

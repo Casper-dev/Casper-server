@@ -5,8 +5,8 @@ import (
 	"encoding/json"
 	"fmt"
 
-	bl "gitlab.com/casperDev/Casper-server/blocks"
-	uid "gitlab.com/casperDev/Casper-server/casper/uuid"
+	bl "github.com/Casper-dev/Casper-server/blocks"
+	uid "github.com/Casper-dev/Casper-server/casper/uuid"
 
 	"bytes"
 	cid "gx/ipfs/QmNp85zy9RLrQ5oQD4hPyS39ezrrXpcaa7R4Y9kxdWQLLQ/go-cid"

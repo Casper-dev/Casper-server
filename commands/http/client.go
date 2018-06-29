@@ -12,8 +12,8 @@ import (
 	"strconv"
 	"strings"
 
-	cmds "gitlab.com/casperDev/Casper-server/commands"
-	config "gitlab.com/casperDev/Casper-server/repo/config"
+	cmds "github.com/Casper-dev/Casper-server/commands"
+	config "github.com/Casper-dev/Casper-server/repo/config"
 
 	context "context"
 )

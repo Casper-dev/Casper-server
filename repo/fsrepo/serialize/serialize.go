@@ -11,7 +11,7 @@ import (
 	"gx/ipfs/QmSU6eubNdhXjFBJBSksTp8kv8YRub8mGAPv8tVJHmL2EU/go-ipfs-util"
 	"gx/ipfs/QmdYwCmx8pZRkzdcd8MhmLJqYVoVTC1aGsy5Q4reMGLNLg/atomicfile"
 
-	"gitlab.com/casperDev/Casper-server/repo/config"
+	"github.com/Casper-dev/Casper-server/repo/config"
 )
 
 // ReadConfigFile reads the config from `filename` into `cfg`.

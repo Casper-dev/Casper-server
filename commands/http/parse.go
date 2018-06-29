@@ -7,9 +7,9 @@ import (
 	"net/http"
 	"strings"
 
-	cmds "gitlab.com/casperDev/Casper-server/commands"
-	files "gitlab.com/casperDev/Casper-server/commands/files"
-	path "gitlab.com/casperDev/Casper-server/path"
+	cmds "github.com/Casper-dev/Casper-server/commands"
+	files "github.com/Casper-dev/Casper-server/commands/files"
+	path "github.com/Casper-dev/Casper-server/path"
 )
 
 // Parse parses the data in a http.Request and returns a command Request object

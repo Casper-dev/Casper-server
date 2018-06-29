@@ -3,9 +3,9 @@ package reprovide
 import (
 	"context"
 
-	blocks "gitlab.com/casperDev/Casper-server/blocks/blockstore"
-	merkledag "gitlab.com/casperDev/Casper-server/merkledag"
-	pin "gitlab.com/casperDev/Casper-server/pin"
+	blocks "github.com/Casper-dev/Casper-server/blocks/blockstore"
+	merkledag "github.com/Casper-dev/Casper-server/merkledag"
+	pin "github.com/Casper-dev/Casper-server/pin"
 
 	cid "gx/ipfs/QmNp85zy9RLrQ5oQD4hPyS39ezrrXpcaa7R4Y9kxdWQLLQ/go-cid"
 )

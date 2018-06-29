@@ -36,7 +36,7 @@ import (
 	context "context"
 	ci "gx/ipfs/QmaPbCnUMBohSGo3KnxEa2bHqyJVVeEEcwtqJAYxerieBo/go-libp2p-crypto"
 
-	path "gitlab.com/casperDev/Casper-server/path"
+	path "github.com/Casper-dev/Casper-server/path"
 )
 
 const (

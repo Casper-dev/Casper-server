@@ -3,9 +3,9 @@ package dagutils
 import (
 	"testing"
 
-	dag "gitlab.com/casperDev/Casper-server/merkledag"
-	mdtest "gitlab.com/casperDev/Casper-server/merkledag/test"
-	path "gitlab.com/casperDev/Casper-server/path"
+	dag "github.com/Casper-dev/Casper-server/merkledag"
+	mdtest "github.com/Casper-dev/Casper-server/merkledag/test"
+	path "github.com/Casper-dev/Casper-server/path"
 
 	context "context"
 	cid "gx/ipfs/QmNp85zy9RLrQ5oQD4hPyS39ezrrXpcaa7R4Y9kxdWQLLQ/go-cid"

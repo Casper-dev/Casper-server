@@ -6,8 +6,8 @@ import (
 
 	context "context"
 
-	"gitlab.com/casperDev/Casper-server/core"
-	fsrepo "gitlab.com/casperDev/Casper-server/repo/fsrepo"
+	"github.com/Casper-dev/Casper-server/core"
+	fsrepo "github.com/Casper-dev/Casper-server/repo/fsrepo"
 
 	humanize "gx/ipfs/QmPSBJL4momYnE7DcUyk2DVhD6rH488ZmHBGLbxNdhU44K/go-humanize"
 )

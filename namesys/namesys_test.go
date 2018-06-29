@@ -6,9 +6,9 @@ import (
 
 	context "context"
 
-	path "gitlab.com/casperDev/Casper-server/path"
-	offroute "gitlab.com/casperDev/Casper-server/routing/offline"
-	"gitlab.com/casperDev/Casper-server/unixfs"
+	path "github.com/Casper-dev/Casper-server/path"
+	offroute "github.com/Casper-dev/Casper-server/routing/offline"
+	"github.com/Casper-dev/Casper-server/unixfs"
 
 	ds "gx/ipfs/QmVSase1JP7cq9QkPT46oNwdp9pT6kBkG3oqS14y3QcZjG/go-datastore"
 	dssync "gx/ipfs/QmVSase1JP7cq9QkPT46oNwdp9pT6kBkG3oqS14y3QcZjG/go-datastore/sync"

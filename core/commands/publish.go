@@ -8,10 +8,10 @@ import (
 	"strings"
 	"time"
 
-	cmds "gitlab.com/casperDev/Casper-server/commands"
-	core "gitlab.com/casperDev/Casper-server/core"
-	keystore "gitlab.com/casperDev/Casper-server/keystore"
-	path "gitlab.com/casperDev/Casper-server/path"
+	cmds "github.com/Casper-dev/Casper-server/commands"
+	core "github.com/Casper-dev/Casper-server/core"
+	keystore "github.com/Casper-dev/Casper-server/keystore"
+	path "github.com/Casper-dev/Casper-server/path"
 
 	peer "gx/ipfs/QmXYjuNuxVzXKJCfWasQk1RqkhVLDM9jtUKhqc2WPQmFSB/go-libp2p-peer"
 	crypto "gx/ipfs/QmaPbCnUMBohSGo3KnxEa2bHqyJVVeEEcwtqJAYxerieBo/go-libp2p-crypto"

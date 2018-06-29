@@ -16,7 +16,7 @@ import (
 
 	logging "gx/ipfs/QmSpJByNKFX1sCsHBEp3R73FL4NF6FnQTEGyNAXHm2GS52/go-log"
 
-	"gitlab.com/casperDev/Casper-server/path"
+	"github.com/Casper-dev/Casper-server/path"
 )
 
 var log = logging.Logger("command")

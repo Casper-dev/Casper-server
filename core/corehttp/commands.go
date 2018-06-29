@@ -7,11 +7,11 @@ import (
 	"strconv"
 	"strings"
 
-	commands "gitlab.com/casperDev/Casper-server/commands"
-	cmdsHttp "gitlab.com/casperDev/Casper-server/commands/http"
-	core "gitlab.com/casperDev/Casper-server/core"
-	corecommands "gitlab.com/casperDev/Casper-server/core/commands"
-	config "gitlab.com/casperDev/Casper-server/repo/config"
+	commands "github.com/Casper-dev/Casper-server/commands"
+	cmdsHttp "github.com/Casper-dev/Casper-server/commands/http"
+	core "github.com/Casper-dev/Casper-server/core"
+	corecommands "github.com/Casper-dev/Casper-server/core/commands"
+	config "github.com/Casper-dev/Casper-server/repo/config"
 )
 
 const originEnvKey = "API_ORIGIN"

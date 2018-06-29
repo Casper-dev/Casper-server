@@ -11,12 +11,12 @@ import (
 	"io"
 	"os"
 
-	core "gitlab.com/casperDev/Casper-server/core"
-	dag "gitlab.com/casperDev/Casper-server/merkledag"
-	mfs "gitlab.com/casperDev/Casper-server/mfs"
-	namesys "gitlab.com/casperDev/Casper-server/namesys"
-	path "gitlab.com/casperDev/Casper-server/path"
-	ft "gitlab.com/casperDev/Casper-server/unixfs"
+	core "github.com/Casper-dev/Casper-server/core"
+	dag "github.com/Casper-dev/Casper-server/merkledag"
+	mfs "github.com/Casper-dev/Casper-server/mfs"
+	namesys "github.com/Casper-dev/Casper-server/namesys"
+	path "github.com/Casper-dev/Casper-server/path"
+	ft "github.com/Casper-dev/Casper-server/unixfs"
 
 	cid "gx/ipfs/QmNp85zy9RLrQ5oQD4hPyS39ezrrXpcaa7R4Y9kxdWQLLQ/go-cid"
 	logging "gx/ipfs/QmSpJByNKFX1sCsHBEp3R73FL4NF6FnQTEGyNAXHm2GS52/go-log"

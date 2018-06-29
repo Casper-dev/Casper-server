@@ -5,7 +5,7 @@ package blocksutil
 import (
 	blocks "gx/ipfs/QmSn9Td7xgxm9EV7iEjTckpUWmWApggzPxu7eFGWkkpwin/go-block-format"
 
-	bl "gitlab.com/casperDev/Casper-server/blocks"
+	bl "github.com/Casper-dev/Casper-server/blocks"
 )
 
 // NewBlockGenerator returns an object capable of

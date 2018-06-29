@@ -18,15 +18,15 @@ import (
 	"syscall"
 	"time"
 
-	cmds "gitlab.com/casperDev/Casper-server/commands"
-	cmdsCli "gitlab.com/casperDev/Casper-server/commands/cli"
-	cmdsHttp "gitlab.com/casperDev/Casper-server/commands/http"
-	core "gitlab.com/casperDev/Casper-server/core"
-	coreCmds "gitlab.com/casperDev/Casper-server/core/commands"
-	"gitlab.com/casperDev/Casper-server/plugin/loader"
-	repo "gitlab.com/casperDev/Casper-server/repo"
-	config "gitlab.com/casperDev/Casper-server/repo/config"
-	fsrepo "gitlab.com/casperDev/Casper-server/repo/fsrepo"
+	cmds "github.com/Casper-dev/Casper-server/commands"
+	cmdsCli "github.com/Casper-dev/Casper-server/commands/cli"
+	cmdsHttp "github.com/Casper-dev/Casper-server/commands/http"
+	core "github.com/Casper-dev/Casper-server/core"
+	coreCmds "github.com/Casper-dev/Casper-server/core/commands"
+	"github.com/Casper-dev/Casper-server/plugin/loader"
+	repo "github.com/Casper-dev/Casper-server/repo"
+	config "github.com/Casper-dev/Casper-server/repo/config"
+	fsrepo "github.com/Casper-dev/Casper-server/repo/fsrepo"
 
 	u "gx/ipfs/QmSU6eubNdhXjFBJBSksTp8kv8YRub8mGAPv8tVJHmL2EU/go-ipfs-util"
 
@@ -38,7 +38,7 @@ import (
 )
 
 // log is the command logger
-var log = logging.Logger("cmd/ipfs")
+var log = logging.Logger("cmd/csper")
 
 var errRequestCanceled = errors.New("request canceled")
 

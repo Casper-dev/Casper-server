@@ -15,13 +15,13 @@ import (
 
 	ci "gx/ipfs/QmWRCn8vruNAzHx8i6SAXinuheRitKEGu8c7m26stKvsYx/go-testutil/ci"
 
-	core "gitlab.com/casperDev/Casper-server/core"
-	coreunix "gitlab.com/casperDev/Casper-server/core/coreunix"
-	coremock "gitlab.com/casperDev/Casper-server/core/mock"
-	importer "gitlab.com/casperDev/Casper-server/importer"
-	chunk "gitlab.com/casperDev/Casper-server/importer/chunk"
-	dag "gitlab.com/casperDev/Casper-server/merkledag"
-	uio "gitlab.com/casperDev/Casper-server/unixfs/io"
+	core "github.com/Casper-dev/Casper-server/core"
+	coreunix "github.com/Casper-dev/Casper-server/core/coreunix"
+	coremock "github.com/Casper-dev/Casper-server/core/mock"
+	importer "github.com/Casper-dev/Casper-server/importer"
+	chunk "github.com/Casper-dev/Casper-server/importer/chunk"
+	dag "github.com/Casper-dev/Casper-server/merkledag"
+	uio "github.com/Casper-dev/Casper-server/unixfs/io"
 
 	node "gx/ipfs/QmPN7cwmpcc4DWXb4KTB9dNAJgjuPY69h3npsMfhRrQL9c/go-ipld-format"
 	u "gx/ipfs/QmSU6eubNdhXjFBJBSksTp8kv8YRub8mGAPv8tVJHmL2EU/go-ipfs-util"

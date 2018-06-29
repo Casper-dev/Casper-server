@@ -13,21 +13,20 @@ import (
 	"net/http"
 	"runtime/debug"
 	"strconv"
-	"strings"
 	"time"
 
-	blockservice "gitlab.com/casperDev/Casper-server/blockservice"
-	uuid "gitlab.com/casperDev/Casper-server/casper/uuid"
-	cmds "gitlab.com/casperDev/Casper-server/commands"
-	files "gitlab.com/casperDev/Casper-server/commands/files"
-	cmdsHttp "gitlab.com/casperDev/Casper-server/commands/http"
-	core "gitlab.com/casperDev/Casper-server/core"
-	coreCmds "gitlab.com/casperDev/Casper-server/core/commands"
-	corehttp "gitlab.com/casperDev/Casper-server/core/corehttp"
-	coreunix "gitlab.com/casperDev/Casper-server/core/coreunix"
-	offline "gitlab.com/casperDev/Casper-server/exchange/offline"
-	dag "gitlab.com/casperDev/Casper-server/merkledag"
-	path "gitlab.com/casperDev/Casper-server/path"
+	blockservice "github.com/Casper-dev/Casper-server/blockservice"
+	uuid "github.com/Casper-dev/Casper-server/casper/uuid"
+	cmds "github.com/Casper-dev/Casper-server/commands"
+	files "github.com/Casper-dev/Casper-server/commands/files"
+	cmdsHttp "github.com/Casper-dev/Casper-server/commands/http"
+	core "github.com/Casper-dev/Casper-server/core"
+	coreCmds "github.com/Casper-dev/Casper-server/core/commands"
+	corehttp "github.com/Casper-dev/Casper-server/core/corehttp"
+	coreunix "github.com/Casper-dev/Casper-server/core/coreunix"
+	offline "github.com/Casper-dev/Casper-server/exchange/offline"
+	dag "github.com/Casper-dev/Casper-server/merkledag"
+	path "github.com/Casper-dev/Casper-server/path"
 
 	logging "gx/ipfs/QmSpJByNKFX1sCsHBEp3R73FL4NF6FnQTEGyNAXHm2GS52/go-log"
 	b58 "gx/ipfs/QmT8rehPR3F6bmwL6zjUN8XpiDBFFpMP2myPdC6ApsWfJf/go-base58"
@@ -40,8 +39,12 @@ const (
 	CasperApiStat       = "stat"
 	contentTypeHeader   = "Content-Type"
 	streamHeader        = "X-Stream-Output"
-	contentLengthHeader = "X-Content-Length"
+	xPeersHeader        = "X-Peers"
+	contentLengthHeader = "Content-Length"
 	linkExpireTimeout   = 5 * time.Minute
+	ACAHeaders          = "Access-Control-Allow-Headers"
+	ACAOrigin           = "Access-Control-Allow-Origin"
+	ACAMethods          = "Access-Control-Allow-Methods"
 )
 
 var mimeTypes = map[string]string{
@@ -88,19 +91,26 @@ func recoverHandler() {
 func (h *handler) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 	defer recoverHandler()
 
-	pth := path.SplitList(strings.TrimPrefix(req.URL.Path, CasperApiPath+"/"))
+	w.Header().Set(ACAOrigin, "*")
+	if req.Method == http.MethodOptions {
+		w.Header().Set(ACAMethods, "DELETE, GET, OPTIONS, POST, PUT")
+		w.Header().Set(ACAHeaders, xPeersHeader)
+		w.WriteHeader(http.StatusOK)
+		return
+	}
+
+	pth := path.SplitList(req.URL.Path)
 	if len(pth) > 0 {
 		switch pth[0] {
 		case CasperApiFile:
 			h.processFile(w, req)
-			return
 		case CasperApiShare:
 			h.processShare(w, req)
+		default:
+			http.Error(w, "", http.StatusNotFound)
 			return
 		}
 	}
-	http.Error(w, "", http.StatusNotFound)
-	return
 }
 
 func (h *handler) processFile(w http.ResponseWriter, req *http.Request) {
@@ -112,7 +122,6 @@ func (h *handler) processFile(w http.ResponseWriter, req *http.Request) {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
-	fmt.Println(cmdsReq)
 
 	n, err := h.cctx.GetNode()
 	if err != nil {
@@ -149,7 +158,7 @@ func (h *handler) processFile(w http.ResponseWriter, req *http.Request) {
 	//b, _ := httputil.DumpRequest(req, true)
 	//fmt.Printf("Request:\n%s\n", string(b))
 
-	SendResponse(w, req, res, cmdsReq, cmdOpts)
+	sendResponse(w, req, res, cmdsReq, cmdOpts)
 }
 
 func randString(n int) string {
@@ -175,7 +184,7 @@ func genMagic() (magic string) {
 var errNotShareRequest = fmt.Errorf("not a share request")
 
 func (h *handler) processShare(w http.ResponseWriter, req *http.Request) {
-	pth := getRequestPath(req)
+	pth := path.SplitList(req.URL.Path)
 	if len(pth) < 2 {
 		http.Error(w, "", http.StatusNotFound)
 		return
@@ -203,35 +212,22 @@ func (h *handler) processShare(w http.ResponseWriter, req *http.Request) {
 	}
 
 	magic := genMagic()
-	handler := http.FileServer(http.Dir(fmt.Sprintf("/ipfs/%s", id.String())))
-	share := fmt.Sprintf("%s/%s/%s", CasperFileSharePath, magic, node.Links()[0].Name)
-	fileLinkHandlers.Store(magic, handler)
+	share := fmt.Sprintf("%s/%s", CasperFileSharePath, magic)
+	fileLinkHandlers.Store(magic, id.String())
 	time.AfterFunc(linkExpireTimeout, func() {
 		log.Debugf("link '%s' has expired", share)
 		fileLinkHandlers.Delete(magic)
 	})
 
 	log.Debugf("file was shared at '%s'", share)
-	w.WriteHeader(http.StatusOK)
-	err = cmdsHttp.FlushCopy(w, strings.NewReader(share))
-	if err != nil {
-		log.Error(err)
-	}
-}
 
-func getRequestPath(req *http.Request) []string {
-	return path.SplitList(strings.TrimPrefix(req.URL.Path, CasperApiPath+"/"))
+	w.WriteHeader(http.StatusOK)
+	fmt.Fprintln(w, share)
 }
 
 func (h *handler) parseRequest(req *http.Request) (cmds.Request, *commandOpts, error) {
-	if !strings.HasPrefix(req.URL.Path, CasperApiPath) {
-		return nil, nil, errors.New("Unexpected path prefix")
-	}
-
-	pth := getRequestPath(req)
-	for k, v := range req.URL.Query() {
-		fmt.Printf("%s: %s\n", k, v)
-	}
+	log.Debugf("%+v", req.URL.Query())
+	pth := path.SplitList(req.URL.Path)
 
 	var opts *commandOpts
 	var err error
@@ -282,16 +278,25 @@ func getAddNewFileOpts(req *http.Request) (*commandOpts, error) {
 		// file argument is mandatory
 		return nil, err
 	}
+
+	opts := map[string]interface{}{
+		cmds.EncLong:   cmds.JSON,
+		cmds.CallerOpt: cmds.CallerOptWeb,
+		"quiet":        true,
+		"uuid":         b58.Encode(uuid.GenUUID()),
+	}
+
+	if peers := req.URL.Query().Get("peers"); peers != "" {
+		opts["peers"] = peers
+	} else if peers := req.Header.Get(xPeersHeader); peers != "" {
+		opts["peers"] = peers
+	}
+
 	return &commandOpts{
 		cmdPath: []string{"add"},
-		opts: map[string]interface{}{
-			cmds.EncLong:   cmds.JSON,
-			cmds.CallerOpt: cmds.CallerOptWeb,
-			"quiet":        true,
-			"uuid":         b58.Encode(uuid.GenUUID()),
-		},
-		args: []string{},
-		file: f,
+		opts:    opts,
+		args:    []string{},
+		file:    f,
 		reader: func(res cmds.Response) (io.Reader, error) {
 			// If command was add we must return only one response
 			// TODO: another method of determining what command we were executing
@@ -318,7 +323,7 @@ func getReplaceFileOpts(req *http.Request) (*commandOpts, error) {
 		// file argument is mandatory
 		return nil, err
 	}
-	pth := getRequestPath(req)
+	pth := path.SplitList(req.URL.Path)
 	return &commandOpts{
 		cmdPath: []string{"add"},
 		opts: map[string]interface{}{
@@ -350,14 +355,12 @@ func getReplaceFileOpts(req *http.Request) (*commandOpts, error) {
 }
 
 func getGetFileOpts(req *http.Request) (*commandOpts, error) {
-	pth := getRequestPath(req)
+	pth := path.SplitList(req.URL.Path)
 	if len(pth) < 2 {
 		return nil, fmt.Errorf("name is not specified")
 	}
-	a, ok := req.URL.Query()["archive"]
-	archive := ok && len(a) == 1 && a[0] == "1"
 	cmdPath := []string{"cat"}
-	if archive {
+	if a := req.URL.Query().Get("archive"); a == "1" {
 		cmdPath = []string{"get"}
 	}
 	return &commandOpts{
@@ -371,7 +374,7 @@ func getGetFileOpts(req *http.Request) (*commandOpts, error) {
 }
 
 func getFileStatOpts(req *http.Request) (*commandOpts, error) {
-	pth := getRequestPath(req)
+	pth := path.SplitList(req.URL.Path)
 	return &commandOpts{
 		cmdPath: []string{"dag", "stat"},
 		opts: map[string]interface{}{
@@ -385,7 +388,7 @@ func getFileStatOpts(req *http.Request) (*commandOpts, error) {
 func getDeleteFileOpts(req *http.Request) (*commandOpts, error) {
 	cmdPath := []string{"del"}
 
-	pth := getRequestPath(req)
+	pth := path.SplitList(req.URL.Path)
 	return &commandOpts{
 		cmdPath: cmdPath,
 		opts: map[string]interface{}{
@@ -397,12 +400,12 @@ func getDeleteFileOpts(req *http.Request) (*commandOpts, error) {
 }
 
 func getFile(req *http.Request) (files.File, error) {
-	ct := req.Header.Get(contentTypeHeader)
-	mediatype, _, _ := mime.ParseMediaType(ct)
 	reader, err := req.MultipartReader()
 	if err != nil {
 		return nil, err
 	}
+	ct := req.Header.Get(contentTypeHeader)
+	mediatype, _, _ := mime.ParseMediaType(ct)
 	return &files.MultipartFile{
 		Mediatype: mediatype,
 		Reader:    reader,
@@ -422,19 +425,16 @@ func guessMimeType(res cmds.Response) (string, error) {
 	enc, found, err := res.Request().Option(cmds.EncShort).String()
 	if err != nil {
 		return "", err
-	}
-	if !found {
+	} else if !found {
 		return "", errors.New("no encoding option set")
 	}
-
 	if m, ok := mimeTypes[enc]; ok {
 		return m, nil
 	}
-
 	return mimeTypes[cmds.JSON], nil
 }
 
-func SendResponse(w http.ResponseWriter, r *http.Request, res cmds.Response, req cmds.Request, cmdOpts *commandOpts) {
+func sendResponse(w http.ResponseWriter, r *http.Request, res cmds.Response, req cmds.Request, cmdOpts *commandOpts) {
 	h := w.Header()
 	// Expose our agent to allow identification
 	//h.Set("Server", "go-ipfs/"+config.CurrentVersionNumber)
@@ -479,23 +479,11 @@ func SendResponse(w http.ResponseWriter, r *http.Request, res cmds.Response, req
 		// html pages on priveleged api ports
 		mime = "text/plain"
 		h.Set(streamHeader, "1")
-	}
-
-	// catch-all, set to text as default
-	if mime == "" {
+	} else if mime == "" { // catch-all, set to text as default
 		mime = "text/plain"
 	}
 
 	h.Set(contentTypeHeader, mime)
-
-	// set 'allowed' headers
-	//h.Set("Access-Control-Allow-Headers", AllowedExposedHeaders)
-	// expose those headers
-	//h.Set("Access-Control-Expose-Headers", AllowedExposedHeaders)
-
-	if r.Method == "HEAD" { // after all the headers.
-		return
-	}
 
 	w.WriteHeader(status)
 	err = cmdsHttp.FlushCopy(w, out)
@@ -507,8 +495,9 @@ func SendResponse(w http.ResponseWriter, r *http.Request, res cmds.Response, req
 
 func CasperOption(cctx cmds.Context) corehttp.ServeOption {
 	return func(n *core.IpfsNode, l net.Listener, mux *http.ServeMux) (*http.ServeMux, error) {
-		cmdHandler := NewHandler(cctx, coreCmds.Root)
-		mux.Handle(CasperApiPath+"/", cmdHandler)
+		p := CasperApiPath + "/"
+		h := NewHandler(cctx, coreCmds.Root)
+		mux.Handle(p, http.StripPrefix(p, h))
 		return mux, nil
 	}
 }

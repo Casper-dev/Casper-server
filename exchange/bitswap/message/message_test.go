@@ -10,7 +10,7 @@ import (
 	u "gx/ipfs/QmSU6eubNdhXjFBJBSksTp8kv8YRub8mGAPv8tVJHmL2EU/go-ipfs-util"
 	blocks "gx/ipfs/QmSn9Td7xgxm9EV7iEjTckpUWmWApggzPxu7eFGWkkpwin/go-block-format"
 
-	pb "gitlab.com/casperDev/Casper-server/exchange/bitswap/message/pb"
+	pb "github.com/Casper-dev/Casper-server/exchange/bitswap/message/pb"
 )
 
 func mkFakeCid(s string) *cid.Cid {

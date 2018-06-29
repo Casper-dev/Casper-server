@@ -11,14 +11,14 @@ import (
 	blocks "gx/ipfs/QmSn9Td7xgxm9EV7iEjTckpUWmWApggzPxu7eFGWkkpwin/go-block-format"
 	travis "gx/ipfs/QmWRCn8vruNAzHx8i6SAXinuheRitKEGu8c7m26stKvsYx/go-testutil/ci/travis"
 
-	blockstore "gitlab.com/casperDev/Casper-server/blocks/blockstore"
-	blocksutil "gitlab.com/casperDev/Casper-server/blocks/blocksutil"
-	decision "gitlab.com/casperDev/Casper-server/exchange/bitswap/decision"
-	tn "gitlab.com/casperDev/Casper-server/exchange/bitswap/testnet"
-	mockrouting "gitlab.com/casperDev/Casper-server/routing/mock"
-	delay "gitlab.com/casperDev/Casper-server/thirdparty/delay"
+	blockstore "github.com/Casper-dev/Casper-server/blocks/blockstore"
+	blocksutil "github.com/Casper-dev/Casper-server/blocks/blocksutil"
+	decision "github.com/Casper-dev/Casper-server/exchange/bitswap/decision"
+	tn "github.com/Casper-dev/Casper-server/exchange/bitswap/testnet"
+	mockrouting "github.com/Casper-dev/Casper-server/routing/mock"
+	delay "github.com/Casper-dev/Casper-server/thirdparty/delay"
 
-	detectrace "gitlab.com/casperDev/Casper-server/Godeps/_workspace/src/github.com/jbenet/go-detect-race"
+	detectrace "github.com/Casper-dev/Casper-server/Godeps/_workspace/src/github.com/jbenet/go-detect-race"
 
 	cid "gx/ipfs/QmNp85zy9RLrQ5oQD4hPyS39ezrrXpcaa7R4Y9kxdWQLLQ/go-cid"
 	p2ptestutil "gx/ipfs/QmQGX417WoxKxDJeHqouMEmmH4G1RCENNSzkZYHrXy3Xb3/go-libp2p-netutil"

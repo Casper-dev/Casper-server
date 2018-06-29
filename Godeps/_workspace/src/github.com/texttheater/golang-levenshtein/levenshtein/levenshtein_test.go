@@ -3,7 +3,7 @@ package levenshtein_test
 import (
 	"testing"
 
-	"gitlab.com/casperDev/Casper-server/Godeps/_workspace/src/github.com/texttheater/golang-levenshtein/levenshtein"
+	"github.com/Casper-dev/Casper-server/Godeps/_workspace/src/github.com/texttheater/golang-levenshtein/levenshtein"
 )
 
 var testCases = []struct {

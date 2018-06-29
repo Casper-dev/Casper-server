@@ -12,16 +12,16 @@ import (
 
 	"gx/ipfs/QmSn9Td7xgxm9EV7iEjTckpUWmWApggzPxu7eFGWkkpwin/go-block-format"
 
-	"gitlab.com/casperDev/Casper-server/blocks/blockstore"
-	"gitlab.com/casperDev/Casper-server/blockservice"
-	"gitlab.com/casperDev/Casper-server/commands/files"
-	"gitlab.com/casperDev/Casper-server/core"
-	dag "gitlab.com/casperDev/Casper-server/merkledag"
-	"gitlab.com/casperDev/Casper-server/pin/gc"
-	"gitlab.com/casperDev/Casper-server/repo"
-	"gitlab.com/casperDev/Casper-server/repo/config"
-	ds2 "gitlab.com/casperDev/Casper-server/thirdparty/datastore2"
-	pi "gitlab.com/casperDev/Casper-server/thirdparty/posinfo"
+	"github.com/Casper-dev/Casper-server/blocks/blockstore"
+	"github.com/Casper-dev/Casper-server/blockservice"
+	"github.com/Casper-dev/Casper-server/commands/files"
+	"github.com/Casper-dev/Casper-server/core"
+	dag "github.com/Casper-dev/Casper-server/merkledag"
+	"github.com/Casper-dev/Casper-server/pin/gc"
+	"github.com/Casper-dev/Casper-server/repo"
+	"github.com/Casper-dev/Casper-server/repo/config"
+	ds2 "github.com/Casper-dev/Casper-server/thirdparty/datastore2"
+	pi "github.com/Casper-dev/Casper-server/thirdparty/posinfo"
 
 	cid "gx/ipfs/QmNp85zy9RLrQ5oQD4hPyS39ezrrXpcaa7R4Y9kxdWQLLQ/go-cid"
 )

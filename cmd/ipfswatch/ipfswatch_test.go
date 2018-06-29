@@ -3,7 +3,7 @@ package main
 import (
 	"testing"
 
-	"gitlab.com/casperDev/Casper-server/thirdparty/assert"
+	"github.com/Casper-dev/Casper-server/thirdparty/assert"
 )
 
 func TestIsHidden(t *testing.T) {

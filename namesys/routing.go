@@ -6,8 +6,8 @@ import (
 	"strings"
 	"time"
 
-	pb "gitlab.com/casperDev/Casper-server/namesys/pb"
-	path "gitlab.com/casperDev/Casper-server/path"
+	pb "github.com/Casper-dev/Casper-server/namesys/pb"
+	path "github.com/Casper-dev/Casper-server/path"
 
 	cid "gx/ipfs/QmNp85zy9RLrQ5oQD4hPyS39ezrrXpcaa7R4Y9kxdWQLLQ/go-cid"
 	routing "gx/ipfs/QmPR2JzfKd9poHx9XBhzoFeBBC31ZM3W5iUPKJZWyaoZZm/go-libp2p-routing"

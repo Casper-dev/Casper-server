@@ -11,11 +11,11 @@ import (
 	pstore "gx/ipfs/QmPgDWmTmuzvP7QE5zwo1TmjbJme9pmZHNujB2453jkCTr/go-libp2p-peerstore"
 	mocknet "gx/ipfs/QmefgzMbKZYsmHFkLqxgaTBG9ypeEjrdWRD5WXH4j1cWDL/go-libp2p/p2p/net/mock"
 
-	"gitlab.com/casperDev/Casper-server/core"
-	mock "gitlab.com/casperDev/Casper-server/core/mock"
-	namesys "gitlab.com/casperDev/Casper-server/namesys"
-	. "gitlab.com/casperDev/Casper-server/namesys/republisher"
-	path "gitlab.com/casperDev/Casper-server/path"
+	"github.com/Casper-dev/Casper-server/core"
+	mock "github.com/Casper-dev/Casper-server/core/mock"
+	namesys "github.com/Casper-dev/Casper-server/namesys"
+	. "github.com/Casper-dev/Casper-server/namesys/republisher"
+	path "github.com/Casper-dev/Casper-server/path"
 )
 
 func TestRepublish(t *testing.T) {

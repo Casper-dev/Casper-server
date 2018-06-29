@@ -13,26 +13,24 @@ import (
 	"strings"
 	"sync"
 
-	"gitlab.com/casperDev/Casper-server/casper/casper_utils"
-
-	"gitlab.com/casperDev/Casper-server/casper/restapi"
-
-	cmds "gitlab.com/casperDev/Casper-server/commands"
-	"gitlab.com/casperDev/Casper-server/core"
-	"gitlab.com/casperDev/Casper-server/core/commands"
-	"gitlab.com/casperDev/Casper-server/core/corehttp"
-	"gitlab.com/casperDev/Casper-server/core/corerepo"
-	nodeMount "gitlab.com/casperDev/Casper-server/fuse/node"
-	"gitlab.com/casperDev/Casper-server/repo/config"
-	"gitlab.com/casperDev/Casper-server/repo/fsrepo"
-	migrate "gitlab.com/casperDev/Casper-server/repo/fsrepo/migrations"
+	cu "github.com/Casper-dev/Casper-server/casper/casper_utils"
+	"github.com/Casper-dev/Casper-server/casper/restapi"
+	"github.com/Casper-dev/Casper-server/casper/validation"
+	cmds "github.com/Casper-dev/Casper-server/commands"
+	"github.com/Casper-dev/Casper-server/core"
+	"github.com/Casper-dev/Casper-server/core/commands"
+	"github.com/Casper-dev/Casper-server/core/corehttp"
+	"github.com/Casper-dev/Casper-server/core/corerepo"
+	nodeMount "github.com/Casper-dev/Casper-server/fuse/node"
+	"github.com/Casper-dev/Casper-server/repo/config"
+	"github.com/Casper-dev/Casper-server/repo/fsrepo"
+	migrate "github.com/Casper-dev/Casper-server/repo/fsrepo/migrations"
 
 	mprome "gx/ipfs/QmSk46nSD78YiuNojYMS8NW6hSCjH95JajqqzzoychZgef/go-metrics-prometheus"
 	"gx/ipfs/QmX3QZ5jHEPidwUrymXV1iSCSUhdGxj15sm2gP4jKMef7B/client_golang/prometheus"
 	"gx/ipfs/QmX3U3YXCQ6UYBxq2LVWF8dARS1hPUTEYLrSx654Qyxyw6/go-multiaddr-net"
 	ma "gx/ipfs/QmXY77cVe7rVRQXZZQRioukUM7aRW3BTcAgJe12MCtb3Ji/go-multiaddr"
 	iconn "gx/ipfs/QmfQAY7YU4fQi3sjGLs1hwkM2Aq7dxgDyoMjaKN4WBWvcB/go-libp2p-interface-conn"
-	"gitlab.com/casperDev/Casper-server/casper/validation"
 )
 
 const (
@@ -391,12 +389,22 @@ func daemonFunc(req cmds.Request, res cmds.Response) {
 			}
 		}
 	}
-
-	go serveThrift(req.Context(), ctx)
-	go statusChecker()
-	go verificationWatcher(req.Context(), node)
-	go verificationRunner(req.Context())
-	//go memory.ServeRPC()
+	/*if cfg.Casper.SDKEnabled {
+	if true {
+		addr := ma.StringCast(cfg.Addresses.API)
+		if port, err := addr.ValueForProtocol(ma.P_TCP); err == nil {
+			laddr := net.JoinHostPort("0.0.0.0", port)
+			for _, stunIP := range cfg.Swarm.NAT.StunServers {
+				log.Debugf("Trying STUN-server: %s", stunIP)
+				if addr, err := connectStun(laddr, stunIP); err == nil {
+					log.Debugf("Received address: %s", addr.String())
+					break
+				} else {
+					log.Error("Error while trying to get external IP:", err)
+				}
+			}
+		}
+	}*/
 
 	defer func() {
 		// We wait for the node to close first, as the node has children
@@ -410,14 +418,19 @@ func daemonFunc(req cmds.Request, res cmds.Response) {
 		}
 	}()
 
-	err = casper_utils.RegisterSC(node, cfg, extAddrs...)
-	// TODO: make pings great again
-	pinger := &validation.Pinger{}
-	go pinger.RunPinger(req.Context())
+	err = cu.RegisterSC(req.Context(), node, cfg, extAddrs...)
 	if err != nil {
 		res.SetError(fmt.Errorf("cant register SC: %v", err), cmds.ErrNormal)
 		return
 	}
+
+	// TODO: make pings great again
+	pinger := &validation.Pinger{}
+	go serveThrift(req.Context(), ctx)
+	go pinger.RunPinger(req.Context())
+	go statusChecker(req.Context())
+	go verificationWatcher(req.Context(), node)
+	go verificationRunner(req.Context())
 
 	ctx.ConstructNode = func() (*core.IpfsNode, error) {
 		return node, nil
@@ -524,7 +537,8 @@ func serveHTTPApi(req cmds.Request) (error, <-chan error) {
 		corehttp.MetricsCollectionOption("api"),
 		corehttp.CommandsOption(*req.InvocContext()),
 		restapi.CasperOption(*req.InvocContext()),
-		restapi.CasperFileShareOption(),
+		restapi.CasperFileShareOption(*req.InvocContext()),
+		CasperThriftOption(*req.InvocContext()),
 		corehttp.WebUIOption,
 		gatewayOpt,
 		corehttp.VersionOption(),

@@ -7,9 +7,9 @@ import (
 
 	id "gx/ipfs/QmefgzMbKZYsmHFkLqxgaTBG9ypeEjrdWRD5WXH4j1cWDL/go-libp2p/p2p/protocol/identify"
 
-	core "gitlab.com/casperDev/Casper-server/core"
-	coreapi "gitlab.com/casperDev/Casper-server/core/coreapi"
-	config "gitlab.com/casperDev/Casper-server/repo/config"
+	core "github.com/Casper-dev/Casper-server/core"
+	coreapi "github.com/Casper-dev/Casper-server/core/coreapi"
+	config "github.com/Casper-dev/Casper-server/repo/config"
 )
 
 type GatewayConfig struct {

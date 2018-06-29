@@ -5,10 +5,10 @@ import (
 	"fmt"
 	"io"
 
-	cmds "gitlab.com/casperDev/Casper-server/commands"
-	core "gitlab.com/casperDev/Casper-server/core"
-	dagutils "gitlab.com/casperDev/Casper-server/merkledag/utils"
-	path "gitlab.com/casperDev/Casper-server/path"
+	cmds "github.com/Casper-dev/Casper-server/commands"
+	core "github.com/Casper-dev/Casper-server/core"
+	dagutils "github.com/Casper-dev/Casper-server/merkledag/utils"
+	path "github.com/Casper-dev/Casper-server/path"
 )
 
 type Changes struct {

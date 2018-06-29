@@ -2,42 +2,39 @@ package casper_utils
 
 import (
 	"context"
-
+	"expvar"
 	"fmt"
-	"math/big"
 	"net"
-	"gitlab.com/casperDev/Casper-SC/casper"
-	"gitlab.com/casperDev/Casper-SC/casper_sc"
-	"gitlab.com/casperDev/Casper-server/core"
-	"gitlab.com/casperDev/Casper-server/repo/config"
+	"regexp"
 
-	"github.com/ethereum/go-ethereum/core/types"
+	"github.com/Casper-dev/Casper-server/casper/sc"
+	"github.com/Casper-dev/Casper-server/core"
+	"github.com/Casper-dev/Casper-server/repo/config"
 
 	logging "gx/ipfs/QmSpJByNKFX1sCsHBEp3R73FL4NF6FnQTEGyNAXHm2GS52/go-log"
 	"gx/ipfs/QmX3U3YXCQ6UYBxq2LVWF8dARS1hPUTEYLrSx654Qyxyw6/go-multiaddr-net"
 	ma "gx/ipfs/QmXY77cVe7rVRQXZZQRioukUM7aRW3BTcAgJe12MCtb3Ji/go-multiaddr"
 	"gx/ipfs/QmeS8cCKawUwejVrsBtmC1toTXmwVWZGiRJqzgTURVWeF9/go-ipfs-addr"
-	"regexp"
+
+	"github.com/fatih/color"
 )
 
 var log = logging.Logger("csp/utils")
 
 type ExternalAddr struct {
 	IPFSAddr   ipfsaddr.IPFSAddr
-	ThriftAddr net.Addr
+	ThriftAddr *net.TCPAddr
 }
 
 var localNode *ExternalAddr
 
-func (a *ExternalAddr) Thrift() net.Addr {
+func (a *ExternalAddr) Thrift() *net.TCPAddr {
 	return a.ThriftAddr
 }
 func (a *ExternalAddr) IPFS() ipfsaddr.IPFSAddr {
 	return a.IPFSAddr
 }
 func (a *ExternalAddr) String() string {
-	a.IPFSAddr.String()
-
 	return a.IPFSAddr.String()[:]
 }
 
@@ -45,28 +42,37 @@ func GetLocalAddr() *ExternalAddr {
 	return localNode
 }
 
-func (a *ExternalAddr) ID() string {
-	return StringGet32Lower(a.IPFSAddr.ID().Pretty())
+func (a *ExternalAddr) NodeHash() string {
+	return a.IPFSAddr.ID().Pretty()
 }
 
 var ErrInvalidLocalAddr = fmt.Errorf("cannot determine IP for SC registration")
 
-func RegisterSC(node *core.IpfsNode, cfg *config.Config, addresses ...string) error {
-	if len(addresses) > 0 {
-		if addr, err := manet.ToNetAddr(ma.StringCast(addresses[0])); err == nil {
+func initDebug() {
+	var getInfo expvar.Func = func() interface{} {
+		if localNode == nil {
+			return nil
+		}
+		return map[string]string{
+			"thrift": localNode.ThriftAddr.String(),
+			"ipfs":   localNode.IPFS().String(),
+		}
+	}
+	expvar.Publish("localnode", getInfo)
+}
 
-			fmt.Println("Thrift external IPs were provided:", addresses, addr)
-			id, err := ipfsaddr.ParseString(fmt.Sprintf("%s/ipfs/%s", addresses[0], node.Identity.Pretty()))
-			if err == nil {
-				fmt.Println("Making local thrift")
-/*
+func RegisterSC(ctx context.Context, node *core.IpfsNode, cfg *config.Config, addresses ...string) error {
+	initDebug()
+
+	if len(addresses) > 0 {
+		addr := ma.StringCast(addresses[0])
+		if naddr, err := manet.ToNetAddr(addr); err == nil {
 			fmt.Println("Thrift external IPs were provided:", addresses)
 			addrS := fmt.Sprintf("%s/ipfs/%s", addr, node.Identity.Pretty())
 			if id, err := ipfsaddr.ParseString(addrS); err == nil {
-*/
-				localNode = &ExternalAddr{id, addr}
+				localNode = &ExternalAddr{id, naddr.(*net.TCPAddr)}
 			} else {
-				fmt.Println("err while parsing", err)
+				log.Error(err)
 			}
 		}
 	}
@@ -97,83 +103,95 @@ func RegisterSC(node *core.IpfsNode, cfg *config.Config, addresses ...string) er
 
 	fmt.Println("Full node address:", localNode.String())
 
-	//nodeID = StringGet32Lower(node.Identity.Pretty())
-	casperClient, client, auth, _ := Casper_SC.GetSC()
+	settings, ok := cfg.Casper.Blockchain[cfg.Casper.UsedChain]
+	if !ok {
+		log.Warning("no settings for connection to blockchain are specified, using default")
+		settings = nil
+	}
+
+	c, err := sc.GetContractByName(ctx, cfg.Casper.UsedChain, settings)
+	if err != nil {
+		return fmt.Errorf("cant initialize SC: %v", err)
+	}
 
 	///TODO: debug only: remove as soon as we deploy
-	Casper_SC.ValidateMineTX(func() (*types.Transaction, error) {
-		return casperClient.AddToken(auth, big.NewInt(int64(13370000000)))
-	}, client, auth)
+	geoloc := GetGeoloc()
+	fmt.Println(geoloc)
 
-	udpIp, _, _ := net.SplitHostPort(localNode.Thrift().String())
-	connectionString := regexp.MustCompile("ip4/.+/tcp").ReplaceAllString(cfg.Addresses.Swarm[0], "ip4/"+udpIp+"/tcp")
+	c.AddToken(13370000000)
+
+	taddr := localNode.Thrift()
+	connectionString := regexp.MustCompile("ip4/.+/tcp").ReplaceAllString(cfg.Addresses.Swarm[0], "ip4/"+taddr.IP.String()+"/tcp")
 	fmt.Println("Conn string", connectionString)
-	var telegramAddress [32]byte
-	copy(telegramAddress[:], []byte(cfg.Casper.TelegramAddress)[:31])
-	Casper_SC.ValidateMineTX(func() (*types.Transaction, error) {
-		return casperClient.RegisterProvider(auth, localNode.IPFSAddr.ID().Pretty(), telegramAddress, connectionString, localNode.Thrift().String(), StringGet32Lower(localNode.String()), big.NewInt(int64(13370000000)))
-	}, client, auth)
-	Casper_SC.ValidateMineTX(func() (*types.Transaction, error) {
-		return casperClient.UpdateIpPort(auth, StringGet32Lower(localNode.String()), localNode.Thrift().String())
-	}, client, auth)
-
+	nodeID := localNode.IPFSAddr.ID().Pretty()
+	err = c.RegisterProvider(nodeID, cfg.Casper.TelegramAddress, connectionString, taddr.String(), 13370000000)
+	if err != nil { // the provider is already registered
+		err = c.SetRPCAddr(nodeID, taddr.String())
+		if err != nil {
+			if isBanned, _ := c.VerifyReplication(localNode.NodeHash()); isBanned {
+				color.New(color.BgRed).Print("    Node is banned    ")
+				fmt.Println()
+			}
+			return fmt.Errorf("cant update IP in SC: %v", err)
+		}
+	} else {
+		err = c.SetRPCAddr(nodeID, taddr.String())
+		if err != nil {
+			log.Error(err)
+		}
+		err = c.SetOriginCode(nodeID, geoloc)
+		if err != nil {
+			log.Error(err)
+		}
+	}
+	log.Info("Node registered")
 	return nil
-}
-
-func GetNodeConnectionString() string {
-	return localNode.String()
 }
 
 func StringGet32Lower(inputString string) string {
 	return inputString[len(inputString)-31:]
 }
 
-func GetPeersMultiaddrs(hash string) (ret []ma.Multiaddr, err error) {
-	caspersclient, _, _, _ := Casper_SC.GetSC()
-	bytePeers, err := caspersclient.ShowStoringPeers(nil, hash)
+func GetPeersMultiaddrs(hash string) ([]ma.Multiaddr, error) {
+	c, _ := sc.GetContract()
+	peers, err := c.ShowStoringPeers(hash)
 	if err != nil {
-		fmt.Println(err)
+		return nil, err
 	}
-	var peers []string
-	for i := 0; i < len(bytePeers); i++ {
-		peers = append(peers, string(bytePeers[i][:31]))
-	}
-	getMultiaddrsByPeers(peers)
-	return ret, err
+	return getMultiaddrsByPeers(peers)
 }
 
-func GetPeersMultiaddrsBySize(size int64) (ret []ma.Multiaddr, err error) {
-	caspersclient, _, _, _ := Casper_SC.GetSC()
-	peersStruct, err := caspersclient.GetPeers(nil, big.NewInt(size))
+func GetPeersMultiaddrsBySize(size int64, count int) (ret []ma.Multiaddr, err error) {
+	c, _ := sc.GetContract()
+	peers, err := c.GetPeers(size, count)
 	if err != nil {
-		fmt.Println(err)
+		log.Error(err)
 	}
-	peers := []string{peersStruct.Id1, peersStruct.Id2, peersStruct.Id3, peersStruct.Id4}
 	return getMultiaddrsByPeers(peers)
 }
 
 func getMultiaddrsByPeers(peers []string) (ret []ma.Multiaddr, err error) {
-	caspersclient, _, _, _ := Casper_SC.GetSC()
+	c, _ := sc.GetContract()
 	fmt.Println(peers)
 	for _, peer := range peers {
+		if peer == "" {
+			log.Error("empty peer ID")
+			continue
+		}
 		func(peer string) {
-			defer func() {
-				if r := recover(); r != nil {
-					fmt.Println("Error with peer", peer, r)
-				}
-			}()
-			ipPort, err := caspersclient.GetUDPIpPort(nil, peer)
-			hash, err := caspersclient.GetNodeHash(nil, peer)
-			fmt.Println(ipPort + "/ipfs/" + hash)
+			ipPort, err := c.GetAPIAddr(peer)
 			if err != nil {
-				fmt.Println(err)
+				log.Error(err)
 				return
 			}
-			if maddr, err := ma.NewMultiaddr(ipPort + "/ipfs/" + hash); err == nil {
+
+			mastr := fmt.Sprintf("%s/ipfs/%s", ipPort, peer)
+			if maddr, err := ma.NewMultiaddr(mastr); err == nil {
 				ret = append(ret, maddr)
 			} else {
-				fmt.Println(err)
+				log.Error(err)
 			}
+
 		}(peer)
 	}
 	return ret, err
@@ -183,31 +201,16 @@ func GetPeersMultiaddrsByHash(hash string) (ret []ma.Multiaddr, err error) {
 	return GetPeersMultiaddrs(hash)
 }
 
-func GetPeersForUpload(size int64) (ret []string) {
-	//return []string{"10.10.10.1"}
-	client, _, _, _ := Casper_SC.GetSC()
-	tx_get, _ := client.GetPeers(nil, big.NewInt(size))
-	peers := []string{tx_get.Id1, tx_get.Id2, tx_get.Id3, tx_get.Id4}
-
-	for _, peer := range peers {
-		if filteredIP, err := client.GetIpPort(nil, peer); err == nil && filteredIP != "" {
-			ret = append(ret, filteredIP)
-		} else {
-			fmt.Println(err)
-		}
-	}
-	return
-}
-
 func GetIpPortsByHash(hash string) (ret []string) {
 	// FIXME
-	caspersclient, _, _, _ := Casper_SC.GetSC()
-	peers, err := caspersclient.ShowStoringPeers(nil, hash)
+	c, _ := sc.GetContract()
+	peers, err := c.ShowStoringPeers(hash)
 	if err != nil {
-		fmt.Println(err)
+		log.Error(err)
+		return
 	}
 	for _, peer := range peers {
-		ipPort, err := caspersclient.GetIpPort(nil, string(peer[:31]))
+		ipPort, err := c.GetRPCAddr(peer)
 		if err != nil {
 			fmt.Println(err)
 			continue
@@ -215,12 +218,4 @@ func GetIpPortsByHash(hash string) (ret []string) {
 		ret = append(ret, ipPort)
 	}
 	return
-}
-
-func SubscribeToVerificationTargetLogs(ctx context.Context, logCallback func(log *casper.CasperVerificationTarget)) {
-	Casper_SC.SubscribeToReplicationLogs(ctx, logCallback)
-}
-
-func SubscribeToVerificationConsensusLogs(ctx context.Context, logCallback func(log *casper.CasperConsensusResult)) {
-	Casper_SC.SubscribeToConsensusLogs(ctx, logCallback)
 }

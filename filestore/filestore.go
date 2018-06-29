@@ -12,8 +12,8 @@ import (
 
 	"gx/ipfs/QmSn9Td7xgxm9EV7iEjTckpUWmWApggzPxu7eFGWkkpwin/go-block-format"
 
-	"gitlab.com/casperDev/Casper-server/blocks/blockstore"
-	posinfo "gitlab.com/casperDev/Casper-server/thirdparty/posinfo"
+	"github.com/Casper-dev/Casper-server/blocks/blockstore"
+	posinfo "github.com/Casper-dev/Casper-server/thirdparty/posinfo"
 
 	cid "gx/ipfs/QmNp85zy9RLrQ5oQD4hPyS39ezrrXpcaa7R4Y9kxdWQLLQ/go-cid"
 	logging "gx/ipfs/QmSpJByNKFX1sCsHBEp3R73FL4NF6FnQTEGyNAXHm2GS52/go-log"

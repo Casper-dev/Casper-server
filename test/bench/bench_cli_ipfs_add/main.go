@@ -10,9 +10,9 @@ import (
 	"path"
 	"testing"
 
-	"gitlab.com/casperDev/Casper-server/Godeps/_workspace/src/github.com/jbenet/go-random"
-	"gitlab.com/casperDev/Casper-server/repo/config"
-	"gitlab.com/casperDev/Casper-server/thirdparty/unit"
+	"github.com/Casper-dev/Casper-server/Godeps/_workspace/src/github.com/jbenet/go-random"
+	"github.com/Casper-dev/Casper-server/repo/config"
+	"github.com/Casper-dev/Casper-server/thirdparty/unit"
 )
 
 var (

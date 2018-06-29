@@ -6,7 +6,7 @@ import (
 	"strconv"
 	"testing"
 
-	"gitlab.com/casperDev/Casper-server/thirdparty/assert"
+	"github.com/Casper-dev/Casper-server/thirdparty/assert"
 )
 
 func testVersionFile(v string, t *testing.T) (rp RepoPath) {

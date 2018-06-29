@@ -15,8 +15,8 @@ import (
 	testutil "gx/ipfs/QmWRCn8vruNAzHx8i6SAXinuheRitKEGu8c7m26stKvsYx/go-testutil"
 	peer "gx/ipfs/QmXYjuNuxVzXKJCfWasQk1RqkhVLDM9jtUKhqc2WPQmFSB/go-libp2p-peer"
 
-	blockstore "gitlab.com/casperDev/Casper-server/blocks/blockstore"
-	message "gitlab.com/casperDev/Casper-server/exchange/bitswap/message"
+	blockstore "github.com/Casper-dev/Casper-server/blocks/blockstore"
+	message "github.com/Casper-dev/Casper-server/exchange/bitswap/message"
 )
 
 type peerAndEngine struct {

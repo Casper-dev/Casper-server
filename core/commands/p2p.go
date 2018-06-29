@@ -8,8 +8,8 @@ import (
 	"strconv"
 	"text/tabwriter"
 
-	cmds "gitlab.com/casperDev/Casper-server/commands"
-	core "gitlab.com/casperDev/Casper-server/core"
+	cmds "github.com/Casper-dev/Casper-server/commands"
+	core "github.com/Casper-dev/Casper-server/core"
 
 	ma "gx/ipfs/QmXY77cVe7rVRQXZZQRioukUM7aRW3BTcAgJe12MCtb3Ji/go-multiaddr"
 )

@@ -6,12 +6,12 @@ import (
 	"fmt"
 	"os"
 
-	"gitlab.com/casperDev/Casper-server/commands/files"
-	bal "gitlab.com/casperDev/Casper-server/importer/balanced"
-	"gitlab.com/casperDev/Casper-server/importer/chunk"
-	h "gitlab.com/casperDev/Casper-server/importer/helpers"
-	trickle "gitlab.com/casperDev/Casper-server/importer/trickle"
-	dag "gitlab.com/casperDev/Casper-server/merkledag"
+	"github.com/Casper-dev/Casper-server/commands/files"
+	bal "github.com/Casper-dev/Casper-server/importer/balanced"
+	"github.com/Casper-dev/Casper-server/importer/chunk"
+	h "github.com/Casper-dev/Casper-server/importer/helpers"
+	trickle "github.com/Casper-dev/Casper-server/importer/trickle"
+	dag "github.com/Casper-dev/Casper-server/merkledag"
 
 	node "gx/ipfs/QmPN7cwmpcc4DWXb4KTB9dNAJgjuPY69h3npsMfhRrQL9c/go-ipld-format"
 )

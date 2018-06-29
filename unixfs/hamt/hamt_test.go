@@ -9,10 +9,10 @@ import (
 	"testing"
 	"time"
 
-	dag "gitlab.com/casperDev/Casper-server/merkledag"
-	mdtest "gitlab.com/casperDev/Casper-server/merkledag/test"
-	dagutils "gitlab.com/casperDev/Casper-server/merkledag/utils"
-	ft "gitlab.com/casperDev/Casper-server/unixfs"
+	dag "github.com/Casper-dev/Casper-server/merkledag"
+	mdtest "github.com/Casper-dev/Casper-server/merkledag/test"
+	dagutils "github.com/Casper-dev/Casper-server/merkledag/utils"
+	ft "github.com/Casper-dev/Casper-server/unixfs"
 )
 
 func shuffle(seed int64, arr []string) {

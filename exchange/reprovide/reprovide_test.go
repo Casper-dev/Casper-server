@@ -10,10 +10,10 @@ import (
 	dssync "gx/ipfs/QmVSase1JP7cq9QkPT46oNwdp9pT6kBkG3oqS14y3QcZjG/go-datastore/sync"
 	testutil "gx/ipfs/QmWRCn8vruNAzHx8i6SAXinuheRitKEGu8c7m26stKvsYx/go-testutil"
 
-	blockstore "gitlab.com/casperDev/Casper-server/blocks/blockstore"
-	mock "gitlab.com/casperDev/Casper-server/routing/mock"
+	blockstore "github.com/Casper-dev/Casper-server/blocks/blockstore"
+	mock "github.com/Casper-dev/Casper-server/routing/mock"
 
-	. "gitlab.com/casperDev/Casper-server/exchange/reprovide"
+	. "github.com/Casper-dev/Casper-server/exchange/reprovide"
 )
 
 func TestReprovide(t *testing.T) {

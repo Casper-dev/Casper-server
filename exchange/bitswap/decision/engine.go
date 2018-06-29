@@ -10,9 +10,9 @@ import (
 	logging "gx/ipfs/QmSpJByNKFX1sCsHBEp3R73FL4NF6FnQTEGyNAXHm2GS52/go-log"
 	peer "gx/ipfs/QmXYjuNuxVzXKJCfWasQk1RqkhVLDM9jtUKhqc2WPQmFSB/go-libp2p-peer"
 
-	bstore "gitlab.com/casperDev/Casper-server/blocks/blockstore"
-	bsmsg "gitlab.com/casperDev/Casper-server/exchange/bitswap/message"
-	wl "gitlab.com/casperDev/Casper-server/exchange/bitswap/wantlist"
+	bstore "github.com/Casper-dev/Casper-server/blocks/blockstore"
+	bsmsg "github.com/Casper-dev/Casper-server/exchange/bitswap/message"
+	wl "github.com/Casper-dev/Casper-server/exchange/bitswap/wantlist"
 )
 
 // TODO consider taking responsibility for other types of requests. For

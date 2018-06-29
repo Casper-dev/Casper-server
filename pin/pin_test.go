@@ -5,10 +5,10 @@ import (
 	"testing"
 	"time"
 
-	"gitlab.com/casperDev/Casper-server/blocks/blockstore"
-	bs "gitlab.com/casperDev/Casper-server/blockservice"
-	"gitlab.com/casperDev/Casper-server/exchange/offline"
-	mdag "gitlab.com/casperDev/Casper-server/merkledag"
+	"github.com/Casper-dev/Casper-server/blocks/blockstore"
+	bs "github.com/Casper-dev/Casper-server/blockservice"
+	"github.com/Casper-dev/Casper-server/exchange/offline"
+	mdag "github.com/Casper-dev/Casper-server/merkledag"
 
 	cid "gx/ipfs/QmNp85zy9RLrQ5oQD4hPyS39ezrrXpcaa7R4Y9kxdWQLLQ/go-cid"
 	"gx/ipfs/QmSU6eubNdhXjFBJBSksTp8kv8YRub8mGAPv8tVJHmL2EU/go-ipfs-util"

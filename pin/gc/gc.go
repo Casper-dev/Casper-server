@@ -5,9 +5,9 @@ import (
 	"errors"
 	"fmt"
 
-	bstore "gitlab.com/casperDev/Casper-server/blocks/blockstore"
-	dag "gitlab.com/casperDev/Casper-server/merkledag"
-	pin "gitlab.com/casperDev/Casper-server/pin"
+	bstore "github.com/Casper-dev/Casper-server/blocks/blockstore"
+	dag "github.com/Casper-dev/Casper-server/merkledag"
+	pin "github.com/Casper-dev/Casper-server/pin"
 
 	cid "gx/ipfs/QmNp85zy9RLrQ5oQD4hPyS39ezrrXpcaa7R4Y9kxdWQLLQ/go-cid"
 	node "gx/ipfs/QmPN7cwmpcc4DWXb4KTB9dNAJgjuPY69h3npsMfhRrQL9c/go-ipld-format"

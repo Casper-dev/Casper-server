@@ -13,10 +13,10 @@ import (
 	swarm "gx/ipfs/QmdQFrFnPrKRQtpeHKjZ3cVNwxmGKKS2TvhJTuN9C9yduh/go-libp2p-swarm"
 	iaddr "gx/ipfs/QmeS8cCKawUwejVrsBtmC1toTXmwVWZGiRJqzgTURVWeF9/go-ipfs-addr"
 
-	cmds "gitlab.com/casperDev/Casper-server/commands"
-	repo "gitlab.com/casperDev/Casper-server/repo"
-	config "gitlab.com/casperDev/Casper-server/repo/config"
-	"gitlab.com/casperDev/Casper-server/repo/fsrepo"
+	cmds "github.com/Casper-dev/Casper-server/commands"
+	repo "github.com/Casper-dev/Casper-server/repo"
+	config "github.com/Casper-dev/Casper-server/repo/config"
+	"github.com/Casper-dev/Casper-server/repo/fsrepo"
 
 	mafilter "gx/ipfs/QmSMZwvs3n4GBikZ7hKzT17c3bk65FmyZo2JqtJ16swqCv/multiaddr-filter"
 	ma "gx/ipfs/QmXY77cVe7rVRQXZZQRioukUM7aRW3BTcAgJe12MCtb3Ji/go-multiaddr"

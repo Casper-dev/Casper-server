@@ -9,7 +9,7 @@ import (
 	"path/filepath"
 	"strings"
 
-	"gitlab.com/casperDev/Casper-server/Godeps/_workspace/src/github.com/mitchellh/go-homedir"
+	"github.com/Casper-dev/Casper-server/Godeps/_workspace/src/github.com/mitchellh/go-homedir"
 )
 
 // Config is used to load ipfs config files.

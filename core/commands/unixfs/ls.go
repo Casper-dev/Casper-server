@@ -7,13 +7,13 @@ import (
 	"sort"
 	"text/tabwriter"
 
-	cmds "gitlab.com/casperDev/Casper-server/commands"
-	core "gitlab.com/casperDev/Casper-server/core"
-	merkledag "gitlab.com/casperDev/Casper-server/merkledag"
-	path "gitlab.com/casperDev/Casper-server/path"
-	unixfs "gitlab.com/casperDev/Casper-server/unixfs"
-	uio "gitlab.com/casperDev/Casper-server/unixfs/io"
-	unixfspb "gitlab.com/casperDev/Casper-server/unixfs/pb"
+	cmds "github.com/Casper-dev/Casper-server/commands"
+	core "github.com/Casper-dev/Casper-server/core"
+	merkledag "github.com/Casper-dev/Casper-server/merkledag"
+	path "github.com/Casper-dev/Casper-server/path"
+	unixfs "github.com/Casper-dev/Casper-server/unixfs"
+	uio "github.com/Casper-dev/Casper-server/unixfs/io"
+	unixfspb "github.com/Casper-dev/Casper-server/unixfs/pb"
 )
 
 type LsLink struct {

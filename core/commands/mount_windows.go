@@ -3,7 +3,7 @@ package commands
 import (
 	"errors"
 
-	cmds "gitlab.com/casperDev/Casper-server/commands"
+	cmds "github.com/Casper-dev/Casper-server/commands"
 )
 
 var MountCmd = &cmds.Command{

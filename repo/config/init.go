@@ -7,6 +7,9 @@ import (
 	"io"
 	"time"
 
+	sc "github.com/Casper-dev/Casper-server/casper/sc"
+	scin "github.com/Casper-dev/Casper-server/casper/sc/sc_interface"
+
 	"gx/ipfs/QmXYjuNuxVzXKJCfWasQk1RqkhVLDM9jtUKhqc2WPQmFSB/go-libp2p-peer"
 	ci "gx/ipfs/QmaPbCnUMBohSGo3KnxEa2bHqyJVVeEEcwtqJAYxerieBo/go-libp2p-crypto"
 )
@@ -89,6 +92,11 @@ func Init(out io.Writer, nBitsForKeypair int) (*Config, error) {
 			TelegramAddress: DefaultCasperTelegramAddress,
 			IPAddress:       DefaultCasperConnectionIP,
 			ConnectionPort:  DefaultCasperConnectionPort,
+			Blockchain: map[string]scin.InitOpts{
+				sc.Ethereum: DefaultETHOpts,
+				sc.NEO:      DefaultNEOOpts,
+			},
+			UsedChain: sc.DefaultChain,
 		},
 	}
 

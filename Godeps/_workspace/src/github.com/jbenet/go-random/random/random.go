@@ -7,7 +7,7 @@ import (
 
 	"gx/ipfs/QmPSBJL4momYnE7DcUyk2DVhD6rH488ZmHBGLbxNdhU44K/go-humanize"
 
-	random "gitlab.com/casperDev/Casper-server/Godeps/_workspace/src/github.com/jbenet/go-random"
+	random "github.com/Casper-dev/Casper-server/Godeps/_workspace/src/github.com/jbenet/go-random"
 )
 
 func main() {

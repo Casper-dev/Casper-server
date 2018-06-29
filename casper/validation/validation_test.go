@@ -7,11 +7,11 @@ import (
 
 	"fmt"
 
-	bstest "gitlab.com/casperDev/Casper-server/blockservice/test"
-	"gitlab.com/casperDev/Casper-server/casper/validation"
-	imp "gitlab.com/casperDev/Casper-server/importer"
-	chunk "gitlab.com/casperDev/Casper-server/importer/chunk"
-	dag "gitlab.com/casperDev/Casper-server/merkledag"
+	bstest "github.com/Casper-dev/Casper-server/blockservice/test"
+	"github.com/Casper-dev/Casper-server/casper/validation"
+	imp "github.com/Casper-dev/Casper-server/importer"
+	chunk "github.com/Casper-dev/Casper-server/importer/chunk"
+	dag "github.com/Casper-dev/Casper-server/merkledag"
 )
 
 func slicesEqual(a, b []byte) (bool, string) {

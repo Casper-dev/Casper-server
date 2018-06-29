@@ -7,10 +7,10 @@ import (
 
 	logging "gx/ipfs/QmSpJByNKFX1sCsHBEp3R73FL4NF6FnQTEGyNAXHm2GS52/go-log"
 
-	uuid "gitlab.com/casperDev/Casper-server/casper/uuid"
-	dag "gitlab.com/casperDev/Casper-server/merkledag"
-	pi "gitlab.com/casperDev/Casper-server/thirdparty/posinfo"
-	ft "gitlab.com/casperDev/Casper-server/unixfs"
+	uuid "github.com/Casper-dev/Casper-server/casper/uuid"
+	dag "github.com/Casper-dev/Casper-server/merkledag"
+	pi "github.com/Casper-dev/Casper-server/thirdparty/posinfo"
+	ft "github.com/Casper-dev/Casper-server/unixfs"
 
 	cid "gx/ipfs/QmNp85zy9RLrQ5oQD4hPyS39ezrrXpcaa7R4Y9kxdWQLLQ/go-cid"
 	node "gx/ipfs/QmPN7cwmpcc4DWXb4KTB9dNAJgjuPY69h3npsMfhRrQL9c/go-ipld-format"

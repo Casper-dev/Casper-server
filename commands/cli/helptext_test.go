@@ -4,7 +4,7 @@ import (
 	"strings"
 	"testing"
 
-	cmds "gitlab.com/casperDev/Casper-server/commands"
+	cmds "github.com/Casper-dev/Casper-server/commands"
 )
 
 func TestSynopsisGenerator(t *testing.T) {

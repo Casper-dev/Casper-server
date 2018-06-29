@@ -7,10 +7,10 @@ import (
 	"io/ioutil"
 	"strings"
 
-	bl "gitlab.com/casperDev/Casper-server/blocks"
-	util "gitlab.com/casperDev/Casper-server/blocks/blockstore/util"
-	uuid "gitlab.com/casperDev/Casper-server/casper/uuid"
-	cmds "gitlab.com/casperDev/Casper-server/commands"
+	bl "github.com/Casper-dev/Casper-server/blocks"
+	util "github.com/Casper-dev/Casper-server/blocks/blockstore/util"
+	uuid "github.com/Casper-dev/Casper-server/casper/uuid"
+	cmds "github.com/Casper-dev/Casper-server/commands"
 
 	cid "gx/ipfs/QmNp85zy9RLrQ5oQD4hPyS39ezrrXpcaa7R4Y9kxdWQLLQ/go-cid"
 	u "gx/ipfs/QmSU6eubNdhXjFBJBSksTp8kv8YRub8mGAPv8tVJHmL2EU/go-ipfs-util"

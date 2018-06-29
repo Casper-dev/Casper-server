@@ -6,11 +6,11 @@ import (
 
 	logging "gx/ipfs/QmSpJByNKFX1sCsHBEp3R73FL4NF6FnQTEGyNAXHm2GS52/go-log"
 
-	cmds "gitlab.com/casperDev/Casper-server/commands"
-	dag "gitlab.com/casperDev/Casper-server/core/commands/dag"
-	files "gitlab.com/casperDev/Casper-server/core/commands/files"
-	ocmd "gitlab.com/casperDev/Casper-server/core/commands/object"
-	unixfs "gitlab.com/casperDev/Casper-server/core/commands/unixfs"
+	cmds "github.com/Casper-dev/Casper-server/commands"
+	dag "github.com/Casper-dev/Casper-server/core/commands/dag"
+	files "github.com/Casper-dev/Casper-server/core/commands/files"
+	ocmd "github.com/Casper-dev/Casper-server/core/commands/object"
+	unixfs "github.com/Casper-dev/Casper-server/core/commands/unixfs"
 )
 
 var log = logging.Logger("core/commands")

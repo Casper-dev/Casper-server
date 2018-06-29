@@ -7,12 +7,12 @@ import (
 
 	u "gx/ipfs/QmSU6eubNdhXjFBJBSksTp8kv8YRub8mGAPv8tVJHmL2EU/go-ipfs-util"
 
-	cmds "gitlab.com/casperDev/Casper-server/commands"
-	core "gitlab.com/casperDev/Casper-server/core"
-	dag "gitlab.com/casperDev/Casper-server/merkledag"
-	dagutils "gitlab.com/casperDev/Casper-server/merkledag/utils"
-	path "gitlab.com/casperDev/Casper-server/path"
-	ft "gitlab.com/casperDev/Casper-server/unixfs"
+	cmds "github.com/Casper-dev/Casper-server/commands"
+	core "github.com/Casper-dev/Casper-server/core"
+	dag "github.com/Casper-dev/Casper-server/merkledag"
+	dagutils "github.com/Casper-dev/Casper-server/merkledag/utils"
+	path "github.com/Casper-dev/Casper-server/path"
+	ft "github.com/Casper-dev/Casper-server/unixfs"
 )
 
 var ObjectPatchCmd = &cmds.Command{

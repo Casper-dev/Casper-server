@@ -8,7 +8,7 @@ import (
 	"path/filepath"
 	"sort"
 
-	repo "gitlab.com/casperDev/Casper-server/repo"
+	repo "github.com/Casper-dev/Casper-server/repo"
 
 	measure "gx/ipfs/QmSb95iHExSSb47zpmyn5CyY5PZidVWSjyKyDqgYQrnKor/go-ds-measure"
 	flatfs "gx/ipfs/QmUTshC2PP4ZDqkrFfDU4JGJFMWjYnunxPgkQ6ZCA2hGqh/go-ds-flatfs"

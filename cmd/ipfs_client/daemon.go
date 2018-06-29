@@ -11,15 +11,16 @@ import (
 	"sort"
 	"sync"
 
-	utilmain "gitlab.com/casperDev/Casper-server/cmd/ipfs_client/util"
-	cmds "gitlab.com/casperDev/Casper-server/commands"
-	"gitlab.com/casperDev/Casper-server/core"
-	commands "gitlab.com/casperDev/Casper-server/core/commands"
-	corehttp "gitlab.com/casperDev/Casper-server/core/corehttp"
-	corerepo "gitlab.com/casperDev/Casper-server/core/corerepo"
-	nodeMount "gitlab.com/casperDev/Casper-server/fuse/node"
-	fsrepo "gitlab.com/casperDev/Casper-server/repo/fsrepo"
-	migrate "gitlab.com/casperDev/Casper-server/repo/fsrepo/migrations"
+	sc "github.com/Casper-dev/Casper-server/casper/sc"
+	utilmain "github.com/Casper-dev/Casper-server/cmd/ipfs_client/util"
+	cmds "github.com/Casper-dev/Casper-server/commands"
+	"github.com/Casper-dev/Casper-server/core"
+	commands "github.com/Casper-dev/Casper-server/core/commands"
+	corehttp "github.com/Casper-dev/Casper-server/core/corehttp"
+	corerepo "github.com/Casper-dev/Casper-server/core/corerepo"
+	nodeMount "github.com/Casper-dev/Casper-server/fuse/node"
+	fsrepo "github.com/Casper-dev/Casper-server/repo/fsrepo"
+	migrate "github.com/Casper-dev/Casper-server/repo/fsrepo/migrations"
 
 	mprome "gx/ipfs/QmSk46nSD78YiuNojYMS8NW6hSCjH95JajqqzzoychZgef/go-metrics-prometheus"
 	"gx/ipfs/QmX3QZ5jHEPidwUrymXV1iSCSUhdGxj15sm2gP4jKMef7B/client_golang/prometheus"
@@ -275,6 +276,13 @@ func daemonFunc(req cmds.Request, res cmds.Response) {
 	}
 
 	cfg, err := ctx.GetConfig()
+	if err != nil {
+		res.SetError(err, cmds.ErrNormal)
+		return
+	}
+
+	// Initialize SC for subsequent calls
+	_, err = sc.GetContractContext(req.Context(), cfg.Casper.Blockchain[cfg.Casper.UsedChain])
 	if err != nil {
 		res.SetError(err, cmds.ErrNormal)
 		return

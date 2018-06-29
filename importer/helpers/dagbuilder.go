@@ -4,11 +4,11 @@ import (
 	"io"
 	"os"
 
-	uuid "gitlab.com/casperDev/Casper-server/casper/uuid"
-	"gitlab.com/casperDev/Casper-server/commands/files"
-	"gitlab.com/casperDev/Casper-server/importer/chunk"
-	dag "gitlab.com/casperDev/Casper-server/merkledag"
-	ft "gitlab.com/casperDev/Casper-server/unixfs"
+	uuid "github.com/Casper-dev/Casper-server/casper/uuid"
+	"github.com/Casper-dev/Casper-server/commands/files"
+	"github.com/Casper-dev/Casper-server/importer/chunk"
+	dag "github.com/Casper-dev/Casper-server/merkledag"
+	ft "github.com/Casper-dev/Casper-server/unixfs"
 
 	cid "gx/ipfs/QmNp85zy9RLrQ5oQD4hPyS39ezrrXpcaa7R4Y9kxdWQLLQ/go-cid"
 	node "gx/ipfs/QmPN7cwmpcc4DWXb4KTB9dNAJgjuPY69h3npsMfhRrQL9c/go-ipld-format"

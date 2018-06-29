@@ -3,9 +3,9 @@ package repo
 import (
 	"errors"
 
-	filestore "gitlab.com/casperDev/Casper-server/filestore"
-	keystore "gitlab.com/casperDev/Casper-server/keystore"
-	"gitlab.com/casperDev/Casper-server/repo/config"
+	filestore "github.com/Casper-dev/Casper-server/filestore"
+	keystore "github.com/Casper-dev/Casper-server/keystore"
+	"github.com/Casper-dev/Casper-server/repo/config"
 
 	ma "gx/ipfs/QmXY77cVe7rVRQXZZQRioukUM7aRW3BTcAgJe12MCtb3Ji/go-multiaddr"
 )

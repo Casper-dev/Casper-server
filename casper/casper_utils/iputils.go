@@ -1,8 +1,12 @@
 package casper_utils
 
 import (
+	"encoding/json"
 	"errors"
+	"fmt"
+	"io/ioutil"
 	"net"
+	"net/http"
 	"strconv"
 
 	ma "gx/ipfs/QmXY77cVe7rVRQXZZQRioukUM7aRW3BTcAgJe12MCtb3Ji/go-multiaddr"
@@ -98,4 +102,51 @@ func FilterIP(addr string) (ip string) {
 	}
 
 	return ip
+}
+
+type GeoIP struct {
+	// The right side is the name of the JSON variable
+	Status      string `json:"status"`
+	CountryCode string `json:"countryCode"`
+	Country     string `json:"country""`
+	RegionCode  string `json:"region"`
+	RegionName  string `json:"regionName"`
+	City        string `json:"city"`
+	ISP         string `json:"isp"`
+}
+
+func GetGeoloc() string {
+	var geo GeoIP
+
+	client := &http.Client{
+		Transport: &http.Transport{
+			Proxy: nil,
+		},
+	}
+
+	response, err := client.Get("http://ip-api.com/json")
+	if err != nil {
+		fmt.Println(err)
+	}
+	defer response.Body.Close()
+
+	body, err := ioutil.ReadAll(response.Body)
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	// Unmarshal the JSON byte slice to a GeoIP struct
+	err = json.Unmarshal(body, &geo)
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	// Everything accessible in struct now
+	fmt.Println("\n==== IP Geolocation Info ====\n")
+	fmt.Println("IP address:\t", geo.CountryCode)
+	fmt.Println("IP address:\t", geo.Country)
+	fmt.Println("Country Code:\t", geo.RegionCode)
+	fmt.Println("Country Name:\t", geo.RegionName)
+	fmt.Println("Area Code:\t", geo.ISP)
+	return geo.CountryCode
 }

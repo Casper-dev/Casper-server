@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"testing"
 
-	dag "gitlab.com/casperDev/Casper-server/merkledag"
-	mdtest "gitlab.com/casperDev/Casper-server/merkledag/test"
+	dag "github.com/Casper-dev/Casper-server/merkledag"
+	mdtest "github.com/Casper-dev/Casper-server/merkledag/test"
 
 	cid "gx/ipfs/QmNp85zy9RLrQ5oQD4hPyS39ezrrXpcaa7R4Y9kxdWQLLQ/go-cid"
 	node "gx/ipfs/QmPN7cwmpcc4DWXb4KTB9dNAJgjuPY69h3npsMfhRrQL9c/go-ipld-format"

@@ -3,7 +3,7 @@ package main
 import (
 	"testing"
 
-	"gitlab.com/casperDev/Casper-server/commands"
+	"github.com/Casper-dev/Casper-server/commands"
 )
 
 func TestIsCientErr(t *testing.T) {

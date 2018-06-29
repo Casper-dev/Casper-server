@@ -11,8 +11,8 @@ import (
 	u "gx/ipfs/QmSU6eubNdhXjFBJBSksTp8kv8YRub8mGAPv8tVJHmL2EU/go-ipfs-util"
 	ci "gx/ipfs/QmaPbCnUMBohSGo3KnxEa2bHqyJVVeEEcwtqJAYxerieBo/go-libp2p-crypto"
 
-	pb "gitlab.com/casperDev/Casper-server/namesys/pb"
-	path "gitlab.com/casperDev/Casper-server/path"
+	pb "github.com/Casper-dev/Casper-server/namesys/pb"
+	path "github.com/Casper-dev/Casper-server/path"
 )
 
 func shuffle(a []*pb.IpnsEntry) {

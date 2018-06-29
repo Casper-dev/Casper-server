@@ -3,8 +3,8 @@ package fsrepo
 import (
 	"os"
 
-	homedir "gitlab.com/casperDev/Casper-server/Godeps/_workspace/src/github.com/mitchellh/go-homedir"
-	"gitlab.com/casperDev/Casper-server/repo/config"
+	homedir "github.com/Casper-dev/Casper-server/Godeps/_workspace/src/github.com/mitchellh/go-homedir"
+	"github.com/Casper-dev/Casper-server/repo/config"
 )
 
 // BestKnownPath returns the best known fsrepo path. If the ENV override is

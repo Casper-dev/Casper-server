@@ -6,10 +6,10 @@ import (
 	"errors"
 	"time"
 
-	"gitlab.com/casperDev/Casper-server/core"
-	mfs "gitlab.com/casperDev/Casper-server/mfs"
-	gc "gitlab.com/casperDev/Casper-server/pin/gc"
-	repo "gitlab.com/casperDev/Casper-server/repo"
+	"github.com/Casper-dev/Casper-server/core"
+	mfs "github.com/Casper-dev/Casper-server/mfs"
+	gc "github.com/Casper-dev/Casper-server/pin/gc"
+	repo "github.com/Casper-dev/Casper-server/repo"
 
 	cid "gx/ipfs/QmNp85zy9RLrQ5oQD4hPyS39ezrrXpcaa7R4Y9kxdWQLLQ/go-cid"
 	humanize "gx/ipfs/QmPSBJL4momYnE7DcUyk2DVhD6rH488ZmHBGLbxNdhU44K/go-humanize"

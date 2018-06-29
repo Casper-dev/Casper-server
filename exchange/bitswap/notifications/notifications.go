@@ -7,7 +7,7 @@ import (
 
 	cid "gx/ipfs/QmNp85zy9RLrQ5oQD4hPyS39ezrrXpcaa7R4Y9kxdWQLLQ/go-cid"
 
-	pubsub "gitlab.com/casperDev/Casper-server/Godeps/_workspace/src/github.com/briantigerchow/pubsub"
+	pubsub "github.com/Casper-dev/Casper-server/Godeps/_workspace/src/github.com/briantigerchow/pubsub"
 )
 
 const bufferSize = 16

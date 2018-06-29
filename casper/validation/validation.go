@@ -4,9 +4,9 @@ import (
 	"context"
 	"errors"
 
-	bl "gitlab.com/casperDev/Casper-server/blocks"
-	dag "gitlab.com/casperDev/Casper-server/merkledag"
-	ft "gitlab.com/casperDev/Casper-server/unixfs"
+	bl "github.com/Casper-dev/Casper-server/blocks"
+	dag "github.com/Casper-dev/Casper-server/merkledag"
+	ft "github.com/Casper-dev/Casper-server/unixfs"
 
 	node "gx/ipfs/QmPN7cwmpcc4DWXb4KTB9dNAJgjuPY69h3npsMfhRrQL9c/go-ipld-format"
 	logging "gx/ipfs/QmSpJByNKFX1sCsHBEp3R73FL4NF6FnQTEGyNAXHm2GS52/go-log"

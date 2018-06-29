@@ -5,8 +5,8 @@ import (
 	"errors"
 	"strings"
 
-	namesys "gitlab.com/casperDev/Casper-server/namesys"
-	path "gitlab.com/casperDev/Casper-server/path"
+	namesys "github.com/Casper-dev/Casper-server/namesys"
+	path "github.com/Casper-dev/Casper-server/path"
 
 	cid "gx/ipfs/QmNp85zy9RLrQ5oQD4hPyS39ezrrXpcaa7R4Y9kxdWQLLQ/go-cid"
 	node "gx/ipfs/QmPN7cwmpcc4DWXb4KTB9dNAJgjuPY69h3npsMfhRrQL9c/go-ipld-format"

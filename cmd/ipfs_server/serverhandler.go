@@ -5,28 +5,40 @@ import (
 	"encoding/json"
 	"errors"
 	"io"
-	"math/big"
 	"net"
+	"net/http"
 	"os"
 	"time"
 
-	"gitlab.com/casperDev/Casper-SC/casper_sc"
-	cu "gitlab.com/casperDev/Casper-server/casper/casper_utils"
-	uid "gitlab.com/casperDev/Casper-server/casper/uuid"
-	val "gitlab.com/casperDev/Casper-server/casper/validation"
-	"gitlab.com/casperDev/Casper-server/core"
-	"gitlab.com/casperDev/Casper-server/core/commands"
-	"gitlab.com/casperDev/Casper-server/exchange/bitswap/decision"
-	"gitlab.com/casperDev/Casper-server/repo/fsrepo"
-	"gitlab.com/casperDev/Casper-thrift/casperproto"
+	cu "github.com/Casper-dev/Casper-server/casper/casper_utils"
+	"github.com/Casper-dev/Casper-server/casper/proxy"
+	"github.com/Casper-dev/Casper-server/casper/sc"
+	"github.com/Casper-dev/Casper-server/casper/thrift"
+	uid "github.com/Casper-dev/Casper-server/casper/uuid"
+	val "github.com/Casper-dev/Casper-server/casper/validation"
+	oldCmds "github.com/Casper-dev/Casper-server/commands"
+	"github.com/Casper-dev/Casper-server/core"
+	"github.com/Casper-dev/Casper-server/core/commands"
+	"github.com/Casper-dev/Casper-server/core/corehttp"
+	"github.com/Casper-dev/Casper-server/exchange/bitswap/decision"
+	"github.com/Casper-dev/Casper-server/repo/fsrepo"
+
+	"github.com/Casper-dev/Casper-thrift/casperproto"
 
 	"gx/ipfs/QmNp85zy9RLrQ5oQD4hPyS39ezrrXpcaa7R4Y9kxdWQLLQ/go-cid"
 	"gx/ipfs/QmT8rehPR3F6bmwL6zjUN8XpiDBFFpMP2myPdC6ApsWfJf/go-base58"
 	"gx/ipfs/QmU9a9NV9RdPNwZQDYd5uKsm6N6LJLSvLbywDDYFbaaC6P/go-multihash"
+	ma "gx/ipfs/QmXY77cVe7rVRQXZZQRioukUM7aRW3BTcAgJe12MCtb3Ji/go-multiaddr"
 	"gx/ipfs/QmeS8cCKawUwejVrsBtmC1toTXmwVWZGiRJqzgTURVWeF9/go-ipfs-addr"
-
-	"github.com/ethereum/go-ethereum/core/types"
 )
+
+func CasperThriftOption(cctx oldCmds.Context) corehttp.ServeOption {
+	return func(n *core.IpfsNode, l net.Listener, mux *http.ServeMux) (*http.ServeMux, error) {
+		cmdHandler := thrift.NewHandler(NewCasperServerHandler(cctx.ConfigRoot))
+		mux.Handle(thrift.CasperThriftApi+"/", cmdHandler)
+		return mux, nil
+	}
+}
 
 type CasperServerHandler struct {
 	configRoot string
@@ -37,7 +49,7 @@ func NewCasperServerHandler(configRoot string) *CasperServerHandler {
 }
 
 func (_ *CasperServerHandler) NodeID() string {
-	return cu.GetLocalAddr().String()
+	return cu.GetLocalAddr().NodeHash()
 }
 
 func (sh *CasperServerHandler) GetNode(ctx context.Context) (*core.IpfsNode, error) {
@@ -77,9 +89,12 @@ func (sh *CasperServerHandler) GetFileChecksum(ctx context.Context, uuid string,
 	return cs.B58String(), nil
 }
 
-func (serverHandler *CasperServerHandler) Ping(ctx context.Context) (int64, error) {
+func (serverHandler *CasperServerHandler) Ping(ctx context.Context) (*casperproto.PingResult_, error) {
 	log.Debugf("Thrift: Ping()")
-	return time.Now().Unix(), nil
+	return &casperproto.PingResult_{
+		Timestamp: time.Now().Unix(),
+		ID:        serverHandler.NodeID(),
+	}, nil
 }
 
 func (serverHandler *CasperServerHandler) SendUploadQuery(ctx context.Context, hash string, ipAddr string, size int64) (status string, err error) {
@@ -94,18 +109,16 @@ func (serverHandler *CasperServerHandler) SendUploadQuery(ctx context.Context, h
 	log.Debugf("Received peers: %v", ipList)
 
 	///TODO: We might want to reimplement this without runCommand
+	/// and return on first fail
 	status, err = runCommand(ctx, []string{"files", "cp", "/ipfs/" + hash, "/"})
+	status, err = runCommand(ctx, []string{"pin", "add", "--recursive", hash})
 	//status, err = runCommand(ctx, []string{"cat", "/ipfs/" + hash})
 	if err != nil {
 		return "", err
 	}
 
-	casper, client, auth, _ := Casper_SC.GetSC()
-
-	///TODO: check actual size from network
-	Casper_SC.ValidateMineTX(func() (tx *types.Transaction, err error) {
-		return casper.ConfirmUpload(auth, serverHandler.NodeID(), hash, big.NewInt(size))
-	}, client, auth)
+	c, _ := sc.GetContract()
+	err = c.ConfirmUpload(serverHandler.NodeID(), hash, size)
 
 	return
 }
@@ -121,41 +134,53 @@ func (serverHandler *CasperServerHandler) SendDeleteQuery(ctx context.Context, h
 	log.Debugf("Thrift: SendDeleteQuery(%s)", hash)
 
 	///TODO: We might want to reimplement this without runCommand
-	status, err = runCommand(ctx, []string{"pin", "rm", hash})
+	status, err = runCommand(ctx, []string{"pin", "rm", "--recursive", hash})
 	status, err = runCommand(ctx, []string{"files", "rm", "/" + hash})
+	status, err = runCommand(ctx, []string{"files", "rm", "-r", "/" + hash})
 	status, err = runCommand(ctx, []string{"block", "rm", hash})
 	if err != nil {
 		return "", err
 	}
 
-	casper, client, auth, _ := Casper_SC.GetSC()
-	Casper_SC.ValidateMineTX(func() (tx *types.Transaction, err error) {
-		return casper.NotifySpaceFreed(auth, serverHandler.NodeID(), hash, big.NewInt(int64(commands.SizeOut)))
-	}, client, auth)
+	c, _ := sc.GetContract()
+	err = c.NotifySpaceFreed(serverHandler.NodeID(), hash, int64(commands.SizeOut))
+	if err != nil {
+		log.Error(err)
+	}
 
-	return "", nil
+	return "", err
 }
 
-func (serverHandler *CasperServerHandler) SendReplicationQuery(ctx context.Context, hash string, ip string, size int64) (status string, err error) {
-	log.Debugf("Thrift: SendReplicationQuery(%s, %s, %d)", hash, ip, size)
+func (serverHandler *CasperServerHandler) SendReplicationQuery(ctx context.Context, fileID string, nodeID string, size int64) (status string, err error) {
+	log.Debugf("Thrift: SendReplicationQuery(%s, %s, %d)", nodeID, fileID, size)
 
-	client, _, _, _ := Casper_SC.GetSC()
-	verified, err := client.VerifyReplication(nil, ip)
+	c, _ := sc.GetContract()
+	verified, err := c.VerifyReplication(nodeID)
 	if err != nil {
 		return "", err
 	}
 	if verified {
-		status, err = runCommand(ctx, []string{"files", "cp", "/ipfs/" + hash, "/"})
+		var peers []ma.Multiaddr
+		peers, err = cu.GetPeersMultiaddrsByHash(fileID)
+		if err != nil && len(peers) == 0 {
+			return "", err
+		}
+
+		for _, peer := range peers {
+			runCommand(ctx, []string{"swarm", "connect", peer.String()})
+		}
+
+		status, err = runCommand(ctx, []string{"files", "cp", "/ipfs/" + fileID, "/"})
+		if err != nil {
+			return
+		}
+		status, err = runCommand(ctx, []string{"pin", "add", "--recursive", fileID})
 		if err != nil {
 			return
 		}
 
 		///TODO: check actual size from network
-		casper, client, auth, _ := Casper_SC.GetSC()
-		Casper_SC.ValidateMineTX(func() (tx *types.Transaction, err error) {
-			return casper.ConfirmUpload(auth, serverHandler.NodeID(), hash, big.NewInt(size))
-		}, client, auth)
-		return status, nil
+		return "", c.ConfirmUpload(serverHandler.NodeID(), fileID, size)
 	}
 	return "", errors.New("replication verification failed")
 }
@@ -170,11 +195,8 @@ func (serverHandler *CasperServerHandler) SendUpdateQuery(ctx context.Context, u
 
 	h := uid.UUIDToHash(base58.Decode(uuid)).B58String()
 
-	casper, client, auth, _ := Casper_SC.GetSC()
-	Casper_SC.ValidateMineTX(func() (tx *types.Transaction, err error) {
-		return casper.ConfirmUpdate(auth, serverHandler.NodeID(), h, big.NewInt(size))
-	}, client, auth)
-
+	c, _ := sc.GetContract()
+	err = c.ConfirmUpdate(serverHandler.NodeID(), h, size)
 	return
 }
 
@@ -223,6 +245,12 @@ func (serverHandler *CasperServerHandler) SendValidationResults(ctx context.Cont
 	// TODO Determine who is bad provider (if any) and send to SC
 
 	return nil
+}
+
+func (serverHandler *CasperServerHandler) SendConnectQuery(ctx context.Context) (string, error) {
+	log.Debugf("Thrift: SendConnectQuery")
+	name, passwd := proxy.GenProxyCreds(26266637774 + time.Now().Unix()%179425859)
+	return proxy.GetProxy(name, passwd)
 }
 
 func runCommand(ctx context.Context, args []string) (status string, err error) {

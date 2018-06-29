@@ -4,7 +4,7 @@ import (
 	"os"
 	"testing"
 
-	config "gitlab.com/casperDev/Casper-server/repo/config"
+	config "github.com/Casper-dev/Casper-server/repo/config"
 )
 
 func TestConfig(t *testing.T) {

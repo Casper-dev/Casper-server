@@ -7,8 +7,8 @@ import (
 
 	blocks "gx/ipfs/QmSn9Td7xgxm9EV7iEjTckpUWmWApggzPxu7eFGWkkpwin/go-block-format"
 
-	"gitlab.com/casperDev/Casper-server/blocks/blockstore"
-	exchange "gitlab.com/casperDev/Casper-server/exchange"
+	"github.com/Casper-dev/Casper-server/blocks/blockstore"
+	exchange "github.com/Casper-dev/Casper-server/exchange"
 
 	cid "gx/ipfs/QmNp85zy9RLrQ5oQD4hPyS39ezrrXpcaa7R4Y9kxdWQLLQ/go-cid"
 )

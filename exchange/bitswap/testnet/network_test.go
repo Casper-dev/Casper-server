@@ -9,10 +9,10 @@ import (
 	testutil "gx/ipfs/QmWRCn8vruNAzHx8i6SAXinuheRitKEGu8c7m26stKvsYx/go-testutil"
 	peer "gx/ipfs/QmXYjuNuxVzXKJCfWasQk1RqkhVLDM9jtUKhqc2WPQmFSB/go-libp2p-peer"
 
-	bsmsg "gitlab.com/casperDev/Casper-server/exchange/bitswap/message"
-	bsnet "gitlab.com/casperDev/Casper-server/exchange/bitswap/network"
-	mockrouting "gitlab.com/casperDev/Casper-server/routing/mock"
-	delay "gitlab.com/casperDev/Casper-server/thirdparty/delay"
+	bsmsg "github.com/Casper-dev/Casper-server/exchange/bitswap/message"
+	bsnet "github.com/Casper-dev/Casper-server/exchange/bitswap/network"
+	mockrouting "github.com/Casper-dev/Casper-server/routing/mock"
+	delay "github.com/Casper-dev/Casper-server/thirdparty/delay"
 )
 
 func TestSendMessageAsyncButWaitForResponse(t *testing.T) {

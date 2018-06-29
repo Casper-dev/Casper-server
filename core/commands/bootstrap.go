@@ -8,10 +8,10 @@ import (
 
 	u "gx/ipfs/QmSU6eubNdhXjFBJBSksTp8kv8YRub8mGAPv8tVJHmL2EU/go-ipfs-util"
 
-	cmds "gitlab.com/casperDev/Casper-server/commands"
-	repo "gitlab.com/casperDev/Casper-server/repo"
-	config "gitlab.com/casperDev/Casper-server/repo/config"
-	"gitlab.com/casperDev/Casper-server/repo/fsrepo"
+	cmds "github.com/Casper-dev/Casper-server/commands"
+	repo "github.com/Casper-dev/Casper-server/repo"
+	config "github.com/Casper-dev/Casper-server/repo/config"
+	"github.com/Casper-dev/Casper-server/repo/fsrepo"
 )
 
 type BootstrapOutput struct {

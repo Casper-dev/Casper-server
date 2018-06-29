@@ -12,11 +12,11 @@ import (
 	context "context"
 	ci "gx/ipfs/QmWRCn8vruNAzHx8i6SAXinuheRitKEGu8c7m26stKvsYx/go-testutil/ci"
 
-	core "gitlab.com/casperDev/Casper-server/core"
-	ipns "gitlab.com/casperDev/Casper-server/fuse/ipns"
-	mount "gitlab.com/casperDev/Casper-server/fuse/mount"
-	namesys "gitlab.com/casperDev/Casper-server/namesys"
-	offroute "gitlab.com/casperDev/Casper-server/routing/offline"
+	core "github.com/Casper-dev/Casper-server/core"
+	ipns "github.com/Casper-dev/Casper-server/fuse/ipns"
+	mount "github.com/Casper-dev/Casper-server/fuse/mount"
+	namesys "github.com/Casper-dev/Casper-server/namesys"
+	offroute "github.com/Casper-dev/Casper-server/routing/offline"
 )
 
 func maybeSkipFuseTests(t *testing.T) {

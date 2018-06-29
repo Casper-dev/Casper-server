@@ -9,7 +9,7 @@ import (
 	fp "path/filepath"
 	"strings"
 
-	"gitlab.com/casperDev/Casper-server/casper/crypto"
+	"github.com/Casper-dev/Casper-server/casper/crypto"
 )
 
 type Extractor struct {

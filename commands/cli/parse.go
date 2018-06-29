@@ -9,8 +9,8 @@ import (
 	"sort"
 	"strings"
 
-	cmds "gitlab.com/casperDev/Casper-server/commands"
-	files "gitlab.com/casperDev/Casper-server/commands/files"
+	cmds "github.com/Casper-dev/Casper-server/commands"
+	files "github.com/Casper-dev/Casper-server/commands/files"
 
 	u "gx/ipfs/QmSU6eubNdhXjFBJBSksTp8kv8YRub8mGAPv8tVJHmL2EU/go-ipfs-util"
 	logging "gx/ipfs/QmSpJByNKFX1sCsHBEp3R73FL4NF6FnQTEGyNAXHm2GS52/go-log"

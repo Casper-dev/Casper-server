@@ -1,11 +1,11 @@
 package bstest
 
 import (
-	. "gitlab.com/casperDev/Casper-server/blockservice"
-	bitswap "gitlab.com/casperDev/Casper-server/exchange/bitswap"
-	tn "gitlab.com/casperDev/Casper-server/exchange/bitswap/testnet"
-	mockrouting "gitlab.com/casperDev/Casper-server/routing/mock"
-	delay "gitlab.com/casperDev/Casper-server/thirdparty/delay"
+	. "github.com/Casper-dev/Casper-server/blockservice"
+	bitswap "github.com/Casper-dev/Casper-server/exchange/bitswap"
+	tn "github.com/Casper-dev/Casper-server/exchange/bitswap/testnet"
+	mockrouting "github.com/Casper-dev/Casper-server/routing/mock"
+	delay "github.com/Casper-dev/Casper-server/thirdparty/delay"
 )
 
 // Mocks returns |n| connected mock Blockservices

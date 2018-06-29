@@ -26,26 +26,15 @@ import (
 	"fmt"
 	_ "net/http/pprof"
 
-	thrift "gitlab.com/casperDev/Casper-server/casper/thrift"
-
-	"gitlab.com/casperDev/Casper-SC/casper_sc"
+	"github.com/Casper-dev/Casper-server/casper/thrift"
 
 	logging "gx/ipfs/QmSpJByNKFX1sCsHBEp3R73FL4NF6FnQTEGyNAXHm2GS52/go-log"
-
-	"github.com/ethereum/go-ethereum/core/types"
 )
 
 var log = logging.Logger("client/handler")
 
-func recoverHandler(name string, args ...interface{}) {
-	if r := recover(); r != nil {
-		fmt.Printf("recovered in %s(%s): %s\n", name, args, r)
-	}
-}
-
 func HandleClientUpload(ctx context.Context, ip string, hash string, size int64, ipList []string) (err error) {
 	log.Infof("started upload(%s, %s, %d)", ip, hash, size)
-	defer recoverHandler("upload", ip, hash, size)
 
 	val, err := json.Marshal(ipList)
 	if err != nil {
@@ -62,7 +51,6 @@ func HandleClientUpload(ctx context.Context, ip string, hash string, size int64,
 
 func HandleClientDownload(ctx context.Context, ip string, hash string, wallet string) (err error) {
 	log.Infof("started download(%s, %s, %s)", ip, hash, wallet)
-	defer recoverHandler("download", ip, hash, wallet)
 
 	_, err = thrift.RunClientClosure(ip, func(c *thrift.ThriftClient) (interface{}, error) {
 		return c.SendDownloadQuery(ctx, hash, "2", wallet)
@@ -70,21 +58,15 @@ func HandleClientDownload(ctx context.Context, ip string, hash string, wallet st
 	if err != nil {
 		return err
 	}
-
-	casper, sclient, auth, _ := Casper_SC.GetSC()
-	fmt.Println("Got SC")
-	//TODO: Change ConfirmDownload call location
-	Casper_SC.ValidateMineTX(func() (tx *types.Transaction, err error) {
-		return casper.ConfirmDownload(auth)
-	}, sclient, auth)
-
-	fmt.Println("download()")
+	/// TODO: SendDownloadQuery just opens a channel; billing must be moved somewhere else
+	/// c, _ := sc.GetContract()
+	/// err = c.ConfirmDownload()
+	/// fmt.Println("download()")
 	return nil
 }
 
 func HandleClientDelete(ctx context.Context, ip string, hash string) (err error) {
 	log.Infof("started delete(%s, %s)", ip, hash)
-	defer recoverHandler("delete", ip, hash)
 
 	_, err = thrift.RunClientClosure(ip, func(c *thrift.ThriftClient) (interface{}, error) {
 		return c.SendDeleteQuery(ctx, hash)
@@ -99,7 +81,6 @@ func HandleClientDelete(ctx context.Context, ip string, hash string) (err error)
 
 func HandleClientUpdate(ctx context.Context, ip string, uuid string, hash string, size int64) (err error) {
 	log.Infof("started update(%s, %s, %s)", ip, uuid, hash)
-	defer recoverHandler("update", ip, uuid, hash, size)
 
 	h, err := thrift.RunClientClosure(ip, func(c *thrift.ThriftClient) (interface{}, error) {
 		return c.SendUpdateQuery(ctx, uuid, hash, size)
@@ -114,7 +95,6 @@ func HandleClientUpdate(ctx context.Context, ip string, uuid string, hash string
 
 func InvokeGetFileChecksum(ctx context.Context, ip string, uuid string, first, last int64, salt string) (string, error) {
 	log.Infof("started GetFileChecksum(%s, %d, %d, %s)", uuid, first, last, salt)
-	defer recoverHandler("GetFileChecksum", uuid, first, last, salt)
 
 	h, err := thrift.RunClientClosure(ip, func(c *thrift.ThriftClient) (interface{}, error) {
 		return c.GetFileChecksum(ctx, uuid, first, last, salt)

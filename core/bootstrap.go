@@ -10,8 +10,8 @@ import (
 
 	lgbl "gx/ipfs/QmT4PgCNdv73hnFAqzHqwW44q7M9PWpykSswHDxndquZbc/go-libp2p-loggables"
 
-	config "gitlab.com/casperDev/Casper-server/repo/config"
-	math2 "gitlab.com/casperDev/Casper-server/thirdparty/math2"
+	config "github.com/Casper-dev/Casper-server/repo/config"
+	math2 "github.com/Casper-dev/Casper-server/thirdparty/math2"
 
 	context "context"
 	inet "gx/ipfs/QmNa31VPzC561NWwRsJLE7nGYZYuuD2QfpK2b1q9BK54J1/go-libp2p-net"

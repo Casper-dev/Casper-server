@@ -8,8 +8,8 @@ import (
 
 	testutil "gx/ipfs/QmWRCn8vruNAzHx8i6SAXinuheRitKEGu8c7m26stKvsYx/go-testutil"
 
-	path "gitlab.com/casperDev/Casper-server/path"
-	mockrouting "gitlab.com/casperDev/Casper-server/routing/mock"
+	path "github.com/Casper-dev/Casper-server/path"
+	mockrouting "github.com/Casper-dev/Casper-server/routing/mock"
 
 	ds "gx/ipfs/QmVSase1JP7cq9QkPT46oNwdp9pT6kBkG3oqS14y3QcZjG/go-datastore"
 	dssync "gx/ipfs/QmVSase1JP7cq9QkPT46oNwdp9pT6kBkG3oqS14y3QcZjG/go-datastore/sync"

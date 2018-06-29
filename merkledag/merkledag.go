@@ -12,8 +12,8 @@ import (
 
 	ipldcbor "gx/ipfs/QmWCs8kMecJwCPK8JThue8TjgM2ieJ2HjTLDu7Cv2NEmZi/go-ipld-cbor"
 
-	bserv "gitlab.com/casperDev/Casper-server/blockservice"
-	offline "gitlab.com/casperDev/Casper-server/exchange/offline"
+	bserv "github.com/Casper-dev/Casper-server/blockservice"
+	offline "github.com/Casper-dev/Casper-server/exchange/offline"
 )
 
 // TODO: We should move these registrations elsewhere. Really, most of the IPLD

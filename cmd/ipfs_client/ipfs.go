@@ -3,8 +3,8 @@ package main
 import (
 	"fmt"
 
-	cmds "gitlab.com/casperDev/Casper-server/commands"
-	commands "gitlab.com/casperDev/Casper-server/core/commands"
+	cmds "github.com/Casper-dev/Casper-server/commands"
+	commands "github.com/Casper-dev/Casper-server/core/commands"
 )
 
 // This is the CLI root, used for executing commands accessible to CLI clients.
@@ -31,6 +31,9 @@ func init() {
 	// setting here instead of in literal to prevent initialization loop
 	// (some commands make references to Root)
 	Root.Subcommands = localCommands
+
+	// override some commands with client variants
+	commands.Root.Subcommands["add"] = commands.AddCCmd
 
 	// copy all subcommands from commands.Root into this root (if they aren't already present)
 	for k, v := range commands.Root.Subcommands {

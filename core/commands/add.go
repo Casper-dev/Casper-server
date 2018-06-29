@@ -6,26 +6,24 @@ import (
 	"errors"
 	"fmt"
 	"io"
-	"net"
 	"strconv"
 	"strings"
 	"sync"
 
-	bstore "gitlab.com/casperDev/Casper-server/blocks/blockstore"
-	"gitlab.com/casperDev/Casper-server/blockservice"
-	cu "gitlab.com/casperDev/Casper-server/casper/casper_utils"
-	"gitlab.com/casperDev/Casper-server/casper/uuid"
-	"gitlab.com/casperDev/Casper-server/client"
-	cmds "gitlab.com/casperDev/Casper-server/commands"
-	"gitlab.com/casperDev/Casper-server/commands/files"
-	"gitlab.com/casperDev/Casper-server/core"
-	"gitlab.com/casperDev/Casper-server/core/coreunix"
-	"gitlab.com/casperDev/Casper-server/exchange/offline"
-	dag "gitlab.com/casperDev/Casper-server/merkledag"
-	dagtest "gitlab.com/casperDev/Casper-server/merkledag/test"
-	"gitlab.com/casperDev/Casper-server/mfs"
-	"gitlab.com/casperDev/Casper-server/pin"
-	ft "gitlab.com/casperDev/Casper-server/unixfs"
+	bstore "github.com/Casper-dev/Casper-server/blocks/blockstore"
+	"github.com/Casper-dev/Casper-server/blockservice"
+	cu "github.com/Casper-dev/Casper-server/casper/casper_utils"
+	sc "github.com/Casper-dev/Casper-server/casper/sc"
+	"github.com/Casper-dev/Casper-server/casper/uuid"
+	cmds "github.com/Casper-dev/Casper-server/commands"
+	"github.com/Casper-dev/Casper-server/commands/files"
+	"github.com/Casper-dev/Casper-server/core"
+	"github.com/Casper-dev/Casper-server/core/coreunix"
+	"github.com/Casper-dev/Casper-server/exchange/offline"
+	dag "github.com/Casper-dev/Casper-server/merkledag"
+	dagtest "github.com/Casper-dev/Casper-server/merkledag/test"
+	"github.com/Casper-dev/Casper-server/mfs"
+	ft "github.com/Casper-dev/Casper-server/unixfs"
 
 	u "gx/ipfs/QmSU6eubNdhXjFBJBSksTp8kv8YRub8mGAPv8tVJHmL2EU/go-ipfs-util"
 	"gx/ipfs/QmT8rehPR3F6bmwL6zjUN8XpiDBFFpMP2myPdC6ApsWfJf/go-base58"
@@ -33,37 +31,6 @@ import (
 	ma "gx/ipfs/QmXY77cVe7rVRQXZZQRioukUM7aRW3BTcAgJe12MCtb3Ji/go-multiaddr"
 	"gx/ipfs/QmeWjRodbcZFKe5tMN7poEx3izym6osrLSnTLf9UjJZBbs/pb"
 )
-
-// Error indicating the max depth has been exceded.
-var ErrDepthLimitExceeded = fmt.Errorf("depth limit exceeded")
-
-const (
-	RootObjectName    = "<root>"
-	finalObjectMarker = "<end>"
-
-	quietOptionName       = "quiet"
-	quieterOptionName     = "quieter"
-	silentOptionName      = "silent"
-	progressOptionName    = "progress"
-	trickleOptionName     = "trickle"
-	wrapOptionName        = "wrap-with-directory"
-	hiddenOptionName      = "hidden"
-	onlyHashOptionName    = "only-hash"
-	chunkerOptionName     = "chunker"
-	pinOptionName         = "pin"
-	rawLeavesOptionName   = "raw-leaves"
-	noCopyOptionName      = "nocopy"
-	fstoreCacheOptionName = "fscache"
-	cidVersionOptionName  = "cid-version"
-	hashOptionName        = "hash"
-	uuidOptionName        = "uuid"
-	passwordOptionName    = "password"
-	updateOptionName      = "update"
-	peersOptionName       = "peers"
-	waitOptionName        = "wait"
-)
-
-const adderOutChanSize = 8
 
 var AddCmd = &cmds.Command{
 	Helptext: cmds.HelpText{
@@ -75,45 +42,6 @@ Adds contents of <path> to ipfs. Use -r to add directories (recursively).
 Adds contents of <path> to ipfs. Use -r to add directories.
 Note that directories are added recursively, to form the ipfs
 MerkleDAG.
-
-The wrap option, '-w', wraps the file (or files, if using the
-recursive option) in a directory. This directory contains only
-the files which have been added, and means that the file retains
-its filename. For example:
-
-  > ipfs add example.jpg
-  added QmbFMke1KXqnYyBBWxB74N4c5SBnJMVAiMNRcGu6x1AwQH example.jpg
-  > ipfs add example.jpg -w
-  added QmbFMke1KXqnYyBBWxB74N4c5SBnJMVAiMNRcGu6x1AwQH example.jpg
-  added QmaG4FuMqEBnQNn3C8XJ5bpW8kLs7zq2ZXgHptJHbKDDVx
-
-You can now refer to the added file in a gateway, like so:
-
-  /ipfs/QmaG4FuMqEBnQNn3C8XJ5bpW8kLs7zq2ZXgHptJHbKDDVx/example.jpg
-
-The chunker option, '-s', specifies the chunking strategy that dictates
-how to break files into blocks. Blocks with same content can
-be deduplicated. The default is a fixed block size of
-256 * 1024 bytes, 'size-262144'. Alternatively, you can use the
-rabin chunker for content defined chunking by specifying
-rabin-[min]-[avg]-[max] (where min/avg/max refer to the resulting
-chunk sizes). Using other chunking strategies will produce
-different hashes for the same file.
-
-  > ipfs add --chunker=size-2048 ipfs-logo.svg
-  added QmafrLBfzRLV4XSH1XcaMMeaXEUhDJjmtDfsYU95TrWG87 ipfs-logo.svg
-  > ipfs add --chunker=rabin-512-1024-2048 ipfs-logo.svg
-  added Qmf1hDN65tR55Ubh2RN1FPxr69xq3giVBz1KApsresY8Gn ipfs-logo.svg
-
-You can now check what blocks have been created by:
-
-  > ipfs object links QmafrLBfzRLV4XSH1XcaMMeaXEUhDJjmtDfsYU95TrWG87
-  QmY6yj1GsermExDXoosVE3aSPxdMNYr6aKuw3nA8LoWPRS 2059
-  Qmf7ZQeSxq2fJVJbCmgTrLLVN9tDR9Wy5k75DxQKuz5Gyt 1195
-  > ipfs object links Qmf1hDN65tR55Ubh2RN1FPxr69xq3giVBz1KApsresY8Gn
-  QmY6yj1GsermExDXoosVE3aSPxdMNYr6aKuw3nA8LoWPRS 2059
-  QmerURi9k4XzKCaaPbsK6BL5pMEjF7PGphjDvkkjDtsVf3 868
-  QmQB28iwSriSUSMqG2nXDTLtdPHgWb4rebBrU7Q1j4vxPv 338
 `,
 	},
 
@@ -173,11 +101,10 @@ You can now check what blocks have been created by:
 		req.Values()["size"] = sizeCh
 
 		// On server we generate new UUID
-
 		if _, uuidset, _ := req.Option(uuidOptionName).String(); uuidset {
-			// if UUID is specified on client, it is an update operation
+			// if UUID is specified on client or with REST API, it is an update operation
 			caller, _, _ := req.Option(cmds.CallerOpt).String()
-			req.SetOption(updateOptionName, caller == cmds.CallerOptClient)
+			req.SetOption(updateOptionName, caller == cmds.CallerOptClient || caller == cmds.CallerOptWeb)
 		} else {
 			req.SetOption(uuidOptionName, base58.Encode(uuid.GenUUID()))
 		}
@@ -231,7 +158,6 @@ You can now check what blocks have been created by:
 		hashFunStr, hfset, _ := req.Option(hashOptionName).String()
 		caller, _, _ := req.Option(cmds.CallerOpt).String()
 		uuidOpt, _, _ := req.Option(uuidOptionName).String()
-		upd, _, _ := req.Option(updateOptionName).Bool()
 		//waitOpt, _, _ := req.Option(waitOptionName).Bool()
 
 		if nocopy && !cfg.Experimental.FilestoreEnabled {
@@ -330,6 +256,14 @@ You can now check what blocks have been created by:
 
 			fileAdder.SetMfsRoot(mr)
 		}
+		contract, err := sc.GetContract(cfg.Casper.Blockchain[cfg.Casper.UsedChain])
+		if err != nil {
+			if caller == cmds.CallerOptWeb {
+				res.SetError(err, cmds.ErrNormal)
+				return
+			}
+			log.Errorf("error while receiving SC: %v", err)
+		}
 
 		var root *dag.ProtoNode
 		addAllAndPin := func(f files.File) error {
@@ -366,22 +300,18 @@ You can now check what blocks have been created by:
 
 			uid := base58.Decode(uuidOpt)
 			log.Debugf("UUID: '%s'", uuidOpt)
-			if upd && caller == cmds.CallerOptClient {
-				newRoot, _ := pn.Copy().(*dag.ProtoNode)
-				newRoot.SetUUID(uid)
-				n.Pinning.PinWithMode(newRoot.Cid(), pin.Recursive)
-				exch.HasBlock(newRoot)
-
-				uid = uuid.GenUUID()
-			}
-
 			pn.SetUUID(uid)
 			exch.HasBlock(pn)
 			root = pn
 			n.AddUUID(uuidOpt, &core.UUIDInfo{PubKey: ""})
 
-			size, _ := pn.Size()
+			size, _ := root.Size()
 			log.Debug(size)
+
+			if caller == cmds.CallerOptWeb {
+				contract.ConfirmUpload(cu.GetLocalAddr().NodeHash(), root.Cid().String(), int64(size))
+			}
+
 			outChan <- &coreunix.AddedObject{
 				Name: RootObjectName,
 				Hash: pn.Cid().String(),
@@ -398,60 +328,35 @@ You can now check what blocks have been created by:
 				res.SetError(err, cmds.ErrNormal)
 				return
 			}
+
 			outChan <- &coreunix.AddedObject{
 				Name: "",
 				Hash: finalObjectMarker,
 				UUID: "",
 			}
 
-			var performUpdate = func(_ ma.Multiaddr) {}
 			var peers []ma.Multiaddr
 			if popt, pf, _ := req.Option(peersOptionName).String(); pf {
 				var ps []string
 				err := json.Unmarshal([]byte(popt), &ps)
 				if err != nil {
 					log.Error(err)
-					return
-				}
-				for _, p := range ps {
-					peers = append(peers, ma.StringCast(p))
-				}
-				performUpdate = func(peer ma.Multiaddr) { uploadRoot(req.Context(), n, peer, root) }
-			} else if caller == cmds.CallerOptClient {
-				if req.Option(updateOptionName).Found() {
-					log.Debugf("UUID is specified. Existing file will be updated %s %s", root.UUID(), root.Cid().String())
-					b58uuid, _, _ := req.Option(uuidOptionName).String()
-					peers, err = cu.GetPeersMultiaddrsByHash(root.Cid().String())
-					if err != nil {
-						log.Error(err)
-						return
-					}
-					performUpdate = func(peer ma.Multiaddr) {
-						updateRoot(req.Context(), n, peer, root, b58uuid)
-					}
 				} else {
-					size, _ := root.Size()
-					peers, err = cu.GetPeersMultiaddrsBySize(int64(size))
-					fmt.Println("Got peeers", peers)
-					if err != nil {
-						log.Error(err)
-						return
-					}
-					performUpdate = func(peer ma.Multiaddr) {
-						uploadRoot(req.Context(), n, peer, root)
+					for _, p := range ps {
+						peers = append(peers, ma.StringCast(p))
 					}
 				}
-			}
 
-			wg := &sync.WaitGroup{}
-			wg.Add(len(peers))
-			for _, peer := range peers {
-				go func() {
-					defer wg.Done()
-					performUpdate(peer)
-				}()
+				wg := &sync.WaitGroup{}
+				wg.Add(len(peers))
+				for _, peer := range peers {
+					go func(p ma.Multiaddr) {
+						defer wg.Done()
+						uploadRoot(context.Background(), n, p, root)
+					}(peer)
+				}
+				wg.Wait()
 			}
-			wg.Wait()
 		}()
 	},
 	PostRun: func(req cmds.Request, res cmds.Response) {
@@ -559,44 +464,4 @@ You can now check what blocks have been created by:
 		}
 	},
 	Type: coreunix.AddedObject{},
-}
-
-func uploadRoot(ctx context.Context, n *core.IpfsNode, peer ma.Multiaddr, root *dag.ProtoNode) {
-	err := n.ConnectToPeer(ctx, peer.String())
-	if err != nil {
-		log.Error("Failed to connect: %s", err)
-		return
-	}
-	size, err := root.Size()
-	if err != nil {
-		log.Error("Cannot determine root size")
-		return
-	}
-	addr, _ := cu.MultiaddrToTCPAddr(peer)
-
-
-	thriftAddr := net.JoinHostPort(addr.IP.String(), "9090")
-	err = client.HandleClientUpload(ctx, thriftAddr, root.Cid().String(), int64(size), []string{})
-	if err != nil {
-		log.Error("Error while uploading to %s: %s", thriftAddr, err)
-	}
-}
-
-func updateRoot(ctx context.Context, n *core.IpfsNode, peer ma.Multiaddr, root *dag.ProtoNode, uuid string) {
-	err := n.ConnectToPeer(ctx, peer.String())
-	if err != nil {
-		log.Error("Failed to connect: %s", err)
-		return
-	}
-	size, err := root.Size()
-	if err != nil {
-		log.Error("Cannot determine root size")
-		return
-	}
-	addr, _ := cu.MultiaddrToTCPAddr(peer)
-	thriftAddr := net.JoinHostPort(addr.IP.String(), "9090")
-	err = client.HandleClientUpdate(ctx, thriftAddr, uuid, root.Cid().String(), int64(size))
-	if err != nil {
-		log.Error("Error while updating on %s: %s", peer, err)
-	}
 }

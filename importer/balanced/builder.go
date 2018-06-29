@@ -6,7 +6,7 @@ import (
 	node "gx/ipfs/QmPN7cwmpcc4DWXb4KTB9dNAJgjuPY69h3npsMfhRrQL9c/go-ipld-format"
 	logging "gx/ipfs/QmSpJByNKFX1sCsHBEp3R73FL4NF6FnQTEGyNAXHm2GS52/go-log"
 
-	h "gitlab.com/casperDev/Casper-server/importer/helpers"
+	h "github.com/Casper-dev/Casper-server/importer/helpers"
 )
 
 var log = logging.Logger("balanced.builder")

@@ -6,7 +6,6 @@ import (
 	"errors"
 	"fmt"
 	"io"
-	"math/big"
 	"math/rand"
 	"net"
 	"net/url"
@@ -19,30 +18,28 @@ import (
 	"syscall"
 	"time"
 
-	cmds "gitlab.com/casperDev/Casper-server/commands"
-	cli "gitlab.com/casperDev/Casper-server/commands/cli"
-	http "gitlab.com/casperDev/Casper-server/commands/http"
-	core "gitlab.com/casperDev/Casper-server/core"
-	coreCmds "gitlab.com/casperDev/Casper-server/core/commands"
-	"gitlab.com/casperDev/Casper-server/plugin/loader"
-	repo "gitlab.com/casperDev/Casper-server/repo"
-	config "gitlab.com/casperDev/Casper-server/repo/config"
-	fsrepo "gitlab.com/casperDev/Casper-server/repo/fsrepo"
-
-	"gitlab.com/casperDev/Casper-SC/casper_sc"
+	cmds "github.com/Casper-dev/Casper-server/commands"
+	"github.com/Casper-dev/Casper-server/commands/cli"
+	"github.com/Casper-dev/Casper-server/commands/http"
+	"github.com/Casper-dev/Casper-server/core"
+	coreCmds "github.com/Casper-dev/Casper-server/core/commands"
+	"github.com/Casper-dev/Casper-server/plugin/loader"
+	"github.com/Casper-dev/Casper-server/repo"
+	"github.com/Casper-dev/Casper-server/repo/config"
+	"github.com/Casper-dev/Casper-server/repo/fsrepo"
 
 	u "gx/ipfs/QmSU6eubNdhXjFBJBSksTp8kv8YRub8mGAPv8tVJHmL2EU/go-ipfs-util"
 	logging "gx/ipfs/QmSpJByNKFX1sCsHBEp3R73FL4NF6FnQTEGyNAXHm2GS52/go-log"
-	loggables "gx/ipfs/QmT4PgCNdv73hnFAqzHqwW44q7M9PWpykSswHDxndquZbc/go-libp2p-loggables"
-	manet "gx/ipfs/QmX3U3YXCQ6UYBxq2LVWF8dARS1hPUTEYLrSx654Qyxyw6/go-multiaddr-net"
+	"gx/ipfs/QmT4PgCNdv73hnFAqzHqwW44q7M9PWpykSswHDxndquZbc/go-libp2p-loggables"
+	"gx/ipfs/QmX3U3YXCQ6UYBxq2LVWF8dARS1hPUTEYLrSx654Qyxyw6/go-multiaddr-net"
 	ma "gx/ipfs/QmXY77cVe7rVRQXZZQRioukUM7aRW3BTcAgJe12MCtb3Ji/go-multiaddr"
-	osh "gx/ipfs/QmXuBJ7DR6k3rmUEKtvVMhwjmXDuJgXXPUt4LQXKBMsU93/go-os-helper"
+	"gx/ipfs/QmXuBJ7DR6k3rmUEKtvVMhwjmXDuJgXXPUt4LQXKBMsU93/go-os-helper"
 
-	"github.com/ethereum/go-ethereum/core/types"
+	"github.com/Casper-dev/Casper-server/casper/sc"
 )
 
 // log is the command logger
-var log = logging.Logger("cmd/ipfs")
+var log = logging.Logger("cmd/csper")
 
 var errRequestCanceled = errors.New("request canceled")
 
@@ -77,12 +74,9 @@ func main() {
 
 func connectToPeers() {
 	fmt.Println("Gettings peers")
-	caspersclient, client, auth, _ := Casper_SC.GetSC()
 
-	prePayClosure := func() (*types.Transaction, error) {
-		return caspersclient.PrePay(auth, big.NewInt(int64(1337)))
-	}
-	Casper_SC.ValidateMineTX(prePayClosure, client, auth)
+	c, _ := sc.GetContract()
+	c.PrePay(1337)
 	///TODO: connect to bootstrap nodes
 }
 

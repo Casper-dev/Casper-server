@@ -9,7 +9,7 @@ import (
 	"net/url"
 	"sync"
 
-	files "gitlab.com/casperDev/Casper-server/commands/files"
+	files "github.com/Casper-dev/Casper-server/commands/files"
 )
 
 // MultiFileReader reads from a `commands.File` (which can be a directory of files

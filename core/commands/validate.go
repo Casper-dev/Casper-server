@@ -1,14 +1,15 @@
 package commands
 
 import (
-	cu "gitlab.com/casperDev/Casper-server/casper/casper_utils"
-	thrift "gitlab.com/casperDev/Casper-server/casper/thrift"
-	val "gitlab.com/casperDev/Casper-server/casper/validation"
-	cmds "gitlab.com/casperDev/Casper-server/commands"
-	"gitlab.com/casperDev/Casper-thrift/casperproto"
+	cu "github.com/Casper-dev/Casper-server/casper/casper_utils"
+	thrift "github.com/Casper-dev/Casper-server/casper/thrift"
+	val "github.com/Casper-dev/Casper-server/casper/validation"
+	cmds "github.com/Casper-dev/Casper-server/commands"
+	"github.com/Casper-dev/Casper-thrift/casperproto"
 
 	"gx/ipfs/QmX3U3YXCQ6UYBxq2LVWF8dARS1hPUTEYLrSx654Qyxyw6/go-multiaddr-net"
 	"gx/ipfs/QmeS8cCKawUwejVrsBtmC1toTXmwVWZGiRJqzgTURVWeF9/go-ipfs-addr"
+	"net"
 )
 
 var ValidateCmd = &cmds.Command{
@@ -49,7 +50,7 @@ Lists running and recently run commands.
 					return
 				}
 
-				localAddr = &cu.ExternalAddr{a, taddr}
+				localAddr = &cu.ExternalAddr{a, taddr.(*net.TCPAddr)}
 			}
 			log.Debugf("Address: %s", localAddr.String())
 
